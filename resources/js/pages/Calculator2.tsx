@@ -18,6 +18,8 @@ export default function Calculator2() {
     const [isWaitingForResult, setIsWaitingForResult] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
     const [animationColor, setAnimationColor] = useState<'red' | 'blue'>('red');
+    const [isPredictionVisible, setIsPredictionVisible] = useState(true);
+    const [circlePositions, setCirclePositions] = useState<{left: 'red' | 'blue', right: 'red' | 'blue'}>({left: 'red', right: 'blue'});
     
     // 计算当前下注金额
     const calculateCurrentBet = (seq: number[]) => {
@@ -53,11 +55,30 @@ export default function Calculator2() {
         setIsAnimating(true);
         setAnimationColor('red');
         
-        // 每100ms切换颜色
+        // 随机初始化圆圈位置
+        const randomizePositions = () => {
+            const isRedLeft = Math.random() < 0.5;
+            setCirclePositions({
+                left: isRedLeft ? 'red' : 'blue',
+                right: isRedLeft ? 'blue' : 'red'
+            });
+        };
+        
+        randomizePositions();
+        
+        // 每100ms切换颜色和随机交换位置
         let colorToggle = true;
         const colorInterval = setInterval(() => {
             setAnimationColor(colorToggle ? 'blue' : 'red');
             colorToggle = !colorToggle;
+            
+            // 30%的概率交换位置
+            if (Math.random() < 0.3) {
+                setCirclePositions(prev => ({
+                    left: prev.right,
+                    right: prev.left
+                }));
+            }
         }, 100);
         
         // 1秒后停止动画并执行回调
@@ -155,6 +176,8 @@ export default function Calculator2() {
         setIsWaitingForResult(false);
         setIsAnimating(false);
         setAnimationColor('red');
+        setIsPredictionVisible(true);
+        setCirclePositions({left: 'red', right: 'blue'});
         // 重置基码输入但保持当前基码值
     };
 
@@ -203,10 +226,10 @@ export default function Calculator2() {
                             </p>
                         </div>
                         
-                        {/* 重置游戏按钮 - 右上角 */}
+                        {/* 重置游戏按钮 - 右上角，默认显示 */}
                         <button
                             onClick={handleResetGame}
-                            className="absolute -top-6 -right-6 bg-gray-500 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg transition-colors text-xs"
+                            className="absolute -top-6 -right-6 border border-gray-400 bg-transparent hover:bg-gray-50 text-gray-600 hover:text-gray-800 px-2 py-1 rounded transition-colors text-xs"
                         >
                             重置游戏
                         </button>
@@ -214,43 +237,67 @@ export default function Calculator2() {
 
 
 
-                    {/* 系统预测显示 */}
-                    {currentSuggestion && isWaitingForResult && (
+                    {/* 显示预测按钮（当预测被隐藏时） */}
+                    {currentSuggestion && isWaitingForResult && !isPredictionVisible && (
                         <div className="text-center mb-6">
-                            <div className="bg-white rounded-lg p-6 shadow-sm border">
-                                <h3 className="text-lg font-semibold mb-2">下一局:系统预测</h3>
-                                <div className="text-xs text-gray-500 mb-4">(随机结果，仅供参考，可根据您自己的玩法选择)</div>
+                            <button
+                                onClick={() => setIsPredictionVisible(true)}
+                                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+                            >
+                                显示系统预测
+                            </button>
+                        </div>
+                    )}
+
+                    {/* 系统预测显示 */}
+                    {currentSuggestion && isWaitingForResult && isPredictionVisible && (
+                        <div className="text-center mb-6">
+                            <div className="bg-white rounded-lg p-6 shadow-sm border relative">
+                                {/* 隐藏按钮 - 右上角叉号 */}
+                                <button
+                                    onClick={() => setIsPredictionVisible(false)}
+                                    className="absolute -top-2 -right-2 w-6 h-6 bg-gray-400 hover:bg-gray-500 text-white rounded-full flex items-center justify-center text-sm transition-colors"
+                                >
+                                    ✕
+                                </button>
+                                
+                                <h3 className="text-lg font-semibold mb-2">下一局摇骰结果：</h3>
+                                <div className="text-xs text-gray-500 mb-4">(随机结果，仅供参考，可根据您自己的玩法选择，点击右上角隐藏)</div>
                                 
                                 {isAnimating ? (
-                                    // 动画状态：显示两个圆圈，交替加粗边框
+                                    // 动画状态：显示两个圆圈，交替加粗边框，位置随机
                                     <div className="flex justify-center gap-6 mb-4">
-                                        <div className={`w-20 h-20 flex items-center justify-center rounded-full text-white font-bold text-2xl transition-all duration-100 bg-red-500 ${
-                                            animationColor === 'red' ? 'border-4 border-red-700 animate-pulse' : 'border-2 border-red-300'
+                                        <div className={`w-20 h-20 flex items-center justify-center rounded-full text-white font-bold text-xl transition-all duration-100 ${
+                                            circlePositions.left === 'red' ? 'bg-red-500' : 'bg-blue-500'
+                                        } ${
+                                            animationColor === circlePositions.left 
+                                                ? `border-4 ${circlePositions.left === 'red' ? 'border-red-700' : 'border-blue-700'} animate-pulse` 
+                                                : `border-2 ${circlePositions.left === 'red' ? 'border-red-300' : 'border-blue-300'}`
                                         }`}>
-                                            
+                                            {currentBet}
                                         </div>
-                                        <div className={`w-20 h-20 flex items-center justify-center rounded-full text-white font-bold text-2xl transition-all duration-100 bg-blue-500 ${
-                                            animationColor === 'blue' ? 'border-4 border-blue-700 animate-pulse' : 'border-2 border-blue-300'
+                                        <div className={`w-20 h-20 flex items-center justify-center rounded-full text-white font-bold text-xl transition-all duration-100 ${
+                                            circlePositions.right === 'red' ? 'bg-red-500' : 'bg-blue-500'
+                                        } ${
+                                            animationColor === circlePositions.right 
+                                                ? `border-4 ${circlePositions.right === 'red' ? 'border-red-700' : 'border-blue-700'} animate-pulse` 
+                                                : `border-2 ${circlePositions.right === 'red' ? 'border-red-300' : 'border-blue-300'}`
                                         }`}>
-                                            
+                                            {currentBet}
                                         </div>
                                     </div>
                                 ) : (
                                     // 静态状态：显示最终预测结果带边框
                                     <div className="flex justify-center mb-4">
-                                        <div className={`w-20 h-20 flex items-center justify-center rounded-full text-white font-bold text-2xl transition-all duration-300 ${
+                                        <div className={`w-20 h-20 flex items-center justify-center rounded-full text-white font-bold text-xl transition-all duration-300 ${
                                             currentSuggestion === 'big' 
                                                 ? 'bg-red-500 border-4 border-red-700' 
                                                 : 'bg-blue-500 border-4 border-blue-700'
                                         }`}>
-                                            {currentSuggestion === 'big' ? '' : ''}
+                                            {currentBet}
                                         </div>
                                     </div>
                                 )}
-                                
-                                <div className="text-lg font-semibold text-gray-800 mt-4">
-                                    建议投注: <span className="text-blue-600">{currentBet}</span>
-                                </div>
                                 <div className="text-sm text-gray-600 mt-2">
                                     {isAnimating && "正在生成下一轮预测..."}
                                 </div>
@@ -274,10 +321,10 @@ export default function Calculator2() {
                             <button
                                 onClick={handleWin}
                                 disabled={isAnimating}
-                                className={`flex-1 border border-green-500 font-bold py-4 px-6 rounded-lg text-xl bg-transparent shadow transition-all ${
-                                    isAnimating 
+                                className={`flex-1 border font-bold py-3 px-6 rounded-lg text-xl bg-transparent shadow transition-all ${
+                                    isAnimating
                                         ? 'text-gray-400 border-gray-300 cursor-not-allowed'
-                                        : 'text-green-600 hover:bg-green-50 hover:shadow-md active:scale-95'
+                                        : 'border-gray-400 text-gray-600 hover:bg-gray-100 hover:shadow-md active:scale-95'
                                 }`}
                             >
                                 正确
@@ -285,7 +332,7 @@ export default function Calculator2() {
                             <button
                                 onClick={handleLose}
                                 disabled={isAnimating}
-                                className={`flex-1 border font-bold py-4 px-6 rounded-lg text-xl bg-transparent shadow transition-all ${
+                                className={`flex-1 border font-bold py-3 px-6 rounded-lg text-xl bg-transparent shadow transition-all ${
                                     isAnimating
                                         ? 'text-gray-400 border-gray-300 cursor-not-allowed'
                                         : 'border-gray-400 text-gray-600 hover:bg-gray-100 hover:shadow-md active:scale-95'
@@ -311,7 +358,7 @@ export default function Calculator2() {
                     {/* 当前序列显示 */}
                     <div className="bg-white rounded-lg p-4 shadow-sm border mb-6">
                         <div className="flex items-center justify-between mb-3">
-                            <h3 className="text-lg font-semibold">1221投注序列</h3>
+                            <h3 className="text-lg font-semibold">1221消数缆法</h3>
                             <div className="flex items-center gap-2">
                                 <label className="text-sm font-semibold text-gray-700">基码:</label>
                                 <input
