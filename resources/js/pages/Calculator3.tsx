@@ -78,6 +78,8 @@ export default function Calculator3() {
     // 预测系统相关状态
     const [currentSuggestion, setCurrentSuggestion] = useState<DiceResult | null>(null);
     const [isWaitingForResult, setIsWaitingForResult] = useState(false);
+    const [isAnimating, setIsAnimating] = useState(false);
+    const [displayValue, setDisplayValue] = useState<DiceResult | null>(null);
     const [showMethodModal, setShowMethodModal] = useState(false);
     const [baseUnit, setBaseUnit] = useState(20); // 基码
     const [baseUnitInput, setBaseUnitInput] = useState('20'); // 基码输入框的值
@@ -131,6 +133,27 @@ export default function Calculator3() {
         return Math.random() < 0.5 ? 'big' : 'small';
     };
 
+    // 动画效果函数
+    const startPredictionAnimation = (finalSuggestion: DiceResult) => {
+        setIsAnimating(true);
+        setDisplayValue('big');
+        
+        // 每100ms切换大小
+        let switchCount = 0;
+        const maxSwitches = 10; // 1秒内切换10次
+        
+        const switchInterval = setInterval(() => {
+            switchCount++;
+            setDisplayValue(prev => prev === 'big' ? 'small' : 'big');
+            
+            if (switchCount >= maxSwitches) {
+                clearInterval(switchInterval);
+                setDisplayValue(finalSuggestion);
+                setIsAnimating(false);
+            }
+        }, 100);
+    };
+
     // 开始新一局
     const startNewRound = () => {
         if (isGameComplete) return;
@@ -138,6 +161,9 @@ export default function Calculator3() {
         const newSuggestion = generateSuggestion();
         setCurrentSuggestion(newSuggestion);
         setIsWaitingForResult(true);
+        
+        // 开始动画
+        startPredictionAnimation(newSuggestion);
     };
 
     // 生成初始建议（游戏开始时）
@@ -145,6 +171,9 @@ export default function Calculator3() {
         const initialSuggestion = generateSuggestion();
         setCurrentSuggestion(initialSuggestion);
         setIsWaitingForResult(true);
+        
+        // 开始动画
+        startPredictionAnimation(initialSuggestion);
     }
 
     // 处理1221方法的输赢
@@ -360,6 +389,9 @@ export default function Calculator3() {
             const nextSuggestion = generateSuggestion();
             setCurrentSuggestion(nextSuggestion);
             setIsWaitingForResult(true);
+            
+            // 开始动画
+            startPredictionAnimation(nextSuggestion);
         } else {
             setIsWaitingForResult(false);
         }
@@ -397,6 +429,9 @@ export default function Calculator3() {
         const nextSuggestion = generateSuggestion();
         setCurrentSuggestion(nextSuggestion);
         setIsWaitingForResult(true);
+        
+        // 开始动画
+        startPredictionAnimation(nextSuggestion);
     };
 
     // 重置游戏
@@ -411,6 +446,8 @@ export default function Calculator3() {
         setIsGameComplete(false);
         setCurrentSuggestion(null);
         setIsWaitingForResult(false);
+        setIsAnimating(false);
+        setDisplayValue(null);
         
         // 九式寶纜重置
         if (selectedMethod === 'jiushi') {
@@ -457,15 +494,24 @@ export default function Calculator3() {
                         <div className="text-left mb-6">
                             <div className={`inline-block px-4 py-2 rounded-lg font-bold border-2 border-gray-300 text-gray-800 bg-transparent`}>
                                 <div className="flex items-center gap-2">
-                                    <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-white ${
-                                        currentSuggestion === 'big' ? 'bg-red-600' : 'bg-blue-600'
-                                    }`}>
-                                        {currentSuggestion === 'big' ? '大' : '小'}
+                                    <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-white transition-all duration-150 ${
+                                        isAnimating 
+                                            ? displayValue === 'big' ? 'bg-red-600 scale-110' : 'bg-blue-600 scale-110'
+                                            : currentSuggestion === 'big' ? 'bg-red-600' : 'bg-blue-600'
+                                    } ${isAnimating ? 'animate-pulse' : ''}`}>
+                                        {isAnimating 
+                                            ? displayValue === 'big' ? '大' : '小'
+                                            : currentSuggestion === 'big' ? '大' : '小'
+                                        }
                                     </div>
-                                    <span>系统预测: {currentSuggestion === 'big' ? '大' : '小'} {currentBet}</span>
+                                    <span>系统预测: {
+                                        isAnimating 
+                                            ? displayValue === 'big' ? '大' : '小'
+                                            : currentSuggestion === 'big' ? '大' : '小'
+                                    } {currentBet}</span>
                                 </div>
                                 <div className="text-xs mt-1">
-                                    根据现场开奖结果，点击下方按钮输入结果
+                                    {isAnimating ? '系统运算中...' : '根据现场开奖结果，点击下方按钮输入结果'}
                                 </div>
                             </div>
                         </div>
@@ -717,13 +763,23 @@ export default function Calculator3() {
                             <div className="flex gap-2 mt-4">
                                 <button
                                     onClick={handleWin}
-                                    className="flex-1 bg-gradient-to-b from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 active:from-green-600 active:to-green-800 text-white font-bold py-2 px-3 rounded shadow-lg hover:shadow-xl active:shadow-md transform hover:scale-105 active:scale-95 transition-all duration-150 text-sm border-b-2 border-green-700 active:border-green-800"
+                                    disabled={isAnimating}
+                                    className={`flex-1 border font-bold py-2 px-3 rounded-lg text-sm bg-transparent shadow transition-all ${
+                                        isAnimating
+                                            ? 'text-gray-400 border-gray-300 cursor-not-allowed'
+                                            : 'border-gray-400 text-gray-600 hover:bg-gray-100 hover:shadow-md active:scale-95'
+                                    }`}
                                 >
                                     正确
                                 </button>
                                 <button
                                     onClick={handleLose}
-                                    className="flex-1 bg-gradient-to-b from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 active:from-red-600 active:to-red-800 text-white font-bold py-2 px-3 rounded shadow-lg hover:shadow-xl active:shadow-md transform hover:scale-105 active:scale-95 transition-all duration-150 text-sm border-b-2 border-red-700 active:border-red-800"
+                                    disabled={isAnimating}
+                                    className={`flex-1 border font-bold py-2 px-3 rounded-lg text-sm bg-transparent shadow transition-all ${
+                                        isAnimating
+                                            ? 'text-gray-400 border-gray-300 cursor-not-allowed'
+                                            : 'border-gray-400 text-gray-600 hover:bg-gray-100 hover:shadow-md active:scale-95'
+                                    }`}
                                 >
                                     错误
                                 </button>
