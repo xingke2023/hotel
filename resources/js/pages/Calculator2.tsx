@@ -190,16 +190,16 @@ export default function Calculator2() {
 
     return (
         <FrontendLayout>
-            <Head title="猜大小 - 1221投注系统" />
+            <Head title="1221注码系统" />
             
             <div className="min-h-screen bg-gray-50 p-4">
                 <div className="max-w-md mx-auto">
                     {/* Header */}
                     <div className="relative mb-6">
                         <div className="text-center">
-                            <h1 className="text-2xl font-bold text-gray-800">🎯 猜大小辅助工具</h1>
+                            <h1 className="text-2xl font-bold text-gray-800">🎯 红蓝辅助工具</h1>
                             <p className="text-sm text-gray-600 mt-2">
-                                1221投注系统 | 系统给预测 | 手动输入结果
+                                1221缆法系统
                             </p>
                         </div>
                         
@@ -227,12 +227,12 @@ export default function Calculator2() {
                                         <div className={`w-20 h-20 flex items-center justify-center rounded-full text-white font-bold text-2xl transition-all duration-100 bg-red-500 ${
                                             animationColor === 'red' ? 'border-4 border-red-700 animate-pulse' : 'border-2 border-red-300'
                                         }`}>
-                                            大
+                                            
                                         </div>
                                         <div className={`w-20 h-20 flex items-center justify-center rounded-full text-white font-bold text-2xl transition-all duration-100 bg-blue-500 ${
                                             animationColor === 'blue' ? 'border-4 border-blue-700 animate-pulse' : 'border-2 border-blue-300'
                                         }`}>
-                                            小
+                                            
                                         </div>
                                     </div>
                                 ) : (
@@ -243,7 +243,7 @@ export default function Calculator2() {
                                                 ? 'bg-red-500 border-4 border-red-700' 
                                                 : 'bg-blue-500 border-4 border-blue-700'
                                         }`}>
-                                            {currentSuggestion === 'big' ? '大' : '小'}
+                                            {currentSuggestion === 'big' ? '' : ''}
                                         </div>
                                     </div>
                                 )}
