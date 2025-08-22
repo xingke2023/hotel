@@ -23,7 +23,16 @@
       "Bash(cp:*)",
       "Bash(find:*)",
       "Bash(grep:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run types:*)",
+      "Bash(npm run lint)",
+      "Bash(pkill:*)",
+      "Bash(ls:*)",
+      "Bash(true)",
+      "Bash(npx eslint:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }

@@ -12,10 +12,43 @@ Route::get('/', function () {
 Route::get('houses', [App\Http\Controllers\HouseController::class, 'index'])->name('houses');
 Route::get('api/houses', [App\Http\Controllers\HouseController::class, 'list'])->name('api.houses');
 
+// 视频页面路由
+Route::get('videos', function () {
+    return Inertia::render('Videos');
+})->name('videos');
+Route::get('api/videos', [\App\Http\Controllers\VideoController::class, 'getVideos'])->name('api.videos');
+Route::post('api/videos/{video}/view', [\App\Http\Controllers\VideoController::class, 'incrementViews'])->name('api.videos.view');
+Route::post('api/videos/{video}/like', [\App\Http\Controllers\VideoController::class, 'toggleLike'])->name('api.videos.like');
+
 // 个人中心页面
 Route::get('profile', function () {
     return Inertia::render('profile/index');
 })->name('profile');
+
+// 计算器页面
+Route::get('calculator', function () {
+    return Inertia::render('Calculator');
+})->name('calculator');
+
+// 计算器1页面
+Route::get('calculator1', function () {
+    return Inertia::render('Calculator1');
+})->name('calculator1');
+
+// 1221投注系统页面
+Route::get('calculator2', function () {
+    return Inertia::render('Calculator2');
+})->name('calculator2');
+
+// 多策略投注系统页面
+Route::get('calculator3', function () {
+    return Inertia::render('Calculator3');
+})->name('calculator3');
+
+// 楼梯分层平注页面
+Route::get('calculator4', function () {
+    return Inertia::render('Calculator4');
+})->name('calculator4');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {

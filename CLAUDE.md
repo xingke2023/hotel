@@ -42,6 +42,7 @@ This is a Laravel-React marketplace application with:
 - User wallet/earnings system
 - Profile management with avatar uploads
 - Seller application system
+- **Calculator Feature**: Advanced betting strategy calculator with dual-mode system (Random/Custom), roadmap generation, and P&L tracking
 
 ### Core Models & Relationships
 - **User**: Central model with referral system, houses, orders, earnings (buyer/seller/pending_seller types)
@@ -51,6 +52,7 @@ This is a Laravel-React marketplace application with:
 - **ReferralCommission**: Commission tracking for 10% referral bonuses
 - **Earning**: User earnings tracking (house_sale, referral_commission, platform_sale types)
 - **UserCredential**: WebAuthn biometric authentication credentials
+- **Video**: Video content model with view counts and like functionality
 
 ### Frontend Structure
 - **Pages**: Organized by feature (auth/, houses/, profile/, settings/)
@@ -64,6 +66,7 @@ This is a Laravel-React marketplace application with:
 - Authenticated routes require `auth` and `verified` middleware
 - Key endpoints: houses, orders, referrals, wallet, profile, settings
 - Separate biometric auth endpoints under `/api/biometric/`
+- Video API endpoints for content management
 
 ### Database Schema
 - Uses enum fields for status management (orders, houses)
@@ -77,6 +80,31 @@ This is a Laravel-React marketplace application with:
 - Existing tests cover authentication flows and basic functionality
 
 ## Development Notes
+
+### Calculator Feature Architecture
+The Calculator (`/calculator` route) is a sophisticated betting strategy system with:
+
+**Dual Strategy System:**
+- **Random Mode (Default)**: Probabilistic betting with 50.8% B (Banker), 49.2% P (Player)
+- **Custom Mode**: User-defined pattern-based strategies with regex matching
+
+**Core Components:**
+- **Roadmap Generation**: Baccarat-style grid visualization with collision detection
+- **Betting Progression**: Configurable level system with 0-value fallback logic
+- **P&L Tracking**: Real-time profit/loss calculation with 5% banker commission
+- **Animation System**: Coin flip transition effects during result processing
+- **Hidden Mode**: Minimalist UI with randomized grayscale color themes
+
+**State Management:**
+- Complex state machine managing betting levels, recommendations, and visual states
+- Pattern matching system for custom strategies using regex
+- Real-time roadmap updates with position collision handling
+
+**UI Features:**
+- Editable betting level grid with click-to-edit functionality
+- Modal-based strategy management with add/edit/delete operations
+- Responsive design with mobile-first approach
+- Dynamic color theming in hidden mode
 
 ### Order Status Flow
 Orders follow a complex state machine with 12+ states:

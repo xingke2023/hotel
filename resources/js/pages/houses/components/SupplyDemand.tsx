@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { usePage } from '@inertiajs/react';
+import { usePage, router } from '@inertiajs/react';
 import axios from 'axios';
 
 interface House {
@@ -51,15 +51,16 @@ export default function SupplyDemand({ onPurchase }: SupplyDemandProps) {
     const [isSwipeActive, setIsSwipeActive] = useState(false);
     
     // 触感震动反馈
-    const triggerHapticFeedback = (type: 'light' | 'medium' | 'heavy' | 'swipe' = 'light') => {
+    const triggerHapticFeedback = (type: 'light' | 'medium' | 'heavy' | 'swipe' | 'ultra' = 'light') => {
         try {
             if ('vibrate' in navigator) {
-                // 不同类型的震动模式
+                // 不同类型的震动模式 - 增强震动强度
                 const patterns = {
-                    light: [15],
-                    medium: [25],
-                    heavy: [40],
-                    swipe: [15, 10, 20] // 特殊的滑动震动模式：短-停-长
+                    light: [20],
+                    medium: [40],
+                    heavy: [80],
+                    swipe: [30, 15, 50, 15, 30], // 更复杂的滑动震动模式：中-停-强-停-中
+                    ultra: [100, 20, 80, 20, 100] // 超强震动：强-停-强-停-强
                 };
                 navigator.vibrate(patterns[type]);
                 console.log(`触发震动反馈: ${type}, 模式: [${patterns[type].join(', ')}]`);
@@ -71,7 +72,8 @@ export default function SupplyDemand({ onPurchase }: SupplyDemandProps) {
                     light: 'impactLight',
                     medium: 'impactMedium', 
                     heavy: 'impactHeavy',
-                    swipe: 'impactMedium'
+                    swipe: 'impactHeavy', // 上滑使用重触感
+                    ultra: 'impactHeavy'
                 };
                 const windowWithHaptic = window as Window & {
                     hapticFeedback?: {
@@ -80,6 +82,16 @@ export default function SupplyDemand({ onPurchase }: SupplyDemandProps) {
                 };
                 windowWithHaptic.hapticFeedback?.[hapticTypes[type]]?.();
                 console.log(`触发iOS触感反馈: ${hapticTypes[type]}`);
+                
+                // 对于ultra和swipe类型，触发多次重触感
+                if (type === 'ultra' || type === 'swipe') {
+                    setTimeout(() => {
+                        windowWithHaptic.hapticFeedback?.['impactHeavy']?.();
+                    }, 100);
+                    setTimeout(() => {
+                        windowWithHaptic.hapticFeedback?.['impactHeavy']?.();
+                    }, 200);
+                }
             }
             
             // 备用震动方案 - 使用更强的震动
@@ -128,11 +140,11 @@ export default function SupplyDemand({ onPurchase }: SupplyDemandProps) {
         if (!touchStart || !touchEnd) return;
         
         const distance = touchStart - touchEnd;
-        const isUpSwipe = distance > 20; // 向上滑动，下一页 - 减小阈值从50到25
-        const isDownSwipe = distance < -20; // 向下滑动，上一页 - 减小阈值从50到25
+        const isUpSwipe = distance > 16; // 向上滑动，下一页 - 调整阈值为16像素
+        const isDownSwipe = distance < -16; // 向下滑动，上一页 - 调整阈值为16像素
         
         // 如果是轻微的滑动，不处理分页，让点击事件正常触发
-        if (Math.abs(distance) < 20) {
+        if (Math.abs(distance) < 16) {
             return;
         }
         
@@ -142,17 +154,17 @@ export default function SupplyDemand({ onPurchase }: SupplyDemandProps) {
         const totalPages = Math.ceil(houses.length / itemsPerPage);
         
         if (isUpSwipe && currentPage < totalPages - 1) {
-            // 上滑翻页 - 使用特殊的滑动震动模式
-            triggerHapticFeedback('heavy');
-            console.log('上滑翻页 - 触发震动反馈');
+            // 上滑翻页 - 使用最强的震动反馈
+            triggerHapticFeedback('ultra');
+            console.log('上滑翻页 - 触发超强震动反馈');
             setPageChanging(true);
             setCurrentPage(prev => prev + 1);
             setTimeout(() => setPageChanging(false), 500);
         }
         if (isDownSwipe && currentPage > 0) {
-            // 下滑翻页 - 使用重一点的震动
-            triggerHapticFeedback('heavy');
-            console.log('下滑翻页 - 触发震动反馈');
+            // 下滑翻页 - 使用强震动
+            triggerHapticFeedback('swipe');
+            console.log('下滑翻页 - 触发强震动反馈');
             setPageChanging(true);
             setCurrentPage(prev => prev - 1);
             setTimeout(() => setPageChanging(false), 500);
@@ -187,15 +199,22 @@ export default function SupplyDemand({ onPurchase }: SupplyDemandProps) {
                 return sortOrder === 'desc' ? -comparison : comparison;
             });
             
-            setHouses(newHouses);
+            // 限制最多显示80条数据
+            const limitedHouses = newHouses.slice(0, 80);
+            setHouses(limitedHouses);
             
-            // 重置到第一页（如果需要的话，可以根据业务逻辑调整）
+            // 如果当前页超出范围，重置到第一页
+            const maxPages = Math.ceil(limitedHouses.length / itemsPerPage);
+            if (currentPage >= maxPages && maxPages > 0) {
+                setCurrentPage(0);
+            }
+            
         } catch (error) {
             console.error('获取房屋列表失败:', error);
         } finally {
             setLoading(false);
         }
-    }, [search, sortBy, sortOrder]);
+    }, [search, sortBy, sortOrder, itemsPerPage, currentPage]);
 
     // 获取港币人民币汇率
     const fetchExchangeRate = useCallback(async () => {
@@ -361,7 +380,9 @@ export default function SupplyDemand({ onPurchase }: SupplyDemandProps) {
     const handleHouseClick = (house: House) => {
         if (house.status === 'available') {
             if (!auth.user) {
-                alert('请先登录');
+                if (confirm('请先登录后再购买房屋，点击确定跳转到登录页面')) {
+                    router.visit('/login');
+                }
                 return;
             }
             onPurchase(house);
@@ -458,17 +479,20 @@ export default function SupplyDemand({ onPurchase }: SupplyDemandProps) {
                                 <span className="text-yellow-400 whitespace-nowrap">
                                     第 {currentPage + 1}/{Math.ceil(houses.length / itemsPerPage)} 页
                                 </span>
+                                <span className="text-gray-400 whitespace-nowrap">
+                                    (显示前{houses.length}条)
+                                </span>
                                 
                                 <div className="text-gray-300 flex items-center gap-2 whitespace-nowrap">
                                     {/* 震动测试按钮 - 仅在开发环境显示 */}
                                     {process.env.NODE_ENV === 'development' && (
                                         <button
                                             onClick={() => {
-                                                triggerHapticFeedback('swipe');
-                                                console.log('测试上滑震动反馈');
+                                                triggerHapticFeedback('ultra');
+                                                console.log('测试超强震动反馈');
                                             }}
                                             className="px-1 py-1 text-xs rounded border bg-blue-600 text-white border-blue-600 hover:bg-blue-700 transition-colors"
-                                            title="测试震动"
+                                            title="测试超强震动"
                                         >
                                             📳
                                         </button>

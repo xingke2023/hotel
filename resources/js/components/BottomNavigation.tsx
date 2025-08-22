@@ -17,6 +17,12 @@ const HotelIcon = () => (
     </svg>
 );
 
+const VideoIcon = () => (
+    <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor" className="w-6 h-6">
+        <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/>
+    </svg>
+);
+
 const UserIcon = () => (
     <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor" className="w-6 h-6">
         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
@@ -34,6 +40,7 @@ export default function BottomNavigation({ pendingSalesCount = 0 }: BottomNaviga
                 const tabVibrationPatterns: { [key: string]: number[] } = {
                     'home': [25], // 首页 - 增强震动
                     'supply-demand': [30], // 房源交易 - 强震动
+                    'videos': [25], // 视频 - 增强震动
                     'mine': [25], // 我的 - 增强震动
                     'mine-with-notification': [30, 10, 30, 10, 25], // 我的(有通知) - 特殊强双重震动
                     'test': [35] // 测试用 - 最强震动
@@ -100,6 +107,12 @@ export default function BottomNavigation({ pendingSalesCount = 0 }: BottomNaviga
             title: '房源交易', 
             icon: <HotelIcon />, 
             href: '/houses'
+        },
+        { 
+            key: 'videos', 
+            title: '视频', 
+            icon: <VideoIcon />, 
+            href: '/videos'
         },
         { 
             key: 'mine', 
