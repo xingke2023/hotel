@@ -45,7 +45,7 @@ export default function HomeIndex() {
                             </Link>
                             
                             <Link
-                                href="/calculator"
+                                href="/investment-tools"
                                 className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 flex flex-col items-center justify-center text-center"
                             >
                                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-3">

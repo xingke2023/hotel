@@ -25,6 +25,11 @@ Route::get('profile', function () {
     return Inertia::render('profile/index');
 })->name('profile');
 
+// 投资工具选择页面
+Route::get('investment-tools', function () {
+    return Inertia::render('InvestmentTools');
+})->name('investment-tools');
+
 // 计算器页面
 Route::get('calculator', function () {
     return Inertia::render('Calculator');
