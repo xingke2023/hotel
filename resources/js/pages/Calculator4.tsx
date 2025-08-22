@@ -331,18 +331,17 @@ export default function Calculator4() {
 
                     {/* 系统预测显示 */}
                     {currentSuggestion && isWaitingForResult && !isGameComplete && !isBusted && (
-                        <div className="text-center mb-6">
-                            <div className="bg-white rounded-lg p-6 shadow-sm border">
-                                <h3 className="text-lg font-semibold mb-4">系统预测</h3>
-                                <div className={`inline-block px-8 py-4 rounded-lg text-white font-bold text-2xl ${
-                                    currentSuggestion === 'big' ? 'bg-red-500' : 'bg-blue-500'
-                                }`}>
-                                    {currentSuggestion === 'big' ? '大' : '小'}
+                        <div className="text-left mb-6">
+                            <div className={`inline-block px-4 py-2 rounded-lg font-bold border-2 border-gray-300 text-gray-800 bg-transparent`}>
+                                <div className="flex items-center gap-2">
+                                    <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-white ${
+                                        currentSuggestion === 'big' ? 'bg-red-600' : 'bg-blue-600'
+                                    }`}>
+                                        {currentSuggestion === 'big' ? '大' : '小'}
+                                    </div>
+                                    <span>系统预测,仅供参考: {currentSuggestion === 'big' ? '大' : '小'} {currentBet}</span>
                                 </div>
-                                <div className="text-lg font-semibold text-gray-800 mt-4">
-                                    建议投注: <span className="text-blue-600">{currentBet}</span>
-                                </div>
-                                <div className="text-sm text-gray-600 mt-2">
+                                <div className="text-xs mt-1">
                                     根据现场开奖结果，点击下方按钮输入结果
                                 </div>
                             </div>
@@ -368,7 +367,35 @@ export default function Calculator4() {
 
                     {/* 当前状态显示 */}
                     <div className="bg-white rounded-lg p-4 shadow-sm border mb-6">
-                        <h3 className="text-lg font-semibold mb-3">当前状态 - 楼梯分层平注</h3>
+                        <h3 className="text-lg font-semibold mb-3">楼梯分层平注</h3>
+                        
+                        {/* 结果输入按钮 - 放在标题下面 */}
+                        {currentSuggestion && isWaitingForResult && !isGameComplete && !isBusted && (
+                            <div className="mb-4">
+                                <div className="flex gap-2 mb-2">
+                                    <button
+                                        onClick={handleWin}
+                                        className="flex-1 bg-gradient-to-b from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 active:from-green-600 active:to-green-800 text-white font-bold py-2 px-3 rounded shadow-lg hover:shadow-xl active:shadow-md transform hover:scale-105 active:scale-95 transition-all duration-150 text-sm border-b-2 border-green-700 active:border-green-800"
+                                    >
+                                        正确
+                                    </button>
+                                    <button
+                                        onClick={handleLose}
+                                        className="flex-1 bg-gradient-to-b from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 active:from-red-600 active:to-red-800 text-white font-bold py-2 px-3 rounded shadow-lg hover:shadow-xl active:shadow-md transform hover:scale-105 active:scale-95 transition-all duration-150 text-sm border-b-2 border-red-700 active:border-red-800"
+                                    >
+                                        错误
+                                    </button>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-sm font-semibold text-gray-700">
+                                        {ladderLevels[currentLevel].name} | 第{currentStep + 1}个数字 | 下注: <span className="text-blue-600">{currentBet}</span>
+                                    </div>
+                                    <div className="text-xs text-gray-600 mt-1">
+                                        当前层损失: {currentLevelLoss} / {ladderLevels[currentLevel].total} | 当前层盈亏: {currentLevelPnL >= 0 ? '+' : ''}{currentLevelPnL}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         
                         {/* 显示所有层级 */}
                         <div className="mb-4">
@@ -411,13 +438,19 @@ export default function Calculator4() {
                             </div>
                         </div>
                         
+                        {/* 当没有预测按钮时显示当前状态 */}
+                        {(!currentSuggestion || !isWaitingForResult || isGameComplete || isBusted) && (
+                            <div className="text-center mb-4">
+                                <div className="text-sm font-semibold text-gray-700">
+                                    {ladderLevels[currentLevel].name} | 第{currentStep + 1}个数字 | 下注: <span className="text-blue-600">{currentBet}</span>
+                                </div>
+                                <div className="text-xs text-gray-600 mt-1">
+                                    当前层累计损失: {currentLevelLoss} / {ladderLevels[currentLevel].total} | 当前层盈亏: {currentLevelPnL >= 0 ? '+' : ''}{currentLevelPnL}
+                                </div>
+                            </div>
+                        )}
+                        
                         <div className="text-center">
-                            <div className="text-lg font-semibold text-gray-800">
-                                {ladderLevels[currentLevel].name} | 第{currentStep + 1}个数字 | 下注: <span className="text-blue-600">{currentBet}</span>
-                            </div>
-                            <div className="text-sm text-gray-600 mt-1">
-                                当前层累计损失: {currentLevelLoss} / {ladderLevels[currentLevel].total} | 当前层盈亏: {currentLevelPnL >= 0 ? '+' : ''}{currentLevelPnL}
-                            </div>
                             <div className="text-xs text-gray-500 mt-1">
                                 {currentStep === 0 
                                     ? '第一个数字：输了→下第二个数字，赢了→下第二个数字'
@@ -431,23 +464,6 @@ export default function Calculator4() {
                         </div>
                     </div>
 
-                    {/* 结果输入按钮 */}
-                    {isWaitingForResult && !isGameComplete && !isBusted && (
-                        <div className="flex gap-4 mb-6">
-                            <button
-                                onClick={handleWin}
-                                className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-lg text-xl transition-colors"
-                            >
-                                预测正确 (+{currentBet})
-                            </button>
-                            <button
-                                onClick={handleLose}
-                                className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-6 rounded-lg text-xl transition-colors"
-                            >
-                                预测错误 (-{currentBet})
-                            </button>
-                        </div>
-                    )}
 
                     {/* 控制按钮 */}
                     <div className="text-center mb-6">

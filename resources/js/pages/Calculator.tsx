@@ -35,11 +35,27 @@ export default function Calculator() {
         rolling: 'bg-gray-500'
     });
     const [showInstructions, setShowInstructions] = useState(false);
+    const [showCableModal, setShowCableModal] = useState(false);
 
+    // 缆法系统预设
+    const cableSystems = {
+        'martingale': {
+            name: '马丁格尔',
+            levels: [10, 30, 70, 150, 310, 630, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            description: '经典倍投法'
+        },
+        'fibonacci': {
+            name: '斐波那契',
+            levels: [10, 10, 20, 30, 50, 80, 130, 210, 340, 550, 0, 0, 0, 0, 0, 0, 0, 0],
+            description: '斐波那契数列递增'
+        }
+    };
+    
     // 投注级别和注码
-    const originalLevels = [10, 30, 70, 150, 310, 630, 0, 0, 0, 0, 0, 0];
+    const originalLevels = cableSystems.martingale.levels;
     const [betLevels, setBetLevels] = useState([...originalLevels]);
     const [baseLevels, setBaseLevels] = useState([...originalLevels]);
+    const [currentCableSystem, setCurrentCableSystem] = useState('martingale');
 
     // 策略管理
     const [strategies, setStrategies] = useState([
@@ -307,8 +323,17 @@ export default function Calculator() {
     };
 
     const resetBetLevels = () => {
-        setBetLevels([...originalLevels]);
-        setBaseLevels([...originalLevels]);
+        const currentSystem = cableSystems[currentCableSystem];
+        setBetLevels([...currentSystem.levels]);
+        setBaseLevels([...currentSystem.levels]);
+    };
+
+    const selectCableSystem = (systemKey: string) => {
+        setCurrentCableSystem(systemKey);
+        const newSystem = cableSystems[systemKey];
+        setBetLevels([...newSystem.levels]);
+        setBaseLevels([...newSystem.levels]);
+        setShowCableModal(false);
     };
 
     const handleLevelEdit = (index: number, value: string) => {
@@ -397,13 +422,13 @@ export default function Calculator() {
                         </div>
                         
                         {/* Betting Recommendation */}
-                        <div className="text-center">
+                        <div className="text-left">
                             {isRolling ? (
-                                <div className={`inline-block px-4 py-2 rounded-lg text-white font-bold ${
-                                    isHidden ? randomButtonColors.rolling : 'bg-amber-500'
+                                <div className={`inline-block px-4 py-2 rounded-lg font-bold border-2 border-gray-300 ${
+                                    isHidden ? `${randomButtonColors.text} bg-transparent` : 'text-gray-800 bg-transparent'
                                 }`}>
                                     <div className="flex items-center justify-center gap-2">
-                                        <div className={`text-lg w-8 h-8 rounded-full flex items-center justify-center font-bold border-2 transition-all duration-100 ${
+                                        <div className={`text-sm w-6 h-6 rounded-full flex items-center justify-center font-bold border-2 transition-all duration-100 ${
                                             isHidden
                                                 ? 'bg-gray-300 text-gray-700 border-gray-500'
                                                 : coinSide === 'B' 
@@ -416,20 +441,26 @@ export default function Calculator() {
                                     </div>
                                 </div>
                             ) : currentRecommendation ? (
-                                <div className={`inline-block px-4 py-2 rounded-lg text-white font-bold ${
+                                <div className={`inline-block px-4 py-2 rounded-lg font-bold border-2 border-gray-300 ${
                                     isHidden 
-                                        ? randomButtonColors.recommendation
-                                        : currentRecommendation === 'P' ? 'bg-blue-500' : 'bg-red-500'
+                                        ? `${randomButtonColors.text} bg-transparent`
+                                        : 'text-gray-800 bg-transparent'
                                 }`}>
-                                    下局建议下注:  {currentRecommendation === 'P' ? 'P 闲' : 'B 庄'} {betLevels[currentBetLevel] || betLevels[0]}
-                                    {betLevels[currentBetLevel] === 0 && <span className="text-xs block">遇到0值，使用第一级</span>}
-                                    
+                                    <div className="flex items-center gap-2">
+                                        <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-white ${
+                                            currentRecommendation === 'P' ? 'bg-blue-600' : 'bg-red-600'
+                                        }`}>
+                                            {currentRecommendation}
+                                        </div>
+                                        <span>下局建议打: {currentRecommendation === 'P' ? 'P 闲' : 'B 庄'} {betLevels[currentBetLevel] || betLevels[0]}</span>
+                                    </div>
+                                    {betLevels[currentBetLevel] === 0 && <span className="text-xs block mt-1">遇到0值，使用第一级</span>}
                                 </div>
                             ) : (
                                 <div className="inline-block px-4 py-2 rounded-lg bg-gray-400 text-white font-bold">
                                     此局不下注
                                     <span className="text-xs block mt-1">
-                                        ({strategyMode === 'random' ? '随机模式' : '自定义策略'})
+                                        ({strategyMode === 'random' ? '随机PB' : '自定义策略'})
                                     </span>
                                 </div>
                             )}
@@ -478,15 +509,21 @@ export default function Calculator() {
                                     重置
                                 </button>
                                 <button
+                                    onClick={() => setShowCableModal(true)}
+                                    className="px-2 py-1 bg-gray-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
+                                >
+                                    注码法
+                                </button>
+                                <button
                                     onClick={() => setShowStrategyModal(true)}
                                     className="px-2 py-1 bg-gray-500 text-white text-xs rounded hover:bg-purple-600 transition-colors"
                                 >
-                                    {strategyMode === 'random' ? '随机模式' : '自定义策略'}
+                                    {strategyMode === 'random' ? '随机PB' : '自定义策略'}
                                 </button>
                             </div>
                             
                         </div>
-                        <div className="grid grid-cols-6 gap-1 text-xs">
+                        <div className="grid grid-cols-6 gap-1 text-xs" style={{gridTemplateRows: 'repeat(3, 1fr)'}}>
                             {betLevels.map((level, index) => (
                                 <div
                                     key={index}
@@ -524,7 +561,7 @@ export default function Calculator() {
                                 </div>
                             ))}
                         </div>
-                        <h4 className="text-[10px] text-gray-400 text-right">缆法(点击数字可编辑)</h4>
+                        <h4 className="text-[10px] text-gray-400 text-right">点击数字可自行编辑</h4>
                     </div>
                     )}
 
@@ -835,6 +872,59 @@ export default function Calculator() {
                                     className="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
                                 >
                                     完成
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Cable System Selection Modal */}
+                {showCableModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-lg p-6 max-w-md mx-4">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-lg font-semibold">选择注码法</h3>
+                                <button
+                                    onClick={() => setShowCableModal(false)}
+                                    className="text-gray-500 hover:text-gray-700 text-xl"
+                                >
+                                    ×
+                                </button>
+                            </div>
+                            
+                            <div className="space-y-3">
+                                {Object.entries(cableSystems).map(([key, system]) => (
+                                    <div 
+                                        key={key}
+                                        className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                                            currentCableSystem === key 
+                                                ? 'border-blue-500 bg-blue-50' 
+                                                : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                        }`}
+                                        onClick={() => selectCableSystem(key)}
+                                    >
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h4 className="font-semibold text-gray-800">{system.name}</h4>
+                                            {currentCableSystem === key && (
+                                                <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                                                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <p className="text-sm text-gray-600 mb-2">{system.description}</p>
+                                        <div className="text-xs text-gray-500 font-mono">
+                                            [{system.levels.filter(l => l > 0).join(', ')}...]
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            <div className="mt-6 flex justify-end">
+                                <button
+                                    onClick={() => setShowCableModal(false)}
+                                    className="px-4 py-2 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 transition-colors"
+                                >
+                                    取消
                                 </button>
                             </div>
                         </div>

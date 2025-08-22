@@ -9,8 +9,8 @@ export default function InvestmentTools() {
     const tools = [
         {
             href: '/calculator',
-            title: 'Calculator',
-            description: '百家乐智能投注系统',
+            title: '红蓝直缆系统',
+            description: '红蓝智能注码控制工具',
             color: 'blue',
             icon: (
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -18,21 +18,11 @@ export default function InvestmentTools() {
                 </svg>
             )
         },
-        {
-            href: '/calculator1',
-            title: 'Calculator1',
-            description: '高级投注分析工具',
-            color: 'green',
-            icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-            )
-        },
+
         {
             href: '/calculator2',
-            title: 'Calculator2',
-            description: '1221投注系统',
+            title: '1221消数法注码系统',
+            description: '1221消数缆法',
             color: 'purple',
             icon: (
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,8 +32,8 @@ export default function InvestmentTools() {
         },
         {
             href: '/calculator3',
-            title: 'Calculator3',
-            description: '多策略投注系统',
+            title: '多策略投注缆法',
+            description: '多策略投注缆法',
             color: 'red',
             icon: (
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +43,7 @@ export default function InvestmentTools() {
         },
         {
             href: '/calculator4',
-            title: 'Calculator4',
+            title: '楼梯分层平注缆法',
             description: '楼梯分层平注',
             color: 'indigo',
             icon: (

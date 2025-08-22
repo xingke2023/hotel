@@ -78,11 +78,15 @@ export default function Calculator3() {
     // 预测系统相关状态
     const [currentSuggestion, setCurrentSuggestion] = useState<DiceResult | null>(null);
     const [isWaitingForResult, setIsWaitingForResult] = useState(false);
+    const [showMethodModal, setShowMethodModal] = useState(false);
+    const [baseUnit, setBaseUnit] = useState(20); // 基码
+    const [baseUnitInput, setBaseUnitInput] = useState('20'); // 基码输入框的值
 
     // 初始化序列
     useEffect(() => {
         const system = bettingSystems[selectedMethod];
-        setSequence([...system.initialSequence]);
+        const multipliedSequence = system.initialSequence.map(num => num * baseUnit);
+        setSequence([...multipliedSequence]);
         setCurrentLevel(0);
         setWinCount(0);
         
@@ -92,17 +96,17 @@ export default function Calculator3() {
             setJiushiStep(0);
             setJiushiWinsInLevel(0);
             setIsJiushiBusted(false);
-            setCurrentBet(jiushiLevels[0].bets[0]);
+            setCurrentBet(jiushiLevels[0].bets[0] * baseUnit);
         } else if (selectedMethod === '1324') {
             // 1324缆法初始化
             setStep1324(0);
-            setCurrentBet(1); // 第一步总是1
+            setCurrentBet(1 * baseUnit); // 第一步乘以基码
         } else {
-            setCurrentBet(calculateCurrentBet(system.initialSequence, selectedMethod, 0));
+            setCurrentBet(calculateCurrentBet(multipliedSequence, selectedMethod, 0));
         }
         
         setIsGameComplete(false);
-    }, [selectedMethod]);
+    }, [selectedMethod, baseUnit]);
 
     // 计算当前下注金额
     const calculateCurrentBet = (seq: number[], method: BettingMethod, level: number): number => {
@@ -114,10 +118,10 @@ export default function Calculator3() {
             return seq[level] || seq[seq.length - 1] || 1;
         } else if (method === 'jiushi') {
             const currentLevelData = jiushiLevels[jiushiLevel] || jiushiLevels[0];
-            return currentLevelData.bets[jiushiStep] || currentLevelData.bets[0];
+            return (currentLevelData.bets[jiushiStep] || currentLevelData.bets[0]) * baseUnit;
         } else if (method === '1324') {
             const sequence1324 = [1, 3, 2, 4];
-            return sequence1324[step1324] || 1;
+            return (sequence1324[step1324] || 1) * baseUnit;
         }
         return 1;
     };
@@ -217,7 +221,7 @@ export default function Calculator3() {
                 setJiushiLevel(0);
                 setJiushiStep(0);
                 setJiushiWinsInLevel(0);
-                setCurrentBet(jiushiLevels[0].bets[0]);
+                setCurrentBet(jiushiLevels[0].bets[0] * baseUnit);
                 setTotalPnL(newPnL);
                 
                 return { newPnL, newSequence: [...sequence], gameComplete: false, newLevel: 0, newWinCount: 0 };
@@ -227,19 +231,19 @@ export default function Calculator3() {
                     // 第一个数字赢了，继续当前级别的第二个数字
                     setJiushiStep(1);
                     setJiushiWinsInLevel(1);
-                    setCurrentBet(jiushiLevels[jiushiLevel].bets[1]);
+                    setCurrentBet(jiushiLevels[jiushiLevel].bets[1] * baseUnit);
                 } else if (jiushiStep === 1) {
                     // 第二个数字赢了，直接返回初始状态
                     setJiushiLevel(0);
                     setJiushiStep(0);
                     setJiushiWinsInLevel(0);
-                    setCurrentBet(jiushiLevels[0].bets[0]);
+                    setCurrentBet(jiushiLevels[0].bets[0] * baseUnit);
                 } else if (jiushiStep === 2) {
                     // 第三个数字赢了，返回初始状态
                     setJiushiLevel(0);
                     setJiushiStep(0);
                     setJiushiWinsInLevel(0);
-                    setCurrentBet(jiushiLevels[0].bets[0]);
+                    setCurrentBet(jiushiLevels[0].bets[0] * baseUnit);
                 }
                 
                 setTotalPnL(newPnL);
@@ -256,13 +260,13 @@ export default function Calculator3() {
                     // 继续第一级的下一步
                     const newStep = jiushiStep + 1;
                     setJiushiStep(newStep);
-                    setCurrentBet(jiushiLevels[0].bets[newStep]);
+                    setCurrentBet(jiushiLevels[0].bets[newStep] * baseUnit);
                 } else {
                     // 第一级三步都输了，升级到第二级
                     setJiushiLevel(1);
                     setJiushiStep(0);
                     setJiushiWinsInLevel(0);
-                    setCurrentBet(jiushiLevels[1].bets[0]);
+                    setCurrentBet(jiushiLevels[1].bets[0] * baseUnit);
                 }
             } else {
                 // 其他级别输了
@@ -278,17 +282,17 @@ export default function Calculator3() {
                         setJiushiLevel(nextLevel);
                         setJiushiStep(0);
                         setJiushiWinsInLevel(0);
-                        setCurrentBet(jiushiLevels[nextLevel].bets[0]);
+                        setCurrentBet(jiushiLevels[nextLevel].bets[0] * baseUnit);
                     }
                 } else if (jiushiStep === 1) {
                     // 第二个数字输了，继续第三个数字
                     setJiushiStep(2);
-                    setCurrentBet(jiushiLevels[jiushiLevel].bets[2]);
+                    setCurrentBet(jiushiLevels[jiushiLevel].bets[2] * baseUnit);
                 } else if (jiushiStep === 2) {
                     // 第三个数字输了，重新回到当前级别第一个数字
                     setJiushiStep(0);
                     setJiushiWinsInLevel(0);
-                    setCurrentBet(jiushiLevels[jiushiLevel].bets[0]);
+                    setCurrentBet(jiushiLevels[jiushiLevel].bets[0] * baseUnit);
                 }
             }
             
@@ -306,16 +310,16 @@ export default function Calculator3() {
         if (step1324 === 3) {
             // 第四步，不论输赢都回到原点
             setStep1324(0);
-            setCurrentBet(sequence1324[0]); // 回到第一步：1
+            setCurrentBet(sequence1324[0] * baseUnit); // 回到第一步：1 * baseUnit
         } else if (isWin) {
             // 赢了，前进到下一步
             const newStep = step1324 + 1;
             setStep1324(newStep);
-            setCurrentBet(sequence1324[newStep]);
+            setCurrentBet(sequence1324[newStep] * baseUnit);
         } else {
             // 输了，回到原点
             setStep1324(0);
-            setCurrentBet(sequence1324[0]); // 回到第一步：1
+            setCurrentBet(sequence1324[0] * baseUnit); // 回到第一步：1 * baseUnit
         }
         
         setTotalPnL(newPnL);
@@ -398,7 +402,8 @@ export default function Calculator3() {
     // 重置游戏
     const resetGame = () => {
         const system = bettingSystems[selectedMethod];
-        setSequence([...system.initialSequence]);
+        const multipliedSequence = system.initialSequence.map(num => num * baseUnit);
+        setSequence([...multipliedSequence]);
         setCurrentLevel(0);
         setTotalPnL(0);
         setWinCount(0);
@@ -413,13 +418,13 @@ export default function Calculator3() {
             setJiushiStep(0);
             setJiushiWinsInLevel(0);
             setIsJiushiBusted(false);
-            setCurrentBet(jiushiLevels[0].bets[0]);
+            setCurrentBet(jiushiLevels[0].bets[0] * baseUnit);
         } else if (selectedMethod === '1324') {
             // 1324缆法重置
             setStep1324(0);
-            setCurrentBet(1);
+            setCurrentBet(1 * baseUnit);
         } else {
-            setCurrentBet(calculateCurrentBet(system.initialSequence, selectedMethod, 0));
+            setCurrentBet(calculateCurrentBet(multipliedSequence, selectedMethod, 0));
         }
     };
 
@@ -437,34 +442,6 @@ export default function Calculator3() {
                         </p>
                     </div>
 
-                    {/* 投注方法选择 */}
-                    <div className="bg-white rounded-lg p-4 shadow-sm border mb-6">
-                        <h3 className="text-lg font-semibold mb-3">选择投注方法</h3>
-                        <div className="space-y-3">
-                            {Object.entries(bettingSystems).map(([key, system]) => (
-                                <div key={key} className="relative">
-                                    <label className="flex items-start gap-3 cursor-pointer">
-                                        <input
-                                            type="radio"
-                                            name="bettingMethod"
-                                            value={key}
-                                            checked={selectedMethod === key}
-                                            onChange={(e) => setSelectedMethod(e.target.value as BettingMethod)}
-                                            className="mt-1"
-                                        />
-                                        <div className="flex-1">
-                                            <div className="font-semibold text-gray-800">{system.name}</div>
-                                            <div className="text-sm text-gray-600 mt-1">{system.description}</div>
-                                            <div className="text-xs text-gray-500 mt-1">
-                                                序列: [{system.initialSequence.join(', ')}]
-                                                {system.targetWins && ` | 目標: ${system.targetWins}勝`}
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
 
                     {/* 总盈亏显示 */}
                     <div className="text-center mb-6">
@@ -477,18 +454,17 @@ export default function Calculator3() {
 
                     {/* 系统预测显示 */}
                     {currentSuggestion && isWaitingForResult && (
-                        <div className="text-center mb-6">
-                            <div className="bg-white rounded-lg p-6 shadow-sm border">
-                                <h3 className="text-lg font-semibold mb-4">系统预测</h3>
-                                <div className={`inline-block px-8 py-4 rounded-lg text-white font-bold text-2xl ${
-                                    currentSuggestion === 'big' ? 'bg-red-500' : 'bg-blue-500'
-                                }`}>
-                                    {currentSuggestion === 'big' ? '大' : '小'}
+                        <div className="text-left mb-6">
+                            <div className={`inline-block px-4 py-2 rounded-lg font-bold border-2 border-gray-300 text-gray-800 bg-transparent`}>
+                                <div className="flex items-center gap-2">
+                                    <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-white ${
+                                        currentSuggestion === 'big' ? 'bg-red-600' : 'bg-blue-600'
+                                    }`}>
+                                        {currentSuggestion === 'big' ? '大' : '小'}
+                                    </div>
+                                    <span>系统预测: {currentSuggestion === 'big' ? '大' : '小'} {currentBet}</span>
                                 </div>
-                                <div className="text-lg font-semibold text-gray-800 mt-4">
-                                    建议投注: <span className="text-blue-600">{currentBet}</span>
-                                </div>
-                                <div className="text-sm text-gray-600 mt-2">
+                                <div className="text-xs mt-1">
                                     根据现场开奖结果，点击下方按钮输入结果
                                 </div>
                             </div>
@@ -521,7 +497,58 @@ export default function Calculator3() {
 
                     {/* 当前状态显示 */}
                     <div className="bg-white rounded-lg p-4 shadow-sm border mb-6">
-                        <h3 className="text-lg font-semibold mb-3">当前状态 - {bettingSystems[selectedMethod].name}</h3>
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="text-left">
+                                <button
+                                    onClick={() => setShowMethodModal(true)}
+                                    className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded transition-colors text-sm font-semibold"
+                                >
+                                    {bettingSystems[selectedMethod].name}
+                                </button>
+                                <div className="text-xs text-gray-500 mt-1">
+                                    点击切换投注策略
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <div className="flex items-center gap-1">
+                                    <span className="text-xs text-gray-500">基码</span>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        value={baseUnitInput}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            setBaseUnitInput(value);
+                                            
+                                            // 立即应用有效的数字输入
+                                            if (value === '') {
+                                                setBaseUnit(20); // 空值默认为20
+                                            } else {
+                                                const numValue = parseInt(value);
+                                                if (!isNaN(numValue) && numValue > 0) {
+                                                    setBaseUnit(numValue);
+                                                }
+                                                // 无效输入不改变baseUnit，保持当前值
+                                            }
+                                        }}
+                                        onBlur={(e) => {
+                                            const value = e.target.value;
+                                            if (value === '') {
+                                                setBaseUnitInput('20');
+                                            } else {
+                                                const numValue = parseInt(value);
+                                                if (isNaN(numValue) || numValue <= 0) {
+                                                    // 无效输入，恢复为当前有效值
+                                                    setBaseUnitInput(baseUnit.toString());
+                                                }
+                                            }
+                                        }}
+                                        placeholder="20"
+                                        className="w-12 px-1 py-0.5 border rounded text-xs text-center"
+                                    />
+                                </div>
+                            </div>
+                        </div>
                         
                         {selectedMethod === '1221' ? (
                             <div>
@@ -618,7 +645,7 @@ export default function Calculator3() {
                                                                         ? 'bg-blue-100 text-blue-700'
                                                                         : 'bg-gray-200 text-gray-600'
                                                             }`}>
-                                                                {bet}
+                                                                {bet * baseUnit}
                                                             </span>
                                                         ))}
                                                     </div>
@@ -658,7 +685,7 @@ export default function Calculator3() {
                                                             ? 'bg-gray-300'
                                                             : 'bg-blue-400'
                                                 }`}>
-                                                    {num}
+                                                    {num * baseUnit}
                                                 </div>
                                                 <div className="text-xs text-gray-500 mt-1">
                                                     第{index + 1}步
@@ -684,25 +711,26 @@ export default function Calculator3() {
                                 </div>
                             </div>
                         ) : null}
+                        
+                        {/* 结果输入按钮 - 放在当前状态div内底部 */}
+                        {isWaitingForResult && !isGameComplete && !(selectedMethod === 'jiushi' && isJiushiBusted) && (
+                            <div className="flex gap-2 mt-4">
+                                <button
+                                    onClick={handleWin}
+                                    className="flex-1 bg-gradient-to-b from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 active:from-green-600 active:to-green-800 text-white font-bold py-2 px-3 rounded shadow-lg hover:shadow-xl active:shadow-md transform hover:scale-105 active:scale-95 transition-all duration-150 text-sm border-b-2 border-green-700 active:border-green-800"
+                                >
+                                    正确
+                                </button>
+                                <button
+                                    onClick={handleLose}
+                                    className="flex-1 bg-gradient-to-b from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 active:from-red-600 active:to-red-800 text-white font-bold py-2 px-3 rounded shadow-lg hover:shadow-xl active:shadow-md transform hover:scale-105 active:scale-95 transition-all duration-150 text-sm border-b-2 border-red-700 active:border-red-800"
+                                >
+                                    错误
+                                </button>
+                            </div>
+                        )}
                     </div>
 
-                    {/* 结果输入按钮 */}
-                    {isWaitingForResult && !isGameComplete && !(selectedMethod === 'jiushi' && isJiushiBusted) && (
-                        <div className="flex gap-4 mb-6">
-                            <button
-                                onClick={handleWin}
-                                className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-lg text-xl transition-colors"
-                            >
-                                预测正确 (+{currentBet})
-                            </button>
-                            <button
-                                onClick={handleLose}
-                                className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-6 rounded-lg text-xl transition-colors"
-                            >
-                                预测错误 (-{currentBet})
-                            </button>
-                        </div>
-                    )}
 
                     {/* 控制按钮 */}
                     <div className="text-center mb-6">
@@ -827,6 +855,63 @@ export default function Calculator3() {
                             </div>
                         </div>
                     </div>
+
+                    {/* 投注方法选择弹窗 */}
+                    {showMethodModal && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                            <div className="bg-white rounded-lg p-6 max-w-lg mx-4 max-h-[80vh] overflow-y-auto">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-lg font-semibold">选择投注方法</h3>
+                                    <button
+                                        onClick={() => setShowMethodModal(false)}
+                                        className="text-gray-500 hover:text-gray-700 text-xl"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                                
+                                <div className="space-y-3">
+                                    {Object.entries(bettingSystems).map(([key, system]) => (
+                                        <div 
+                                            key={key} 
+                                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                                                selectedMethod === key 
+                                                    ? 'border-purple-500 bg-purple-50' 
+                                                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                            }`}
+                                            onClick={() => {
+                                                setSelectedMethod(key as BettingMethod);
+                                                setShowMethodModal(false);
+                                            }}
+                                        >
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div className="font-semibold text-gray-800">{system.name}</div>
+                                                {selectedMethod === key && (
+                                                    <div className="w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
+                                                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="text-sm text-gray-600 mb-2">{system.description}</div>
+                                            <div className="text-xs text-gray-500">
+                                                序列: [{system.initialSequence.join(', ')}]
+                                                {system.targetWins && ` | 目標: ${system.targetWins}勝`}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                
+                                <div className="mt-6 flex justify-end">
+                                    <button
+                                        onClick={() => setShowMethodModal(false)}
+                                        className="px-4 py-2 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 transition-colors"
+                                    >
+                                        关闭
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </FrontendLayout>
