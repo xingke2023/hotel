@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Head } from '@inertiajs/react';
 import FrontendLayout from '@/layouts/frontend-layout';
 
@@ -12,7 +12,9 @@ interface RoadCell {
 
 export default function Calculator7() {
     const [results, setResults] = useState<Result[]>([]);
+    const [winLossResults, setWinLossResults] = useState<boolean[]>([]); // true = 赢, false = 输
     const [roadMap, setRoadMap] = useState<RoadCell[]>([]);
+    const winLossScrollRef = useRef<HTMLDivElement>(null);
     const [currentBetLevel, setCurrentBetLevel] = useState(0);
     const [totalPnL, setTotalPnL] = useState(0);
     const [lastRecommendation, setLastRecommendation] = useState<string | null>(null);
@@ -58,6 +60,13 @@ export default function Calculator7() {
         { pattern: '[BP]?BP$', description: '*BP 打B', bet: 'B' as 'B' | 'P', strict: false }
     ]);
 
+    // 自动滚动到输赢路最新数据
+    useEffect(() => {
+        if (winLossScrollRef.current && winLossResults.length > 0) {
+            winLossScrollRef.current.scrollLeft = winLossScrollRef.current.scrollWidth;
+        }
+    }, [winLossResults]);
+
     // 复位功能
     const resetBettingSystem = () => {
         setCurrentBetLevel(0);  // 第一套注码复位到第一个数字
@@ -67,6 +76,9 @@ export default function Calculator7() {
         setCurrentSet('first'); // 返回第一套注码
         setIsBusted(false);     // 重置爆缆状态
         // 保持当前序列不变，不清空results和roadmap
+        
+        // 触发建议运算动画
+        triggerRecommendationAnimation();
     };
 
     // 生成随机按钮颜色（以灰色为主）
@@ -137,6 +149,10 @@ export default function Calculator7() {
             }
             
             const won = result === lastRecommendation;
+            
+            // 记录输赢结果（只有当有投注建议时才记录）
+            const newWinLossResults = [...winLossResults, won];
+            setWinLossResults(newWinLossResults);
             
             if (won) {
                 // 赢了
@@ -289,6 +305,33 @@ export default function Calculator7() {
         return random < 0.5066 ? 'B' : 'P'; // 50.66% B, 49.34% P
     };
 
+    // 通用的建议运算和动画函数
+    const triggerRecommendationAnimation = () => {
+        // 开始硬币翻转动画
+        setIsRolling(true);
+        
+        // 硬币翻转效果：每100ms切换一次B/P
+        const flipInterval = setInterval(() => {
+            setCoinSide(prev => prev === 'B' ? 'P' : 'B');
+        }, 100);
+        
+        // 1.5秒后停止动画并更新投注建议
+        setTimeout(() => {
+            clearInterval(flipInterval);
+            setIsRolling(false);
+            
+            // 生成新的投注建议
+            if (strategyMode === 'random') {
+                const newRandomRecommendation = getRandomRecommendation();
+                setCurrentRandomRecommendation(newRandomRecommendation);
+                setLastRecommendation(newRandomRecommendation);
+            } else {
+                const newRecommendation = getBettingRecommendation(results);
+                setLastRecommendation(newRecommendation);
+            }
+        }, 1500);
+    };
+
     // 为随机模式生成初始建议（爆缆时不生成）
     if (strategyMode === 'random' && results.length === 0 && !currentRandomRecommendation && !isBusted) {
         const initialRandom = getRandomRecommendation();
@@ -410,6 +453,7 @@ export default function Calculator7() {
 
     const clearResults = () => {
         setResults([]);
+        setWinLossResults([]); // 清空输赢记录
         setRoadMap([]);
         setCurrentBetLevel(0);
         setSecondSetLevel(0);
@@ -419,6 +463,9 @@ export default function Calculator7() {
         setIsOnDouble(false);
         setCurrentSet('first');
         setIsBusted(false);
+        
+        // 触发建议运算动画
+        triggerRecommendationAnimation();
     };
 
     const resetBetLevels = () => {
@@ -531,7 +578,7 @@ export default function Calculator7() {
                                 <div className={`inline-block px-4 py-2 rounded-lg font-bold border-2 border-gray-300 ${
                                     isHidden ? `${randomButtonColors.text} bg-transparent` : 'text-gray-800 bg-transparent'
                                 }`}>
-                                    <div className="flex items-center justify-center gap-2">
+                                    <div className="flex items-center gap-2">
                                         <div className={`text-sm w-6 h-6 rounded-full flex items-center justify-center font-bold border-2 transition-all duration-100 ${
                                             isHidden
                                                 ? 'bg-gray-300 text-gray-700 border-gray-500'
@@ -542,6 +589,21 @@ export default function Calculator7() {
                                             {coinSide}
                                         </div>
                                         <span>随机运算中...</span>
+                                        <button
+                                            disabled={true}
+                                            className="ml-2 px-2 py-1 text-xs rounded bg-gray-300 text-gray-500 cursor-not-allowed"
+                                        >
+                                            重摇
+                                        </button>
+                                    </div>
+                                    {/* 保持缆法描述信息显示，避免高度变化 */}
+                                    <div className="text-xs mt-1 opacity-50">
+                                        {currentSet === 'first' 
+                                            ? (currentBetLevel === 0 
+                                                ? `第一套基础缆 | 第1级 (特殊级别)`
+                                                : `第一套孖宝缆 | 第${currentBetLevel + 1}级 | ${isOnDouble ? '孖宝模式' : '基础模式'}`)
+                                            : `第二套胜进缆 | 第${secondSetLevel + 1}级`
+                                        }
                                     </div>
                                 </div>
                             ) : isBusted ? (
@@ -570,6 +632,19 @@ export default function Calculator7() {
                                                     : (isOnDouble ? betLevels[currentBetLevel] * 2 : betLevels[currentBetLevel]))
                                                 : secondBetLevels[secondSetLevel]
                                         }</span>
+                                        <button
+                                            onClick={triggerRecommendationAnimation}
+                                            disabled={isRolling}
+                                            className={`ml-2 px-2 py-1 text-xs rounded transition-colors ${
+                                                isRolling 
+                                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                                    : isHidden
+                                                        ? 'bg-gray-400 hover:bg-gray-500 text-white'
+                                                        : 'bg-blue-500 hover:bg-blue-600 text-white'
+                                            }`}
+                                        >
+                                            重摇
+                                        </button>
                                     </div>
                                     {((currentSet === 'first' && betLevels[currentBetLevel] === 0) || 
                                       (currentSet === 'second' && secondBetLevels[secondSetLevel] === 0)) && 
@@ -595,9 +670,32 @@ export default function Calculator7() {
                         </div>
                     </div>
                     
+                    {/* Win/Loss Path - Above P B Buttons */}
+                    {!isHidden && winLossResults.length > 0 && (
+                        <div className="mb-3">
+                            <div 
+                                ref={winLossScrollRef}
+                                className="font-mono text-base tracking-wide overflow-x-auto whitespace-nowrap py-1 scrollbar-hide"
+                                style={{ 
+                                    scrollbarWidth: 'none', 
+                                    msOverflowStyle: 'none',
+                                    WebkitScrollbar: { display: 'none' }
+                                }}
+                            >
+                                {winLossResults.map((won, index) => (
+                                    <span 
+                                        key={index} 
+                                        className={`${won ? 'text-green-600' : 'text-red-600'} font-bold mr-1`}
+                                    >
+                                        {won ? '✓' : '✗'}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Control Buttons */}
-                    <div className="flex gap-4 mb-6">
+                    <div className="flex gap-4 mb-2">
                         <button
                             onClick={() => addResult('P')}
                             disabled={isBusted}
@@ -626,6 +724,16 @@ export default function Calculator7() {
                         </button>
                     </div>
 
+                    {/* Win/Loss Statistics - Below P B Buttons */}
+                    {!isHidden && winLossResults.length > 0 && (
+                        <div className="mb-4 text-center">
+                            <div className="flex justify-center gap-6 text-xs">
+                                <span className="text-green-600 font-medium">赢: {winLossResults.filter(w => w).length}</span>
+                                <span className="text-gray-500">总局数: {winLossResults.length}</span>
+                                <span className="text-red-600 font-medium">输: {winLossResults.filter(w => !w).length}</span>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Betting Levels Display */}
                     {!isHidden && (
@@ -790,22 +898,6 @@ export default function Calculator7() {
                     </div>
                     )}
 
-                    {/* Current Sequence */}
-                    {!isHidden && results.length > 0 && (
-                        <div className="mt-6 bg-white rounded-lg p-4 shadow-sm border">
-                            <h3 className="text-lg font-semibold mb-2">当前序列</h3>
-                            <div className="mb-4">
-                                <div className="font-mono text-lg tracking-wider overflow-x-auto whitespace-nowrap p-2 border rounded bg-gray-50">
-                                    {results.join('')}
-                                </div>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                                <span>总局数: {results.length}</span>
-                                <span>庄: {results.filter(r => r === 'B').length}</span>
-                                <span>闲: {results.filter(r => r === 'P').length}</span>
-                            </div>
-                        </div>
-                    )}
                 </div>
 
                 {/* Strategy Management Modal */}
