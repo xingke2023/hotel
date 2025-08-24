@@ -764,10 +764,10 @@ export default function Calculator3() {
                                 <button
                                     onClick={handleWin}
                                     disabled={isAnimating}
-                                    className={`flex-1 border font-bold py-2 px-3 rounded-lg text-sm bg-transparent shadow transition-all ${
+                                    className={`flex-1 font-bold py-2 px-3 rounded-lg text-sm shadow transition-all ${
                                         isAnimating
-                                            ? 'text-gray-400 border-gray-300 cursor-not-allowed'
-                                            : 'border-gray-400 text-gray-600 hover:bg-gray-100 hover:shadow-md active:scale-95'
+                                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                            : 'bg-green-500 text-white hover:bg-green-600 hover:shadow-md active:scale-95'
                                     }`}
                                 >
                                     正确
@@ -775,10 +775,10 @@ export default function Calculator3() {
                                 <button
                                     onClick={handleLose}
                                     disabled={isAnimating}
-                                    className={`flex-1 border font-bold py-2 px-3 rounded-lg text-sm bg-transparent shadow transition-all ${
+                                    className={`flex-1 font-bold py-2 px-3 rounded-lg text-sm shadow transition-all ${
                                         isAnimating
-                                            ? 'text-gray-400 border-gray-300 cursor-not-allowed'
-                                            : 'border-gray-400 text-gray-600 hover:bg-gray-100 hover:shadow-md active:scale-95'
+                                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                            : 'bg-gray-500 text-white hover:bg-gray-600 hover:shadow-md active:scale-95'
                                     }`}
                                 >
                                     错误

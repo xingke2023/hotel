@@ -413,7 +413,7 @@ export default function Calculator4() {
 
                     {/* 当前状态显示 */}
                     <div className="bg-white rounded-lg p-4 shadow-sm border mb-6">
-                        <h3 className="text-lg font-semibold mb-3">楼梯分层平注</h3>
+                        
                         
                         {/* 结果输入按钮 - 放在标题下面 */}
                         {currentSuggestion && isWaitingForResult && !isGameComplete && !isBusted && (
@@ -422,10 +422,10 @@ export default function Calculator4() {
                                     <button
                                         onClick={handleWin}
                                         disabled={isAnimating}
-                                        className={`flex-1 border font-bold py-2 px-3 rounded-lg text-sm bg-transparent shadow transition-all ${
+                                        className={`flex-1 font-bold py-2 px-3 rounded-lg text-sm shadow transition-all ${
                                             isAnimating
-                                                ? 'text-gray-400 border-gray-300 cursor-not-allowed'
-                                                : 'border-gray-400 text-gray-600 hover:bg-gray-100 hover:shadow-md active:scale-95'
+                                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                                : 'bg-green-500 text-white hover:bg-green-600 hover:shadow-md active:scale-95'
                                         }`}
                                     >
                                         正确
@@ -433,10 +433,10 @@ export default function Calculator4() {
                                     <button
                                         onClick={handleLose}
                                         disabled={isAnimating}
-                                        className={`flex-1 border font-bold py-2 px-3 rounded-lg text-sm bg-transparent shadow transition-all ${
+                                        className={`flex-1 font-bold py-2 px-3 rounded-lg text-sm shadow transition-all ${
                                             isAnimating
-                                                ? 'text-gray-400 border-gray-300 cursor-not-allowed'
-                                                : 'border-gray-400 text-gray-600 hover:bg-gray-100 hover:shadow-md active:scale-95'
+                                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                                : 'bg-gray-500 text-white hover:bg-gray-600 hover:shadow-md active:scale-95'
                                         }`}
                                     >
                                         错误

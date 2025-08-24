@@ -9,7 +9,7 @@ export default function InvestmentTools() {
     const tools = [
         {
             href: '/calculator',
-            title: '红蓝直缆系统',
+            title: '直缆',
             description: '红蓝智能注码控制工具',
             color: 'blue',
             icon: (
@@ -18,11 +18,33 @@ export default function InvestmentTools() {
                 </svg>
             )
         },
+        {
+            href: '/calculator6',
+            title: '孖宝缆',
+            description: '孖宝缆法注码控制',
+            color: 'yellow',
+            icon: (
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+            )
+        },
+        {
+            href: '/calculator7',
+            title: '孖宝加胜进双层缆',
+            description: '双套注码增强系统',
+            color: 'green',
+            icon: (
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                </svg>
+            )
+        },
 
         {
             href: '/calculator2',
-            title: '1221消数法注码系统',
-            description: '1221消数缆法',
+            title: '1221消数缆',
+            description: '1221消数注码法',
             color: 'purple',
             icon: (
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,25 +52,26 @@ export default function InvestmentTools() {
                 </svg>
             )
         },
-        {
-            href: '/calculator3',
-            title: '多策略投注缆法',
-            description: '多策略投注缆法',
-            color: 'red',
-            icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-            )
-        },
+        
         {
             href: '/calculator4',
-            title: '楼梯分层平注缆法',
+            title: '楼梯分层平注缆',
             description: '楼梯分层平注',
             color: 'indigo',
             icon: (
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                </svg>
+            )
+        },
+        {
+            href: '/calculator3',
+            title: '多策略缆选择器',
+            description: '多策略投注缆法',
+            color: 'red',
+            icon: (
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
             )
         }
@@ -60,7 +83,8 @@ export default function InvestmentTools() {
             green: 'bg-green-100 text-green-600 hover:bg-green-200',
             purple: 'bg-purple-100 text-purple-600 hover:bg-purple-200',
             red: 'bg-red-100 text-red-600 hover:bg-red-200',
-            indigo: 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200'
+            indigo: 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200',
+            yellow: 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
         };
         return colorMap[color as keyof typeof colorMap] || colorMap.blue;
     };

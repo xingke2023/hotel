@@ -55,6 +55,17 @@ Route::get('calculator4', function () {
     return Inertia::render('Calculator4');
 })->name('calculator4');
 
+
+// Calculator6页面
+Route::get('calculator6', function () {
+    return Inertia::render('Calculator6');
+})->name('calculator6');
+
+// Calculator7页面
+Route::get('calculator7', function () {
+    return Inertia::render('Calculator7');
+})->name('calculator7');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');

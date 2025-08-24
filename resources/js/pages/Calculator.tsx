@@ -62,6 +62,13 @@ export default function Calculator() {
         { pattern: '[BP]?BP$', description: '*BP 打B', bet: 'B' as 'B' | 'P', strict: false }
     ]);
 
+    // 复位功能
+    const resetBettingSystem = () => {
+        setCurrentBetLevel(0);  // 注码复位到第一个数字
+        setTotalPnL(0);         // 总盈亏归零
+        // 保持当前序列不变，不清空results和roadmap
+    };
+
     // 生成随机按钮颜色（以灰色为主）
     const generateRandomButtonColors = () => {
         const grayColors = [
@@ -472,16 +479,16 @@ export default function Calculator() {
                     <div className="flex gap-4 mb-6">
                         <button
                             onClick={() => addResult('P')}
-                            className={`flex-1 text-white font-bold py-4 px-6 rounded-lg text-xl transition-colors ${
-                                isHidden ? randomButtonColors.p : 'bg-blue-500 hover:bg-blue-600'
+                            className={`flex-1 text-white font-bold py-2 px-6 rounded-lg text-xl transform active:scale-95 transition-all duration-150 ${
+                                isHidden ? randomButtonColors.p : 'bg-blue-500 hover:bg-blue-600 active:bg-blue-700'
                             }`}
                         >
                             P
                         </button>
                         <button
                             onClick={() => addResult('B')}
-                            className={`flex-1 text-white font-bold py-4 px-6 rounded-lg text-xl transition-colors ${
-                                isHidden ? randomButtonColors.b : 'bg-red-500 hover:bg-red-600'
+                            className={`flex-1 text-white font-bold py-2 px-6 rounded-lg text-xl transform active:scale-95 transition-all duration-150 ${
+                                isHidden ? randomButtonColors.b : 'bg-red-500 hover:bg-red-600 active:bg-red-700'
                             }`}
                         >
                             B
@@ -519,6 +526,12 @@ export default function Calculator() {
                                     className="px-2 py-1 bg-gray-500 text-white text-xs rounded hover:bg-purple-600 transition-colors"
                                 >
                                     {strategyMode === 'random' ? '随机PB' : '自定义策略'}
+                                </button>
+                                <button
+                                    onClick={resetBettingSystem}
+                                    className="px-2 py-1 bg-gray-500 text-white text-xs rounded hover:bg-gray-600 transition-colors"
+                                >
+                                    复位
                                 </button>
                             </div>
                             
