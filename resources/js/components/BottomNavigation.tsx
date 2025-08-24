@@ -17,9 +17,9 @@ const HotelIcon = () => (
     </svg>
 );
 
-const VideoIcon = () => (
+const CalculatorIcon = () => (
     <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor" className="w-6 h-6">
-        <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/>
+        <path d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zM6 4h8v2H6V4zm0 4h2v2H6V8zm4 0h2v2h-2V8zm4 0h2v2h-2V8zM6 12h2v2H6v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z"/>
     </svg>
 );
 
@@ -40,7 +40,7 @@ export default function BottomNavigation({ pendingSalesCount = 0 }: BottomNaviga
                 const tabVibrationPatterns: { [key: string]: number[] } = {
                     'home': [25], // 首页 - 增强震动
                     'supply-demand': [30], // 房源交易 - 强震动
-                    'videos': [25], // 视频 - 增强震动
+                    'analysis': [25], // 数理分析 - 增强震动
                     'mine': [25], // 我的 - 增强震动
                     'mine-with-notification': [30, 10, 30, 10, 25], // 我的(有通知) - 特殊强双重震动
                     'test': [35] // 测试用 - 最强震动
@@ -109,10 +109,10 @@ export default function BottomNavigation({ pendingSalesCount = 0 }: BottomNaviga
             href: '/houses'
         },
         { 
-            key: 'videos', 
-            title: '视频', 
-            icon: <VideoIcon />, 
-            href: '/videos'
+            key: 'analysis', 
+            title: '数理分析', 
+            icon: <CalculatorIcon />, 
+            href: '/investment-tools'
         },
         { 
             key: 'mine', 
