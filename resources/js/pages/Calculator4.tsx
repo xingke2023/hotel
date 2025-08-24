@@ -57,9 +57,9 @@ export default function Calculator4() {
         setCurrentBet(ladderLevels[0].bets[0]);
     }, []);
 
-    // 生成随机建议
+    // 生成随机建议 - 红(大)50.66%, 蓝(小)49.34%
     const generateSuggestion = (): DiceResult => {
-        return Math.random() < 0.5 ? 'big' : 'small';
+        return Math.random() < 0.5066 ? 'big' : 'small';
     };
 
     // 动画效果函数

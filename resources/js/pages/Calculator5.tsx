@@ -47,9 +47,9 @@ const jiushiLevels = [
     { level: 6, bets: [100, 34, 66], name: '第七级' }
 ];
 
-export default function Calculator3() {
+export default function Calculator5() {
     // 基础状态
-    const [selectedMethod, setSelectedMethod] = useState<BettingMethod>('1324');
+    const [selectedMethod, setSelectedMethod] = useState<BettingMethod>('ladder');
     const [sequence, setSequence] = useState<number[]>([]);
     const [currentLevel, setCurrentLevel] = useState(0); // 用于ladder方法
     const [totalPnL, setTotalPnL] = useState(0);
@@ -467,15 +467,15 @@ export default function Calculator3() {
 
     return (
         <FrontendLayout>
-            <Head title="多策略投注系统" />
+            <Head title="胜退输进楼梯缆" />
             
             <div className="min-h-screen bg-gray-50 p-4">
                 <div className="max-w-md mx-auto">
                     {/* Header */}
                     <div className="text-center mb-6">
-                        <h1 className="text-2xl font-bold text-gray-800">🎯 多策略投注系统</h1>
+                        <h1 className="text-2xl font-bold text-gray-800">🎯 胜退输进楼梯缆</h1>
                         <p className="text-sm text-gray-600 mt-2">
-                            选择投注策略 | 系统给预测 | 手动输入结果
+                            默认胜退输进楼梯缆法 | 赢了退一级，输了进一级
                         </p>
                     </div>
 

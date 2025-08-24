@@ -66,12 +66,34 @@ export default function InvestmentTools() {
         },
         {
             href: '/calculator3',
-            title: '多策略缆选择器',
-            description: '多策略投注缆法',
+            title: '1324缆法',
+            description: '默认1324循环缆法',
             color: 'red',
             icon: (
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            )
+        },
+        {
+            href: '/calculator5',
+            title: '胜退输进楼梯缆',
+            description: '赢退一级输进一级',
+            color: 'teal',
+            icon: (
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+            )
+        },
+        {
+            href: '/calculator8',
+            title: '九式宝缆',
+            description: '七级递进宝缆系统',
+            color: 'orange',
+            icon: (
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
                 </svg>
             )
         }
@@ -84,7 +106,9 @@ export default function InvestmentTools() {
             purple: 'bg-purple-100 text-purple-600 hover:bg-purple-200',
             red: 'bg-red-100 text-red-600 hover:bg-red-200',
             indigo: 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200',
-            yellow: 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
+            yellow: 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200',
+            teal: 'bg-teal-100 text-teal-600 hover:bg-teal-200',
+            orange: 'bg-orange-100 text-orange-600 hover:bg-orange-200'
         };
         return colorMap[color as keyof typeof colorMap] || colorMap.blue;
     };

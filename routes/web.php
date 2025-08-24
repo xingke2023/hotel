@@ -66,6 +66,16 @@ Route::get('calculator7', function () {
     return Inertia::render('Calculator7');
 })->name('calculator7');
 
+// 胜退输进楼梯缆页面
+Route::get('calculator5', function () {
+    return Inertia::render('Calculator5');
+})->name('calculator5');
+
+// 九式宝缆页面  
+Route::get('calculator8', function () {
+    return Inertia::render('Calculator8');
+})->name('calculator8');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');

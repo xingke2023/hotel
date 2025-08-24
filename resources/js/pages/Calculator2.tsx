@@ -29,9 +29,9 @@ export default function Calculator2() {
         return (seq[0] + seq[seq.length - 1]) * baseCode;
     };
 
-    // 生成随机建议
+    // 生成随机建议 - 红(大)50.66%, 蓝(小)49.34%
     const generateSuggestion = (): DiceResult => {
-        return Math.random() < 0.5 ? 'big' : 'small';
+        return Math.random() < 0.5066 ? 'big' : 'small';
     };
 
     // 开始新一局，生成预测建议
