@@ -41,14 +41,15 @@ export default function Calculator7() {
     const [isOnDouble, setIsOnDouble] = useState(false); // 第一套注码是否在下孖宝
     const [currentSet, setCurrentSet] = useState<'first' | 'second'>('first'); // 当前使用哪套注码
     const [secondSetLevel, setSecondSetLevel] = useState(0); // 第二套注码的当前级别
+    const [isBusted, setIsBusted] = useState(false); // 是否爆缆
 
     // 第一套注码：孖宝缆法 - 18个位置，前12个是实际注码
     const firstSetLevels = [20, 20, 20, 20, 30, 40, 50, 70, 90, 120, 160, 220, 0, 0, 0, 0, 0, 0];
     const [betLevels, setBetLevels] = useState([...firstSetLevels]);
     const [baseLevels, setBaseLevels] = useState([...firstSetLevels]);
     
-    // 第二套注码：胜进缆法 - 18个位置，前14个是实际注码
-    const secondSetLevels = [20, 40, 40, 80, 80, 160, 160, 320, 320, 640, 640, 1280, 1280, 2560, 0, 0, 0, 0];
+    // 第二套注码：胜进缆法 - 18个位置，前15个是实际注码
+    const secondSetLevels = [40, 20, 40, 40, 80, 80, 160, 160, 320, 320, 640, 640, 1280, 1280, 2560, 0, 0, 0];
     const [secondBetLevels, setSecondBetLevels] = useState([...secondSetLevels]);
     const [secondBaseLevels, setSecondBaseLevels] = useState([...secondSetLevels]);
 
@@ -64,6 +65,7 @@ export default function Calculator7() {
         setTotalPnL(0);         // 总盈亏归零
         setIsOnDouble(false);   // 重置孖宝状态
         setCurrentSet('first'); // 返回第一套注码
+        setIsBusted(false);     // 重置爆缆状态
         // 保持当前序列不变，不清空results和roadmap
     };
 
@@ -105,6 +107,9 @@ export default function Calculator7() {
     };
 
     const addResult = (result: Result) => {
+        // 如果已经爆缆，不处理投注
+        if (isBusted) return;
+        
         // 开始硬币翻转动画
         setIsRolling(true);
         
@@ -118,8 +123,14 @@ export default function Calculator7() {
             let currentStake = 0;
             
             if (currentSet === 'first') {
-                // 第一套注码：孖宝缆法
-                currentStake = isOnDouble ? betLevels[currentBetLevel] * 2 : betLevels[currentBetLevel];
+                // 第一套注码：第一个数字无孖宝，其他数字有孖宝
+                if (currentBetLevel === 0) {
+                    // 第一个数字不需要孖宝
+                    currentStake = betLevels[currentBetLevel];
+                } else {
+                    // 从第二个数字开始有孖宝模式
+                    currentStake = isOnDouble ? betLevels[currentBetLevel] * 2 : betLevels[currentBetLevel];
+                }
             } else {
                 // 第二套注码：胜进缆法
                 currentStake = secondBetLevels[secondSetLevel];
@@ -133,16 +144,21 @@ export default function Calculator7() {
                 setTotalPnL(prev => prev + profit);
                 
                 if (currentSet === 'first') {
-                    // 第一套注码赢了的逻辑
-                    if (isOnDouble) {
-                        // 孖宝也赢了，进入第二套注码
+                    if (currentBetLevel === 0) {
+                        // 第一个数字赢了，进入第二套注码
                         setCurrentSet('second');
                         setSecondSetLevel(0);
                         setIsOnDouble(false);
-                        // 第一套注码保持当前位置，不重置
                     } else {
-                        // 第一次赢了，下注孖宝
-                        setIsOnDouble(true);
+                        // 从第二个数字开始的逻辑
+                        if (isOnDouble) {
+                            // 孖宝赢了，返回第一套第一个数字
+                            setCurrentBetLevel(0);
+                            setIsOnDouble(false);
+                        } else {
+                            // 第一次赢了，下注孖宝
+                            setIsOnDouble(true);
+                        }
                     }
                 } else {
                     // 第二套注码赢了，进入下一个数字
@@ -156,19 +172,37 @@ export default function Calculator7() {
                 setTotalPnL(prev => prev - currentStake);
                 
                 if (currentSet === 'first') {
-                    // 第一套注码输了
-                    if (isOnDouble) {
-                        // 孖宝输了，下注下一个数字
+                    if (currentBetLevel === 0) {
+                        // 第一个数字输了，进入第二个数字
+                        setCurrentBetLevel(1);
                         setIsOnDouble(false);
-                        const nextLevel = currentBetLevel + 1;
-                        if (nextLevel < betLevels.length && betLevels[nextLevel] > 0) {
-                            setCurrentBetLevel(nextLevel);
-                        }
                     } else {
-                        // 第一次输了，下注下一个数字
-                        const nextLevel = currentBetLevel + 1;
-                        if (nextLevel < betLevels.length && betLevels[nextLevel] > 0) {
-                            setCurrentBetLevel(nextLevel);
+                        // 从第二个数字开始的输了逻辑
+                        if (isOnDouble) {
+                            // 孖宝输了，进入下一个数字
+                            setIsOnDouble(false);
+                            const nextLevel = currentBetLevel + 1;
+                            if (nextLevel < betLevels.length && betLevels[nextLevel] > 0) {
+                                setCurrentBetLevel(nextLevel);
+                            } else {
+                                // 已经是最后一个数字的孖宝输了，爆缆
+                                setIsBusted(true);
+                                // 清除推荐
+                                setLastRecommendation(null);
+                                setCurrentRandomRecommendation(null);
+                            }
+                        } else {
+                            // 第一次输了，进入下一个数字
+                            const nextLevel = currentBetLevel + 1;
+                            if (nextLevel < betLevels.length && betLevels[nextLevel] > 0) {
+                                setCurrentBetLevel(nextLevel);
+                            } else {
+                                // 已经是最后一个数字输了，爆缆
+                                setIsBusted(true);
+                                // 清除推荐
+                                setLastRecommendation(null);
+                                setCurrentRandomRecommendation(null);
+                            }
                         }
                     }
                 } else {
@@ -191,17 +225,22 @@ export default function Calculator7() {
         // 1.5秒后停止动画并更新投注建议
         setTimeout(() => {
             clearInterval(flipInterval);
-            
-            // 更新投注建议（用于下一局）
-            if (strategyMode === 'random') {
-                const newRandomRecommendation = getRandomRecommendation();
-                setCurrentRandomRecommendation(newRandomRecommendation);
-                setLastRecommendation(newRandomRecommendation);
-            } else {
-                const newRecommendation = getBettingRecommendation(newResults);
-                setLastRecommendation(newRecommendation);
-            }
             setIsRolling(false);
+            
+            // 延迟检查爆缆状态，因为状态更新可能需要时间
+            setTimeout(() => {
+                // 如果没有爆缆，更新投注建议（用于下一局）
+                if (!isBusted) {
+                    if (strategyMode === 'random') {
+                        const newRandomRecommendation = getRandomRecommendation();
+                        setCurrentRandomRecommendation(newRandomRecommendation);
+                        setLastRecommendation(newRandomRecommendation);
+                    } else {
+                        const newRecommendation = getBettingRecommendation(newResults);
+                        setLastRecommendation(newRecommendation);
+                    }
+                }
+            }, 100);
         }, 1500);
     };
 
@@ -241,8 +280,8 @@ export default function Calculator7() {
         return random < 0.508 ? 'B' : 'P'; // 50.8% B, 49.2% P
     };
 
-    // 为随机模式生成初始建议
-    if (strategyMode === 'random' && results.length === 0 && !currentRandomRecommendation) {
+    // 为随机模式生成初始建议（爆缆时不生成）
+    if (strategyMode === 'random' && results.length === 0 && !currentRandomRecommendation && !isBusted) {
         const initialRandom = getRandomRecommendation();
         setCurrentRandomRecommendation(initialRandom);
         setLastRecommendation(initialRandom); // 确保第一局也有lastRecommendation
@@ -370,6 +409,7 @@ export default function Calculator7() {
         setCurrentRandomRecommendation(null);
         setIsOnDouble(false);
         setCurrentSet('first');
+        setIsBusted(false);
     };
 
     const resetBetLevels = () => {
@@ -495,6 +535,13 @@ export default function Calculator7() {
                                         <span>随机运算中...</span>
                                     </div>
                                 </div>
+                            ) : isBusted ? (
+                                <div className="inline-block px-4 py-2 rounded-lg bg-red-500 text-white font-bold">
+                                    💥 第一套注码爆缆！
+                                    <div className="text-xs mt-1">
+                                        休息一下，点击复位重新开始
+                                    </div>
+                                </div>
                             ) : currentRecommendation ? (
                                 <div className={`inline-block px-4 py-2 rounded-lg font-bold border-2 border-gray-300 ${
                                     isHidden 
@@ -509,7 +556,9 @@ export default function Calculator7() {
                                         </div>
                                         <span>下局建议打: {currentRecommendation === 'P' ? 'P 闲' : 'B 庄'} {
                                             currentSet === 'first' 
-                                                ? (isOnDouble ? (betLevels[currentBetLevel] * 2) : betLevels[currentBetLevel])
+                                                ? (currentBetLevel === 0 
+                                                    ? betLevels[currentBetLevel]
+                                                    : (isOnDouble ? betLevels[currentBetLevel] * 2 : betLevels[currentBetLevel]))
                                                 : secondBetLevels[secondSetLevel]
                                         }</span>
                                     </div>
@@ -518,7 +567,9 @@ export default function Calculator7() {
                                       <span className="text-xs block mt-1">遇到0值，使用第一级</span>}
                                     <div className="text-xs mt-1">
                                         {currentSet === 'first' 
-                                            ? `第一套孖宝缆 | ${isOnDouble ? '孖宝模式' : '基础模式'}`
+                                            ? (currentBetLevel === 0 
+                                                ? `第一套基础缆 | 第1级 (特殊级别)`
+                                                : `第一套孖宝缆 | 第${currentBetLevel + 1}级 | ${isOnDouble ? '孖宝模式' : '基础模式'}`)
                                             : `第二套胜进缆 | 第${secondSetLevel + 1}级`
                                         }
                                     </div>
@@ -540,16 +591,26 @@ export default function Calculator7() {
                     <div className="flex gap-4 mb-6">
                         <button
                             onClick={() => addResult('P')}
-                            className={`flex-1 text-white font-bold py-2 px-6 rounded-lg text-xl transform active:scale-95 transition-all duration-150 ${
-                                isHidden ? randomButtonColors.p : 'bg-blue-500 hover:bg-blue-600 active:bg-blue-700'
+                            disabled={isBusted}
+                            className={`flex-1 text-white font-bold py-2 px-6 rounded-lg text-xl transform transition-all duration-150 ${
+                                isBusted 
+                                    ? 'bg-gray-400 cursor-not-allowed'
+                                    : isHidden 
+                                        ? `${randomButtonColors.p} active:scale-95` 
+                                        : 'bg-blue-500 hover:bg-blue-600 active:bg-blue-700 active:scale-95'
                             }`}
                         >
                             P
                         </button>
                         <button
                             onClick={() => addResult('B')}
-                            className={`flex-1 text-white font-bold py-2 px-6 rounded-lg text-xl transform active:scale-95 transition-all duration-150 ${
-                                isHidden ? randomButtonColors.b : 'bg-red-500 hover:bg-red-600 active:bg-red-700'
+                            disabled={isBusted}
+                            className={`flex-1 text-white font-bold py-2 px-6 rounded-lg text-xl transform transition-all duration-150 ${
+                                isBusted 
+                                    ? 'bg-gray-400 cursor-not-allowed'
+                                    : isHidden 
+                                        ? `${randomButtonColors.b} active:scale-95` 
+                                        : 'bg-red-500 hover:bg-red-600 active:bg-red-700 active:scale-95'
                             }`}
                         >
                             B
@@ -603,9 +664,11 @@ export default function Calculator7() {
                                         level === 0
                                             ? 'bg-gray-100 text-gray-600'
                                             : currentSet === 'first' && index === currentBetLevel
-                                                ? isOnDouble
-                                                    ? 'bg-yellow-500 text-white font-bold'
-                                                    : 'bg-yellow-200 text-gray-800 font-bold'
+                                                ? (index === 0 
+                                                    ? 'bg-blue-200 text-gray-800 font-bold' // 第一个数字特殊颜色
+                                                    : (isOnDouble 
+                                                        ? 'bg-yellow-500 text-white font-bold' // 孖宝模式
+                                                        : 'bg-yellow-200 text-gray-800 font-bold')) // 基础模式
                                                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                     }`}
                                     onClick={() => handleLevelClick(index)}
@@ -629,8 +692,12 @@ export default function Calculator7() {
                                         />
                                     ) : (
                                         <span>
-                                            {level === 0 ? '\u00A0' : (currentSet === 'first' && isOnDouble && index === currentBetLevel ? level * 2 : level)}
-                                            {currentSet === 'first' && index === currentBetLevel && isOnDouble && (
+                                            {level === 0 ? '\u00A0' : (
+                                                currentSet === 'first' && index === currentBetLevel && index > 0 && isOnDouble 
+                                                    ? level * 2 
+                                                    : level
+                                            )}
+                                            {currentSet === 'first' && index === currentBetLevel && index > 0 && isOnDouble && (
                                                 <span className="block text-xs">孖宝</span>
                                             )}
                                         </span>
@@ -998,15 +1065,15 @@ export default function Calculator7() {
                                             <div className="w-2 h-2 bg-white rounded-full"></div>
                                         </div>
                                     </div>
-                                    <p className="text-sm text-gray-600 mb-2">第一套孖宝缆+第二套胜进缆组合系统</p>
+                                    <p className="text-sm text-gray-600 mb-2">混合孖宝缆+胜进缆组合系统</p>
                                     <div className="text-xs text-gray-500 font-mono mb-2">
                                         第一套: [20, 20, 20, 20, 30, 40, 50, 70, 90, 120, 160, 220]
                                     </div>
                                     <div className="text-xs text-gray-500 font-mono mb-2">
-                                        第二套: [20, 40, 40, 80, 80, 160, 160, 320, 320, 640, 640, 1280, 1280, 2560]
+                                        第二套: [40, 20, 40, 40, 80, 80, 160, 160, 320, 320, 640, 640, 1280, 1280, 2560]
                                     </div>
                                     <div className="text-xs text-blue-600 mt-2">
-                                        第一套孖宝都赢→进入第二套胜进；第二套任意输了→回第一套第一个数字
+                                        第一套第1级赢→进入第二套；第一套其他级赢→孖宝模式；孖宝赢→回第1级
                                     </div>
                                 </div>
                             </div>
@@ -1063,13 +1130,13 @@ export default function Calculator7() {
                                 </section>
 
                                 <section>
-                                    <h4 className="font-semibold text-gray-800 mb-2">💰 双套注码系统</h4>
+                                    <h4 className="font-semibold text-gray-800 mb-2">💰 混合双套注码系统</h4>
                                     <ul className="list-disc list-inside space-y-1">
-                                        <li>第一套孖宝缆：20, 20, 20, 20, 30, 40, 50, 70, 90, 120, 160, 220</li>
-                                        <li>第二套胜进缆：20, 40, 40, 80, 80, 160, 160, 320, 320, 640, 640, 1280, 1280, 2560</li>
-                                        <li>第一套：基础模式赢了→孖宝模式；孖宝也赢了→进入第二套</li>
-                                        <li>第二套：赢了→下一级；输了→回第一套第一个数字</li>
-                                        <li>第一套任意输了→第一套下个数字</li>
+                                        <li>第一套混合缆：20, 20, 20, 20, 30, 40, 50, 70, 90, 120, 160, 220</li>
+                                        <li>第二套胜进缆：40, 20, 40, 40, 80, 80, 160, 160, 320, 320, 640, 640, 1280, 1280, 2560</li>
+                                        <li>第一套第1级：赢了→进入第二套；输了→进入第2级</li>
+                                        <li>第一套第2级开始：赢了→孖宝模式；孖宝赢了→回第1级；孖宝输了→下一级</li>
+                                        <li>第二套：赢了→下一级；输了→回第一套第1级</li>
                                         <li>只能编辑第一套注码，第二套固定胜进序列</li>
                                     </ul>
                                 </section>
