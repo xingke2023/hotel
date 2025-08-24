@@ -38,6 +38,7 @@ export default function Calculator7() {
     });
     const [showInstructions, setShowInstructions] = useState(false);
     const [showCableModal, setShowCableModal] = useState(false);
+    const [clickedButton, setClickedButton] = useState<'P' | 'B' | null>(null);
     
     // 双套注码专用状态
     const [isOnDouble, setIsOnDouble] = useState(false); // 第一套注码是否在下孖宝
@@ -79,6 +80,20 @@ export default function Calculator7() {
         
         // 触发建议运算动画
         triggerRecommendationAnimation();
+    };
+
+    // 处理按钮点击动效
+    const handleButtonClick = (result: Result) => {
+        if (isBusted) return;
+        
+        // 设置点击动效
+        setClickedButton(result);
+        
+        // 300ms后清除动效并执行实际功能
+        setTimeout(() => {
+            setClickedButton(null);
+            addResult(result);
+        }, 150);
     };
 
     // 生成随机按钮颜色（以灰色为主）
@@ -588,7 +603,7 @@ export default function Calculator7() {
                                         }`}>
                                             {coinSide}
                                         </div>
-                                        <span>随机运算中...</span>
+                                        <span>下局摇筛中... 请稍候</span>
                                         <button
                                             disabled={true}
                                             className="ml-2 px-2 py-1 text-xs rounded bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -697,30 +712,48 @@ export default function Calculator7() {
                     {/* Control Buttons */}
                     <div className="flex gap-4 mb-2">
                         <button
-                            onClick={() => addResult('P')}
-                            disabled={isBusted}
-                            className={`flex-1 text-white font-bold py-2 px-6 rounded-lg text-xl transform transition-all duration-150 ${
+                            onClick={() => handleButtonClick('P')}
+                            disabled={isBusted || clickedButton !== null}
+                            className={`relative flex-1 text-white font-bold py-2 px-6 rounded-lg text-xl transform transition-all duration-300 overflow-hidden ${
                                 isBusted 
                                     ? 'bg-gray-400 cursor-not-allowed'
-                                    : isHidden 
-                                        ? `${randomButtonColors.p} active:scale-95` 
-                                        : 'bg-blue-500 hover:bg-blue-600 active:bg-blue-700 active:scale-95'
+                                    : clickedButton === 'P'
+                                        ? 'scale-95 shadow-inner bg-blue-800'
+                                        : isHidden 
+                                            ? `${randomButtonColors.p} hover:scale-105 active:scale-90 shadow-lg` 
+                                            : 'bg-blue-500 hover:bg-blue-600 hover:scale-105 active:scale-90 shadow-md'
                             }`}
                         >
-                            P
+                            <span className={`relative z-10 transition-all duration-300 ${
+                                clickedButton === 'P' ? 'scale-90' : ''
+                            }`}>
+                                P
+                            </span>
+                            {clickedButton === 'P' && (
+                                <div className="absolute inset-0 bg-white opacity-30 rounded-lg animate-ping"></div>
+                            )}
                         </button>
                         <button
-                            onClick={() => addResult('B')}
-                            disabled={isBusted}
-                            className={`flex-1 text-white font-bold py-2 px-6 rounded-lg text-xl transform transition-all duration-150 ${
+                            onClick={() => handleButtonClick('B')}
+                            disabled={isBusted || clickedButton !== null}
+                            className={`relative flex-1 text-white font-bold py-2 px-6 rounded-lg text-xl transform transition-all duration-300 overflow-hidden ${
                                 isBusted 
                                     ? 'bg-gray-400 cursor-not-allowed'
-                                    : isHidden 
-                                        ? `${randomButtonColors.b} active:scale-95` 
-                                        : 'bg-red-500 hover:bg-red-600 active:bg-red-700 active:scale-95'
+                                    : clickedButton === 'B'
+                                        ? 'scale-95 shadow-inner bg-red-800'
+                                        : isHidden 
+                                            ? `${randomButtonColors.b} hover:scale-105 active:scale-90 shadow-lg` 
+                                            : 'bg-red-500 hover:bg-red-600 hover:scale-105 active:scale-90 shadow-md'
                             }`}
                         >
-                            B
+                            <span className={`relative z-10 transition-all duration-300 ${
+                                clickedButton === 'B' ? 'scale-90' : ''
+                            }`}>
+                                B
+                            </span>
+                            {clickedButton === 'B' && (
+                                <div className="absolute inset-0 bg-white opacity-30 rounded-lg animate-ping"></div>
+                            )}
                         </button>
                     </div>
 
