@@ -152,7 +152,7 @@ export default function Calculator7() {
                     } else {
                         // 从第二个数字开始的逻辑
                         if (isOnDouble) {
-                            // 孖宝赢了，返回第一套第一个数字
+                            // 孖宝赢了，返回第一条缆第一个数字
                             setCurrentBetLevel(0);
                             setIsOnDouble(false);
                         } else {
@@ -206,11 +206,20 @@ export default function Calculator7() {
                         }
                     }
                 } else {
-                    // 第二套注码输了，返回第一套注码的第一个数字
-                    setCurrentSet('first');
-                    setCurrentBetLevel(0);
-                    setSecondSetLevel(0);
-                    setIsOnDouble(false);
+                    // 第二套注码输了
+                    if (secondSetLevel === 0) {
+                        // 第二套第一个数字输了，返回第一套注码的第二个数字
+                        setCurrentSet('first');
+                        setCurrentBetLevel(1);
+                        setSecondSetLevel(0);
+                        setIsOnDouble(false);
+                    } else {
+                        // 第二套其他数字输了，返回第一套注码的第一个数字
+                        setCurrentSet('first');
+                        setCurrentBetLevel(0);
+                        setSecondSetLevel(0);
+                        setIsOnDouble(false);
+                    }
                 }
             }
         }
@@ -1073,7 +1082,7 @@ export default function Calculator7() {
                                         第二套: [40, 20, 40, 40, 80, 80, 160, 160, 320, 320, 640, 640, 1280, 1280, 2560]
                                     </div>
                                     <div className="text-xs text-blue-600 mt-2">
-                                        第一套第1级赢→进入第二套；第一套其他级赢→孖宝模式；孖宝赢→回第1级
+                                        第一套第1级赢→进入第二套；第一套其他级赢→孖宝模式；孖宝赢→回第1级；第二套第1级输→回第2级；第二套其他级输→回第1级
                                     </div>
                                 </div>
                             </div>
@@ -1136,7 +1145,8 @@ export default function Calculator7() {
                                         <li>第二套胜进缆：40, 20, 40, 40, 80, 80, 160, 160, 320, 320, 640, 640, 1280, 1280, 2560</li>
                                         <li>第一套第1级：赢了→进入第二套；输了→进入第2级</li>
                                         <li>第一套第2级开始：赢了→孖宝模式；孖宝赢了→回第1级；孖宝输了→下一级</li>
-                                        <li>第二套：赢了→下一级；输了→回第一套第1级</li>
+                                        <li>第二套第1级：赢了→下一级；输了→回第一套第2级</li>
+                                        <li>第二套第2级及以后：赢了→下一级；输了→回第一套第1级</li>
                                         <li>只能编辑第一套注码，第二套固定胜进序列</li>
                                     </ul>
                                 </section>
