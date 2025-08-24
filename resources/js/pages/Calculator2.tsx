@@ -220,7 +220,7 @@ export default function Calculator2() {
                     {/* Header */}
                     <div className="relative mb-6">
                         <div className="text-center">
-                            <h1 className="text-2xl font-bold text-gray-800">🎯 红蓝游戏</h1>
+                            <h1 className="text-2xl font-bold text-gray-800">🎯 1221缆法游戏</h1>
                             <p className="text-sm text-gray-600 mt-2">
                                 1221缆法系统
                             </p>

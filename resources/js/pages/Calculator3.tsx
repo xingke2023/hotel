@@ -473,7 +473,7 @@ export default function Calculator3() {
                 <div className="max-w-md mx-auto">
                     {/* Header */}
                     <div className="text-center mb-6">
-                        <h1 className="text-2xl font-bold text-gray-800">🎯 多策略投注系统</h1>
+                        <h1 className="text-2xl font-bold text-gray-800">🎯 1324缆法</h1>
                         <p className="text-sm text-gray-600 mt-2">
                             选择投注策略 | 系统给预测 | 手动输入结果
                         </p>

@@ -202,7 +202,7 @@ export default function Calculator6() {
     // 随机投注推荐
     const getRandomRecommendation = (): string => {
         const random = Math.random();
-        return random < 0.508 ? 'B' : 'P'; // 50.8% B, 49.2% P
+        return random < 0.5066 ? 'B' : 'P'; // 50.66% B, 49.34% P
     };
 
     // 为随机模式生成初始建议
@@ -691,7 +691,7 @@ export default function Calculator6() {
                                     </div>
                                     {strategyMode === 'random' && (
                                         <div className="text-xs text-gray-500 mt-2">
-                                            随机投注：B(庄) 50.8% 概率，P(闲) 49.2% 概率
+                                            随机投注：B(庄) 50.66% 概率，P(闲) 49.34% 概率
                                         </div>
                                     )}
                                 </div>
@@ -870,7 +870,7 @@ export default function Calculator6() {
                                     ) : (
                                         <>
                                             <p>• <strong>随机模式</strong>：每局随机决定投注B或P</p>
-                                            <p>• <strong>概率设置</strong>：B(庄) 50.8%，P(闲) 49.2%</p>
+                                            <p>• <strong>概率设置</strong>：B(庄) 50.66%，P(闲) 49.34%</p>
                                             <p>• <strong>真实模拟</strong>：模拟真实百家乐庄闲出现概率</p>
                                         </>
                                     )}
@@ -967,7 +967,7 @@ export default function Calculator6() {
                                     <div className="space-y-2">
                                         <div>
                                             <strong>随机模式：</strong>
-                                            <p className="text-xs text-gray-600">每局随机推荐，B 50.8%概率，P 49.2%概率</p>
+                                            <p className="text-xs text-gray-600">每局随机推荐，B 50.66%概率，P 49.34%概率</p>
                                         </div>
                                         <div>
                                             <strong>自定义策略：</strong>
