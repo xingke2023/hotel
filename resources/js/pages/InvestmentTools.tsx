@@ -77,7 +77,7 @@ export default function InvestmentTools() {
         },
         {
             href: '/calculator5',
-            title: '胜退输进楼梯缆',
+            title: '楼梯缆',
             description: '赢退一级输进一级',
             color: 'teal',
             icon: (
