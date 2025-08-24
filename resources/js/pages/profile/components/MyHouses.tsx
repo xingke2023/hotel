@@ -39,7 +39,6 @@ export default function MyHouses({ onFetchPendingOrder, onFetchConfirmedOrder, o
     const [newHouse, setNewHouse] = useState({
         title: '',
         price: '',
-        location: '',
         description: '',
     });
 
@@ -69,7 +68,7 @@ export default function MyHouses({ onFetchPendingOrder, onFetchConfirmedOrder, o
         e.preventDefault();
         try {
             await axios.post('/api/houses', newHouse);
-            setNewHouse({ title: '', price: '', location: '', description: '' });
+            setNewHouse({ title: '', price: '', description: '' });
             setShowAddForm(false);
             fetchMyHouses();
             alert('房屋发布成功！');
@@ -182,14 +181,6 @@ export default function MyHouses({ onFetchPendingOrder, onFetchConfirmedOrder, o
                                             />
                                         </div>
                                         <div>
-                                            <Label htmlFor="location">位置</Label>
-                                            <Input
-                                                id="location"
-                                                value={newHouse.location}
-                                                onChange={(e) => setNewHouse({...newHouse, location: e.target.value})}
-                                            />
-                                        </div>
-                                        <div>
                                             <Label htmlFor="description">描述（入住事项）</Label>
                                             <Textarea
                                                 id="description"
@@ -292,14 +283,6 @@ export default function MyHouses({ onFetchPendingOrder, onFetchConfirmedOrder, o
                                                     value={newHouse.price}
                                                     onChange={(e) => setNewHouse({...newHouse, price: e.target.value})}
                                                     required
-                                                />
-                                            </div>
-                                            <div>
-                                                <Label htmlFor="location">位置</Label>
-                                                <Input
-                                                    id="location"
-                                                    value={newHouse.location}
-                                                    onChange={(e) => setNewHouse({...newHouse, location: e.target.value})}
                                                 />
                                             </div>
                                             <div>
@@ -533,14 +516,6 @@ export default function MyHouses({ onFetchPendingOrder, onFetchConfirmedOrder, o
                                         value={editingHouse.price}
                                         onChange={(e) => setEditingHouse({...editingHouse, price: parseFloat(e.target.value) || 0})}
                                         required
-                                    />
-                                </div>
-                                <div>
-                                    <Label htmlFor="edit-location">位置</Label>
-                                    <Input
-                                        id="edit-location"
-                                        value={editingHouse.location || ''}
-                                        onChange={(e) => setEditingHouse({...editingHouse, location: e.target.value})}
                                     />
                                 </div>
                                 <div>

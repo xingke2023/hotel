@@ -41,7 +41,16 @@ interface ProfileData {
 
 export default function ProfileIndex() {
     const { auth } = usePage<PageProps>().props;
-    const [activeTab, setActiveTab] = useState<'mine' | 'my-products' | 'my-orders' | 'my-sales' | 'my-referrals' | 'my-wallet' | 'my-profile' | 'settings'>('mine');
+    // 从URL参数获取tab参数，默认为'mine'
+    const getInitialTab = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get('tab') as 'mine' | 'my-products' | 'my-orders' | 'my-sales' | 'my-referrals' | 'my-wallet' | 'my-profile' | 'settings';
+        return tabParam && ['mine', 'my-products', 'my-orders', 'my-sales', 'my-referrals', 'my-wallet', 'my-profile', 'settings'].includes(tabParam) 
+            ? tabParam 
+            : 'mine';
+    };
+    
+    const [activeTab, setActiveTab] = useState<'mine' | 'my-products' | 'my-orders' | 'my-sales' | 'my-referrals' | 'my-wallet' | 'my-profile' | 'settings'>(getInitialTab());
     const [userType, setUserType] = useState<'buyer' | 'seller' | 'pending_seller'>('buyer');
     const [isApplying, setIsApplying] = useState(false);
     const [profileData, setProfileData] = useState<ProfileData | null>(null);
@@ -180,15 +189,24 @@ export default function ProfileIndex() {
                                         { key: 'my-wallet', title: '我的钱包', icon: '💰', desc: '资金管理' },
                                         { key: 'my-profile', title: '我的资料', icon: '👤', desc: '个人信息管理' },
                                         { key: 'settings', title: '设置', icon: '⚙️', desc: '账户设置' },
+                                        { key: 'customer-service', title: '在线客服', icon: '💬', desc: '联系客服支持', isExternalLink: true, url: 'https://work.weixin.qq.com/kfid/kfcdfdb02ed73c8e4d0' },
                                     ].map((item) => (
                                         <div 
                                             key={item.key}
                                             className={`${
                                                 item.key === 'my-products' || item.key === 'my-sales' 
                                                     ? 'bg-blue-50 border border-blue-200' 
+                                                    : item.key === 'customer-service'
+                                                    ? 'bg-green-50 border border-green-200'
                                                     : 'bg-white border border-gray-200'
                                             } rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer`}
-                                            onClick={() => setActiveTab(item.key as typeof activeTab)}
+                                            onClick={() => {
+                                                if (item.isExternalLink && item.url) {
+                                                    window.open(item.url, '_blank');
+                                                } else {
+                                                    setActiveTab(item.key as typeof activeTab);
+                                                }
+                                            }}
                                         >
                                             <div className="text-center">
                                                 <div className="relative inline-block">

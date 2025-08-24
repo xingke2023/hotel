@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import BiometricAuth from '@/components/biometric-auth';
 
 type LoginForm = {
-    email: string;
+    login: string;
     password: string;
     remember: boolean;
 };
@@ -23,7 +23,7 @@ interface LoginProps {
 
 export default function Login({ status, canResetPassword }: LoginProps) {
     const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
-        email: '',
+        login: '',
         password: '',
         remember: false,
     });
@@ -66,7 +66,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             登录您的账户
                         </h2>
                         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            输入您的邮箱和密码进行登录
+                            输入您的用户名或邮箱和密码进行登录
                         </p>
                     </div>
                     
@@ -87,7 +87,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <div className="mb-6">
                             <BiometricAuth
                                 mode="login"
-                                userEmail={data.email}
+                                userEmail={data.login}
                                 onSuccess={handleBiometricSuccess}
                                 onError={handleBiometricError}
                             />
@@ -95,22 +95,22 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         
                         <form className="space-y-6" onSubmit={submit}>
                             <div>
-                                <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    邮箱地址
+                                <Label htmlFor="login" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    用户名或邮箱
                                 </Label>
                                 <Input
-                                    id="email"
-                                    type="email"
+                                    id="login"
+                                    type="text"
                                     required
                                     autoFocus
                                     tabIndex={1}
-                                    autoComplete="email"
-                                    value={data.email}
-                                    onChange={(e) => setData('email', e.target.value)}
-                                    placeholder="请输入邮箱地址"
+                                    autoComplete="username"
+                                    value={data.login}
+                                    onChange={(e) => setData('login', e.target.value)}
+                                    placeholder="请输入用户名或邮箱地址"
                                     className="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700"
                                 />
-                                <InputError message={errors.email} />
+                                <InputError message={errors.login} />
                             </div>
 
                             <div>

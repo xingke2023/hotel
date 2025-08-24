@@ -42,7 +42,7 @@ class ProfileController extends Controller
             'birth_date' => 'nullable|date',
             'wechat' => 'nullable|string|max:255',
             'whatsapp' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:25|regex:/^\+?(86|853|852)?-?[0-9]{8,11}$/',
             'bio' => 'nullable|string|max:1000',
         ]);
 

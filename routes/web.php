@@ -20,10 +20,10 @@ Route::get('api/videos', [\App\Http\Controllers\VideoController::class, 'getVide
 Route::post('api/videos/{video}/view', [\App\Http\Controllers\VideoController::class, 'incrementViews'])->name('api.videos.view');
 Route::post('api/videos/{video}/like', [\App\Http\Controllers\VideoController::class, 'toggleLike'])->name('api.videos.like');
 
-// 个人中心页面
+// 个人中心页面 - 需要认证
 Route::get('profile', function () {
     return Inertia::render('profile/index');
-})->name('profile');
+})->middleware(['auth', 'verified'])->name('profile');
 
 // 投资工具选择页面
 Route::get('investment-tools', function () {

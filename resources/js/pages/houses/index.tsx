@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, usePage, router } from '@inertiajs/react';
 import FrontendLayout from '@/layouts/frontend-layout';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -125,10 +125,28 @@ export default function HousesIndex() {
             setShowPurchaseDialog(false);
             setSelectedHouse(null);
             setCustomerMessage('');
-            alert('下单成功！等待卖家确认。');
-        } catch (error) {
+            
+            // 显示成功提示并跳转到订单页面
+            const shouldRedirect = window.confirm('下单成功！等待卖家确认。\n\n是否前往查看我的订单？');
+            if (shouldRedirect) {
+                router.visit('/profile?tab=my-orders');
+            }
+        } catch (error: any) {
             console.error('下单失败:', error);
-            alert('下单失败');
+            
+            // 检查是否是资料不完善的错误
+            if (error.response?.status === 422 && error.response?.data?.redirect) {
+                const shouldRedirect = window.confirm(
+                    `${error.response.data.error}\n\n${error.response.data.message}\n\n是否前往完善资料？`
+                );
+                
+                if (shouldRedirect) {
+                    // 使用 Inertia 导航到个人资料页面
+                    window.location.href = error.response.data.redirect;
+                }
+            } else {
+                alert(error.response?.data?.error || '下单失败');
+            }
         }
     };
 

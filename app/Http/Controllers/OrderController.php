@@ -29,6 +29,16 @@ class OrderController extends Controller
             return response()->json(['error' => '不能购买自己的房屋'], 400);
         }
 
+        // 检查用户是否完善了个人资料
+        $user = auth()->user();
+        if (empty($user->real_name) || empty($user->phone)) {
+            return response()->json([
+                'error' => '请先完善个人资料',
+                'message' => '购买房源前，请先在个人中心填写真实姓名和电话号码',
+                'redirect' => '/profile?tab=my-profile'
+            ], 422);
+        }
+
         $order = Order::create([
             'house_id' => $house->id,
             'buyer_id' => auth()->id(),

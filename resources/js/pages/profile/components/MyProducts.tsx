@@ -34,7 +34,6 @@ export default function MyProducts() {
     const [addForm, setAddForm] = useState({
         title: '',
         price: 0,
-        location: '',
         description: ''
     });
     
@@ -44,7 +43,6 @@ export default function MyProducts() {
     const [editForm, setEditForm] = useState({
         title: '',
         price: 0,
-        location: '',
         description: ''
     });
     
@@ -95,7 +93,6 @@ export default function MyProducts() {
             setAddForm({
                 title: '',
                 price: 0,
-                location: '',
                 description: ''
             });
             fetchHouses(); // 刷新列表
@@ -139,7 +136,6 @@ export default function MyProducts() {
         setEditForm({
             title: house.title,
             price: house.price,
-            location: house.location,
             description: house.description
         });
         setShowEditDialog(true);
@@ -148,7 +144,7 @@ export default function MyProducts() {
     const handleEdit = async () => {
         if (!editingHouse) return;
 
-        if (!editForm.title.trim() || !editForm.location.trim() || editForm.price <= 0) {
+        if (!editForm.title.trim() || editForm.price <= 0) {
             alert('请填写完整的房屋信息');
             return;
         }
@@ -287,10 +283,6 @@ export default function MyProducts() {
                             <div className="flex items-center justify-between text-xs mb-2">
                                 <span className="font-medium text-green-600">¥{house.price.toLocaleString()}</span>
                                 <div className="flex items-center gap-2 text-gray-500 truncate ml-2">
-                                    <span className="flex items-center gap-0.5">
-                                        <span>📍</span>
-                                        <span className="truncate max-w-16">{house.location || '未填写'}</span>
-                                    </span>
                                     <span>{new Date(house.updated_at).toLocaleDateString('zh-CN', {month: 'numeric', day: 'numeric'})}</span>
                                 </div>
                             </div>
@@ -413,16 +405,6 @@ export default function MyProducts() {
                                 />
                             </div>
                             
-                            <div>
-                                <Label htmlFor="edit-location">位置 *</Label>
-                                <Input
-                                    id="edit-location"
-                                    value={editForm.location}
-                                    onChange={(e) => setEditForm({...editForm, location: e.target.value})}
-                                    placeholder="请输入位置"
-                                    className="mt-1"
-                                />
-                            </div>
                             
                             <div>
                                 <Label htmlFor="edit-description">入住要求</Label>
@@ -439,7 +421,7 @@ export default function MyProducts() {
                                 <Button 
                                     onClick={handleEdit}
                                     className="flex-1"
-                                    disabled={!editForm.title || !editForm.location || editForm.price <= 0}
+                                    disabled={!editForm.title || editForm.price <= 0}
                                 >
                                     保存修改
                                 </Button>
@@ -492,17 +474,6 @@ export default function MyProducts() {
                             />
                         </div>
                         
-                        <div>
-                            <Label htmlFor="add-location">位置 *</Label>
-                            <Input
-                                id="add-location"
-                                value={addForm.location}
-                                onChange={(e) => setAddForm({...addForm, location: e.target.value})}
-                                placeholder="请输入位置"
-                                required
-                                className="mt-1"
-                            />
-                        </div>
                         
                         <div>
                             <Label htmlFor="add-description">房间描述</Label>

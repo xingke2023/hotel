@@ -55,7 +55,7 @@ export default function Register() {
                         <form className="space-y-6" onSubmit={submit}>
                             <div>
                                 <Label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    姓名
+                                    用户名
                                 </Label>
                                 <Input
                                     id="name"
@@ -67,7 +67,7 @@ export default function Register() {
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                     disabled={processing}
-                                    placeholder="请输入您的姓名"
+                                    placeholder="请输入用户名"
                                     className="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700"
                                 />
                                 <InputError message={errors.name} className="mt-2" />
@@ -75,7 +75,7 @@ export default function Register() {
 
                             <div>
                                 <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    邮箱地址
+                                    电子邮箱
                                 </Label>
                                 <Input
                                     id="email"

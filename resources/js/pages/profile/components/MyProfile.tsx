@@ -31,11 +31,32 @@ export default function MyProfile() {
     const [showEditProfile, setShowEditProfile] = useState(false);
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [phoneRegion, setPhoneRegion] = useState<string>('86'); // 默认选择大陆
+    const [phoneNumber, setPhoneNumber] = useState<string>('');
 
     const fetchProfileData = async () => {
         try {
             const response = await axios.get('/api/profile');
             setProfileData(response.data);
+            
+            // 解析电话号码
+            if (response.data.phone) {
+                const phone = response.data.phone;
+                if (phone.startsWith('+86-')) {
+                    setPhoneRegion('86');
+                    setPhoneNumber(phone.substring(4));
+                } else if (phone.startsWith('+853-')) {
+                    setPhoneRegion('853');
+                    setPhoneNumber(phone.substring(5));
+                } else if (phone.startsWith('+852-')) {
+                    setPhoneRegion('852');
+                    setPhoneNumber(phone.substring(5));
+                } else {
+                    // 兼容旧格式
+                    setPhoneRegion('86');
+                    setPhoneNumber(phone);
+                }
+            }
         } catch (error) {
             console.error('获取个人资料失败:', error);
         }
@@ -46,9 +67,12 @@ export default function MyProfile() {
         if (!profileData) return;
 
         try {
+            // 组合完整的电话号码
+            const fullPhone = phoneNumber ? `+${phoneRegion}-${phoneNumber}` : '';
+            
             await axios.put('/api/profile', {
                 name: profileData.name,
-                phone: profileData.phone,
+                phone: fullPhone,
                 real_name: profileData.real_name,
                 birth_date: profileData.birth_date,
                 gender: profileData.gender,
@@ -130,7 +154,7 @@ export default function MyProfile() {
                         <div className="flex items-center">
                             <span className="text-yellow-600 text-lg mr-2">⚠️</span>
                             <p className="text-yellow-800 text-sm">
-                                <strong>请输入真实姓名以备工作人员协助酒店入住。</strong>虚假信息可能影响您的入住体验。
+                                <strong>请输入真实姓名以备工作人员协助酒店入住。</strong>虚假信息不能办理入住。
                             </p>
                         </div>
                     </div>
@@ -266,7 +290,11 @@ export default function MyProfile() {
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm text-gray-600">手机号码</span>
-                                        <span className="text-sm font-medium text-gray-900">{profileData.phone || '未填写'}</span>
+                                        <span className="text-sm font-medium text-gray-900">
+                                            {profileData.phone ? (
+                                                profileData.phone.includes('+') ? profileData.phone : `+86-${profileData.phone}`
+                                            ) : '未填写'}
+                                        </span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm text-gray-600">微信号</span>
@@ -383,13 +411,26 @@ export default function MyProfile() {
                                 </div>
                                 <div>
                                     <Label htmlFor="edit-phone">联系电话 *</Label>
-                                    <Input
-                                        id="edit-phone"
-                                        value={profileData.phone || ''}
-                                        onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
-                                        placeholder="请输入手机号码"
-                                        required
-                                    />
+                                    <div className="flex gap-2">
+                                        <Select value={phoneRegion} onValueChange={setPhoneRegion}>
+                                            <SelectTrigger className="w-32">
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="86">+86 大陆</SelectItem>
+                                                <SelectItem value="853">+853 澳门</SelectItem>
+                                                <SelectItem value="852">+852 香港</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <Input
+                                            id="edit-phone"
+                                            value={phoneNumber}
+                                            onChange={(e) => setPhoneNumber(e.target.value)}
+                                            placeholder="请输入手机号码"
+                                            required
+                                            className="flex-1"
+                                        />
+                                    </div>
                                 </div>
                                 <div>
                                     <Label htmlFor="edit-wechat">微信号</Label>
