@@ -16,7 +16,7 @@ export default function HomeIndex() {
                     <div className="relative container mx-auto px-4 py-8">
                         <div className="text-center">
                             <div className="inline-block p-4 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 mb-4">
-                                <h3 className="text-2xl font-bold text-white mb-2">✨ 澳门住宿娱乐指南 ✨</h3>
+                                <h3 className="text-2xl font-bold text-white mb-2">✨ 欢迎来到澳门旅游网 ✨</h3>
                             </div>
                             <p className="text-lg text-gray-700 font-medium bg-white/70 rounded-lg px-4 py-2 inline-block backdrop-blur-sm">🏨 澳门住宿娱乐指南 🎰</p>
                         </div>
