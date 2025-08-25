@@ -399,14 +399,14 @@ export default function SupplyDemand({ onPurchase }: SupplyDemandProps) {
                     <div className="md:hidden py-3 px-4 border-b border-gray-600">
                         <div className="text-center text-yellow-400 font-bold text-base">
                             <div className="text-xl font-bold text-white">
-                                {new Date().getMonth() + 1}月{new Date().getDate()}日澳门酒店实时牌价
+                                {new Date().getMonth() + 1}月{new Date().getDate()}日澳门酒店实时交易牌价
                             </div>
                             <div className="flex items-center justify-center gap-3 mt-1">
                                 <span className="text-xs text-gray-300">
                                     {new Date().getHours().toString().padStart(2, '0')}:{new Date().getMinutes().toString().padStart(2, '0')}
                                 </span>
-                                <span className="text-xs text-gray-400 animate-pulse">↕ 滑动翻页实时更新</span>
-                                <span className="text-xs text-gray-400">
+                                <span className="text-xs text-red-400 animate-pulse">↕ 滑动翻页实时更新</span>
+                                <span className="text-xs text-red-250">
                                     港币实时汇率 {exchangeRate ? exchangeRate.toFixed(4) : '0.9100'}
                                 </span>
                             </div>
@@ -478,9 +478,6 @@ export default function SupplyDemand({ onPurchase }: SupplyDemandProps) {
                             <div className="flex items-center gap-2 md:gap-3 text-xs min-w-0">
                                 <span className="text-yellow-400 whitespace-nowrap">
                                     第 {currentPage + 1}/{Math.ceil(houses.length / itemsPerPage)} 页
-                                </span>
-                                <span className="text-gray-400 whitespace-nowrap">
-                                    (显示前{houses.length}条)
                                 </span>
                                 
                                 <div className="text-gray-300 flex items-center gap-2 whitespace-nowrap">
