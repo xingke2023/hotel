@@ -395,7 +395,7 @@ export default function Calculator6() {
                     {/* Header */}
                     <div className="text-center mb-6">
                         <div className="flex items-center justify-center gap-3 mb-2">
-                            {!isHidden && <h1 className="text-2xl font-bold text-gray-800">🎯 孖宝缆法计算器</h1>}
+                            {!isHidden && <h1 className="text-xl text-gray-800">🎯 孖宝游戏</h1>}
                             <button
                                 onClick={() => {
                                     if (!isHidden) {
@@ -415,12 +415,12 @@ export default function Calculator6() {
                     <div className="mb-4">
                         {/* Total P&L */}
                         <div className="text-center mb-2">
-                            <span className={`text-lg font-bold ${
+                            <span className={`text-md ${
                                 isHidden 
                                     ? randomButtonColors.text 
                                     : totalPnL >= 0 ? 'text-green-600' : 'text-red-600'
                             }`}>
-                                总盈亏: {totalPnL >= 0 ? '+' : ''}{totalPnL}
+                                战绩: {totalPnL >= 0 ? '+' : ''}{totalPnL}
                             </span>
                         </div>
                         
@@ -449,13 +449,13 @@ export default function Calculator6() {
                                         ? `${randomButtonColors.text} bg-transparent`
                                         : 'text-gray-800 bg-transparent'
                                 }`}>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2">下局建议:
                                         <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-white ${
                                             currentRecommendation === 'P' ? 'bg-blue-600' : 'bg-red-600'
                                         }`}>
-                                            {currentRecommendation}
+                                            
                                         </div>
-                                        <span>下局建议打: {currentRecommendation === 'P' ? 'P 闲' : 'B 庄'} {isOnDouble ? (betLevels[currentBetLevel] * 2) : betLevels[currentBetLevel]}</span>
+                                        <span>{isOnDouble ? (betLevels[currentBetLevel] * 2) : betLevels[currentBetLevel]}</span>
                                     </div>
                                     {betLevels[currentBetLevel] === 0 && <span className="text-xs block mt-1">遇到0值，使用第一级</span>}
                                     
@@ -480,7 +480,7 @@ export default function Calculator6() {
                                 isHidden ? randomButtonColors.p : 'bg-blue-500 hover:bg-blue-600 active:bg-blue-700'
                             }`}
                         >
-                            P
+                            &nbsp;
                         </button>
                         <button
                             onClick={() => addResult('B')}
@@ -488,7 +488,7 @@ export default function Calculator6() {
                                 isHidden ? randomButtonColors.b : 'bg-red-500 hover:bg-red-600 active:bg-red-700'
                             }`}
                         >
-                            B
+                            &nbsp;
                         </button>
                     </div>
 

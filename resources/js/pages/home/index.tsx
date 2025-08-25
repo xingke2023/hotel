@@ -127,8 +127,8 @@ export default function HomeIndex() {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <h3 className="font-bold text-gray-900 mb-1 text-sm">🎯 数理分析</h3>
-                                <p className="text-gray-600 text-xs leading-tight">投资辅助工具</p>
+                                <h3 className="font-bold text-gray-900 mb-1 text-sm">🎯 休闲数学游戏</h3>
+                                <p className="text-gray-600 text-xs leading-tight"></p>
                             </Link>
 
                             <button
@@ -141,7 +141,7 @@ export default function HomeIndex() {
                                     </svg>
                                 </div>
                                 <h3 className="font-bold text-gray-900 mb-1 text-sm">💬 澳门讨论区</h3>
-                                <p className="text-gray-600 text-xs leading-tight">交流分享社区</p>
+                                <p className="text-gray-600 text-xs leading-tight"></p>
                                 <div className="mt-1">
                                     <span className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded text-xs">即将推出</span>
                                 </div>

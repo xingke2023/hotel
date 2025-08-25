@@ -220,9 +220,9 @@ export default function Calculator2() {
                     {/* Header */}
                     <div className="relative mb-6">
                         <div className="text-center">
-                            <h1 className="text-2xl font-bold text-gray-800">🎯 1221缆法游戏</h1>
+                            <h1 className="text-xl text-gray-800">🎯 1221首尾消数游戏</h1>
                             <p className="text-sm text-gray-600 mt-2">
-                                1221缆法系统
+                                
                             </p>
                         </div>
                         
@@ -244,7 +244,7 @@ export default function Calculator2() {
                                 onClick={() => setIsPredictionVisible(true)}
                                 className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors text-sm"
                             >
-                                显示随机预测
+                                游戏预测
                             </button>
                         </div>
                     )}
@@ -263,7 +263,7 @@ export default function Calculator2() {
                                 
                                 <div className="flex items-center justify-center gap-3">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-sm font-semibold">随机数预测器，仅供参考</span>
+                                        <span className="text-sm font-semibold">游戏预测，仅供参考</span>
                                         
                                     </div>
                                     
@@ -334,22 +334,22 @@ export default function Calculator2() {
                     {/* 当前序列显示 */}
                     <div className="bg-white rounded-lg p-4 shadow-sm border mb-6">
                         <div className="flex items-center justify-between mb-3">
-                            <h3 className="text-lg font-semibold">1221消数缆法</h3>
+                            <h3 className="text-lg font-semibold"></h3>
                             <div className="flex items-center gap-2">
-                                <label className="text-sm font-semibold text-gray-700">基码:</label>
+                                <label className="text-sm text-gray-700">基数</label>
                                 <input
                                     type="number"
                                     min="1"
                                     value={baseCodeInput}
                                     onChange={(e) => handleBaseCodeChange(e.target.value)}
                                     placeholder="20"
-                                    className="w-16 px-2 py-1 border border-gray-300 rounded text-center font-bold text-sm"
+                                    className="w-14 px-2 py-1 border border-gray-300 rounded text-center text-sm"
                                 />
                             </div>
                         </div>
                         
                         <div className="text-xs text-gray-500 mb-3">
-                            基础序列: {sequence.join('-')}，基码: {baseCode}{baseCodeInput === '' ? ' (默认)' : ''}
+                            基础数学序列: {sequence.join('-')}，基码: {baseCode}{baseCodeInput === '' ? ' (默认)' : ''}
                         </div>
                         {/* <div className="text-xs text-gray-500 mb-3">
                             实际序列: {sequence.map(n => n * baseCode).join('-')}
@@ -377,13 +377,13 @@ export default function Calculator2() {
                             </div>
                         ) : (
                             <div className="text-center">
-                                <div className={`text-lg font-bold mb-2 ${
+                                <div className={`text-md font-bold mb-2 ${
                                     totalPnL >= 0 ? 'text-green-600' : 'text-red-600'
                                 }`}>
                                     总得分: {totalPnL >= 0 ? '+' : ''}{totalPnL}
                                 </div>
-                                <div className="text-lg font-semibold text-gray-800">
-                                    下局注码: <span className="text-blue-600">{currentBet}</span>
+                                <div className="text-md text-gray-800">
+                                    下次分值: <span className="text-blue-600">{currentBet}</span>
                                 </div>
                                 {sequence.length > 1 ? (
                                     <div className="text-sm text-gray-600 mt-1">
@@ -410,7 +410,7 @@ export default function Calculator2() {
                                                 : 'bg-green-500 text-white hover:bg-green-600 hover:shadow-md active:scale-95'
                                         }`}
                                     >
-                                        正确
+                                    胜利
                                     </button>
                                     <button
                                         onClick={handleLose}
@@ -421,12 +421,12 @@ export default function Calculator2() {
                                                 : 'bg-gray-500 text-white hover:bg-gray-600 hover:shadow-md active:scale-95'
                                         }`}
                                     >
-                                        错误
+                                    失败
                                     </button>
                                 </div>
                                 <div className="text-xs text-gray-500 text-center mt-2">
-                                    正确 {gameHistory.filter(record => record.result === 'win').length} 次 | 
-                                    错误 {gameHistory.filter(record => record.result === 'lose').length} 次
+                                    胜利 {gameHistory.filter(record => record.result === 'win').length} 次 | 
+                                    失败 {gameHistory.filter(record => record.result === 'lose').length} 次
                                 </div>
                             </div>
                         )}

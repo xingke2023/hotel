@@ -539,7 +539,7 @@ export default function Calculator7() {
 
     return (
         <FrontendLayout>
-            <Head title="孖宝胜进双层缆" />
+            <Head title="孖宝胜进双层缆游戏" />
             
             <div className="min-h-screen bg-gray-50 p-4 relative">
                 {/* Usage Instructions Link - Top Right */}
@@ -558,7 +558,7 @@ export default function Calculator7() {
                     {/* Header */}
                     <div className="text-center mb-6">
                         <div className="flex items-center justify-center gap-3 mb-2">
-                            {!isHidden && <h1 className="text-2xl font-bold text-gray-800">🎯 孖宝胜进双层缆</h1>}
+                            {!isHidden && <h1 className="text-xl text-gray-800">🎯 孖宝胜进双层缆游戏</h1>}
                             <button
                                 onClick={() => {
                                     if (!isHidden) {
@@ -583,7 +583,7 @@ export default function Calculator7() {
                                     ? randomButtonColors.text 
                                     : totalPnL >= 0 ? 'text-green-600' : 'text-red-600'
                             }`}>
-                                总盈亏: {totalPnL >= 0 ? '+' : ''}{totalPnL}
+                                战绩: {totalPnL >= 0 ? '+' : ''}{totalPnL}
                             </span>
                         </div>
                         
@@ -601,14 +601,14 @@ export default function Calculator7() {
                                                     ? 'bg-red-400 text-white border-red-600' 
                                                     : 'bg-blue-400 text-white border-blue-600'
                                         }`}>
-                                            {coinSide}
+                                            
                                         </div>
-                                        <span>下局摇筛中... 请稍候</span>
+                                        <span>下局游戏转动中... 请稍候</span>
                                         <button
                                             disabled={true}
                                             className="ml-2 px-2 py-1 text-xs rounded bg-gray-300 text-gray-500 cursor-not-allowed"
                                         >
-                                            重摇
+                                            游戏
                                         </button>
                                     </div>
                                     {/* 保持缆法描述信息显示，避免高度变化 */}
@@ -635,12 +635,13 @@ export default function Calculator7() {
                                         : 'text-gray-800 bg-transparent'
                                 }`}>
                                     <div className="flex items-center gap-2">
-                                        <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-white ${
+                                        下局建议
+                                        <div className={`w-5 h-5 rounded flex items-center justify-center font-bold text-white ${
                                             currentRecommendation === 'P' ? 'bg-blue-600' : 'bg-red-600'
                                         }`}>
-                                            {currentRecommendation}
+                                            
                                         </div>
-                                        <span>下局建议打: {currentRecommendation === 'P' ? 'P 闲' : 'B 庄'} {
+                                        <span>{
                                             currentSet === 'first' 
                                                 ? (currentBetLevel === 0 
                                                     ? betLevels[currentBetLevel]
@@ -658,7 +659,7 @@ export default function Calculator7() {
                                                         : 'bg-blue-500 hover:bg-blue-600 text-white'
                                             }`}
                                         >
-                                            重摇
+                                        转动
                                         </button>
                                     </div>
                                     {((currentSet === 'first' && betLevels[currentBetLevel] === 0) || 
@@ -727,7 +728,7 @@ export default function Calculator7() {
                             <span className={`relative z-10 transition-all duration-300 ${
                                 clickedButton === 'P' ? 'scale-90' : ''
                             }`}>
-                                P
+                                &nbsp;
                             </span>
                             {clickedButton === 'P' && (
                                 <div className="absolute inset-0 bg-white opacity-30 rounded-lg animate-ping"></div>
@@ -749,7 +750,7 @@ export default function Calculator7() {
                             <span className={`relative z-10 transition-all duration-300 ${
                                 clickedButton === 'B' ? 'scale-90' : ''
                             }`}>
-                                B
+                                &nbsp;
                             </span>
                             {clickedButton === 'B' && (
                                 <div className="absolute inset-0 bg-white opacity-30 rounded-lg animate-ping"></div>

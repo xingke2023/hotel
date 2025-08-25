@@ -2,162 +2,245 @@ import { Head, Link } from '@inertiajs/react';
 import FrontendLayout from '@/layouts/frontend-layout';
 import BottomNavigation from '@/components/BottomNavigation';
 import { usePendingSalesCount } from '@/hooks/use-pending-sales-count';
+import { useState, useEffect } from 'react';
 
 export default function InvestmentTools() {
     const { pendingSalesCount } = usePendingSalesCount();
+    const [floatingElements, setFloatingElements] = useState<number[]>([]);
 
-    const tools = [
+    // 生成浮动元素动画
+    useEffect(() => {
+        setFloatingElements(Array.from({ length: 12 }, (_, i) => i));
+    }, []);
+
+    const games = [
         {
             href: '/calculator',
-            title: '直缆',
-            description: '红蓝智能注码控制工具',
-            color: 'blue',
-            icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 002 2v14a2 2 0 002 2z" />
-                </svg>
-            )
+            title: '🎮 直缆游戏',
+            description: '直缆数理游戏',
+            emoji: '🎯',
+            difficulty: '⭐⭐⭐',
+            players: '1P',
+            category: '策略',
+            gradient: 'from-blue-400 to-cyan-400'
         },
         {
             href: '/calculator6',
-            title: '孖宝缆',
-            description: '孖宝缆法注码控制',
-            color: 'yellow',
-            icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
-            )
+            title: '💎 孖宝游戏',
+            description: '孖宝数理游戏',
+            emoji: '💰',
+            difficulty: '⭐⭐',
+            players: '1P',
+            category: '解谜',
+            gradient: 'from-yellow-400 to-orange-400'
         },
         {
             href: '/calculator7',
-            title: '孖宝加胜进双层缆',
-            description: '双套注码增强系统',
-            color: 'green',
-            icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-                </svg>
-            )
+            title: '🚀 双层缆游戏',
+            description: '孖宝胜进数理挑战',
+            emoji: '🏆',
+            difficulty: '⭐⭐⭐⭐',
+            players: '1P',
+            category: '冒险',
+            gradient: 'from-green-400 to-emerald-400'
         },
-
         {
             href: '/calculator2',
-            title: '1221消数缆',
-            description: '1221消数注码法',
-            color: 'purple',
-            icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-            )
+            title: '⚡ 首尾消数法游戏',
+            description: '1221消数游戏',
+            emoji: '🔥',
+            difficulty: '⭐⭐⭐',
+            players: '1P',
+            category: '休闲',
+            gradient: 'from-purple-400 to-pink-400'
         },
-        
         {
             href: '/calculator4',
-            title: '楼梯分层平注缆',
-            description: '楼梯分层平注',
-            color: 'indigo',
-            icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
-                </svg>
-            )
+            title: '🏗️ 分层游戏',
+            description: '分层数理游戏',
+            emoji: '🏗️',
+            difficulty: '⭐⭐',
+            players: '1P',
+            category: '建造',
+            gradient: 'from-indigo-400 to-blue-400'
         },
         {
             href: '/calculator3',
-            title: '1324缆法',
-            description: '默认1324循环缆法',
-            color: 'red',
-            icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-            )
+            title: '💖 1324法游戏',
+            description: '1324循环挑战',
+            emoji: '💕',
+            difficulty: '⭐⭐⭐',
+            players: '1P',
+            category: '连线',
+            gradient: 'from-red-400 to-rose-400'
         },
         {
             href: '/calculator5',
-            title: '楼梯缆',
-            description: '赢退一级输进一级',
-            color: 'teal',
-            icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-            )
+            title: '🎢 楼梯游戏',
+            description: '上下阶梯大冒险',
+            emoji: '🎠',
+            difficulty: '⭐⭐',
+            players: '1P',
+            category: '动作',
+            gradient: 'from-teal-400 to-cyan-400'
         },
         {
             href: '/calculator8',
-            title: '九式宝缆',
-            description: '七级递进宝缆系统',
-            color: 'orange',
-            icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                </svg>
-            )
+            title: '👑 九宫游戏',
+            description: '传奇九宫缆数理游戏',
+            emoji: '💎',
+            difficulty: '⭐⭐⭐⭐⭐',
+            players: '1P',
+            category: '冒险',
+            gradient: 'from-orange-400 to-red-400'
         }
     ];
 
-    const getColorClasses = (color: string) => {
-        const colorMap = {
-            blue: 'bg-blue-100 text-blue-600 hover:bg-blue-200',
-            green: 'bg-green-100 text-green-600 hover:bg-green-200',
-            purple: 'bg-purple-100 text-purple-600 hover:bg-purple-200',
-            red: 'bg-red-100 text-red-600 hover:bg-red-200',
-            indigo: 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200',
-            yellow: 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200',
-            teal: 'bg-teal-100 text-teal-600 hover:bg-teal-200',
-            orange: 'bg-orange-100 text-orange-600 hover:bg-orange-200'
-        };
-        return colorMap[color as keyof typeof colorMap] || colorMap.blue;
+    // 获取随机浮动动画延迟
+    const getRandomDelay = (index: number) => {
+        return `${(index * 0.5) + Math.random() * 2}s`;
     };
+
+    // 获取随机浮动位置
+    const getRandomPosition = (index: number) => {
+        const positions = [
+            { top: '10%', left: '5%' },
+            { top: '20%', right: '8%' },
+            { top: '30%', left: '15%' },
+            { top: '40%', right: '12%' },
+            { top: '50%', left: '8%' },
+            { top: '60%', right: '15%' },
+            { top: '70%', left: '12%' },
+            { top: '80%', right: '5%' },
+            { bottom: '10%', left: '10%' },
+            { bottom: '20%', right: '10%' },
+            { top: '15%', left: '50%' },
+            { bottom: '15%', right: '45%' }
+        ];
+        return positions[index % positions.length];
+    };
+
+    // 浮动元素表情
+    const floatingEmojis = ['🎮', '🎯', '🎲', '🏆', '⭐', '💎', '🔥', '🚀', '🎪', '🎨', '🎭', '🎡'];
 
     return (
         <FrontendLayout>
-            <Head title="投资工具 - 澳门房屋交易平台" />
+            <Head title="🎮 游戏中心 - 澳门娱乐平台" />
             
-            <div className="min-h-screen bg-gray-50 pb-20">
+            <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100 pb-20 relative overflow-hidden">
+                {/* 浮动背景元素 */}
+                <div className="fixed inset-0 pointer-events-none overflow-hidden">
+                    {floatingElements.map((_, index) => (
+                        <div
+                            key={index}
+                            className="absolute text-2xl opacity-20 animate-bounce"
+                            style={{
+                                ...getRandomPosition(index),
+                                animationDelay: getRandomDelay(index),
+                                animationDuration: `${3 + Math.random() * 2}s`
+                            }}
+                        >
+                            {floatingEmojis[index]}
+                        </div>
+                    ))}
+                </div>
+
+                {/* 装饰性渐变泡泡 */}
+                <div className="fixed inset-0 pointer-events-none">
+                    <div className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-yellow-200 to-orange-200 rounded-full opacity-30 animate-pulse"></div>
+                    <div className="absolute top-1/4 right-16 w-24 h-24 bg-gradient-to-br from-green-200 to-teal-200 rounded-full opacity-25 animate-bounce" style={{animationDelay: '1s'}}></div>
+                    <div className="absolute bottom-1/3 left-1/4 w-40 h-40 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full opacity-20 animate-pulse" style={{animationDelay: '2s'}}></div>
+                    <div className="absolute bottom-20 right-20 w-28 h-28 bg-gradient-to-br from-blue-200 to-cyan-200 rounded-full opacity-30 animate-bounce" style={{animationDelay: '0.5s'}}></div>
+                </div>
+
                 {/* 头部 */}
-                <div className="bg-white border-b border-gray-200">
-                    <div className="container mx-auto px-4 py-4">
-                        <div className="flex items-center">
-                            <Link
-                                href="/"
-                                className="mr-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
-                            >
-                                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                </svg>
-                            </Link>
-                            <h1 className="text-xl font-semibold text-gray-900">数理分析工具</h1>
+                <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-xl relative overflow-hidden">
+                    <div className="absolute inset-0 bg-black opacity-10"></div>
+                    <div className="container mx-auto px-4 py-6 relative z-10">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                                <Link
+                                    href="/"
+                                    className="mr-4 p-3 hover:bg-white/20 rounded-full transition-all duration-300 transform hover:scale-110"
+                                >
+                                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </Link>
+                                <div>
+                                    <h1 className="text-2xl font-bold text-white drop-shadow-lg">🎮 休闲数学游戏</h1>
+                                    <p className="text-white/90 text-sm">选择你喜欢的游戏开始冒险吧！</p>
+                                </div>
+                            </div>
+                            <div className="text-4xl animate-spin-slow">🎲</div>
                         </div>
                     </div>
                 </div>
 
                 {/* 主要内容 */}
-                <div className="container mx-auto px-4 py-6">
-                    <div className="mb-6">
-                        <p className="text-gray-600 text-center">选择适合您的投资分析工具</p>
+                <div className="container mx-auto px-4 py-8">
+                    <div className="mb-8 text-center">
+                        <div className="inline-block bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-lg border border-white/50">
+                            <p className="text-sm font-medium text-gray-800 mb-2">🌟 游戏目标是运用数学方法，达到目标分数！每个游戏都蕴含不同的数学方法</p>
+                            <div className="flex items-center justify-center gap-4 text-sm text-gray-600">
+                                <span className="flex items-center gap-1">
+                                    <span className="text-yellow-500">⭐</span> 难度等级
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <span className="text-blue-500">👤</span> 单人游戏
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <span className="text-green-500">🎯</span> 多种类型
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* 工具列表 */}
-                    <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-                        {tools.map((tool, index) => (
+                    {/* 游戏列表 */}
+                    <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto">
+                        {games.map((game, index) => (
                             <Link
                                 key={index}
-                                href={tool.href}
-                                className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 flex flex-col items-center text-center"
+                                href={game.href}
+                                className={`group relative bg-gradient-to-br ${game.gradient} rounded-2xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-rotate-1 border-2 border-white/50 backdrop-blur-sm overflow-hidden`}
                             >
-                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${getColorClasses(tool.color)}`}>
-                                    {tool.icon}
+                                {/* 游戏卡片内容 */}
+                                <div className="relative z-10">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="text-3xl group-hover:animate-bounce">{game.emoji}</div>
+                                        <div className="bg-white/30 backdrop-blur-sm rounded-lg px-2 py-1">
+                                            <span className="text-xs font-bold text-white">{game.category}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <h3 className="font-bold text-white text-sm mb-1 drop-shadow-md group-hover:text-yellow-100">
+                                        {game.title}
+                                    </h3>
+                                    
+                                    <p className="text-xs text-white/90 mb-2 leading-tight">
+                                        {game.description}
+                                    </p>
+                                    
+                                    <div className="flex items-center justify-between text-xs text-white/80">
+                                        <span className="bg-black/20 rounded px-2 py-1">{game.difficulty}</span>
+                                        <span className="bg-black/20 rounded px-2 py-1">{game.players}</span>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 className="font-semibold text-gray-900 mb-1 text-sm">{tool.title}</h3>
-                                    <p className="text-xs text-gray-500 leading-tight">{tool.description}</p>
-                                </div>
+
+                                {/* 悬停效果装饰 */}
+                                <div className="absolute top-0 right-0 w-16 h-16 bg-white/20 rounded-full -mr-8 -mt-8 group-hover:scale-150 transition-transform duration-300"></div>
+                                <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/20 rounded-full -ml-6 -mb-6 group-hover:scale-125 transition-transform duration-300"></div>
                             </Link>
                         ))}
+                    </div>
+                    
+                    {/* 底部装饰 */}
+                    <div className="mt-12 text-center">
+                        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full px-6 py-3 shadow-lg text-white font-bold animate-pulse">
+                            <span className="text-2xl">🏆</span>
+                            <span>准备好挑战了吗？</span>
+                            <span className="text-2xl">🚀</span>
+                        </div>
                     </div>
                 </div>
 

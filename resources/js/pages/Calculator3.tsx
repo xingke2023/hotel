@@ -482,33 +482,28 @@ export default function Calculator3() {
 
                     {/* 总盈亏显示 */}
                     <div className="text-center mb-6">
-                        <div className={`text-2xl font-bold ${
+                        <div className={`text-md font-bold ${
                             totalPnL >= 0 ? 'text-green-600' : 'text-red-600'
                         }`}>
-                            总盈亏: {totalPnL >= 0 ? '+' : ''}{totalPnL}
+                            游戏战绩: {totalPnL >= 0 ? '+' : ''}{totalPnL}
                         </div>
                     </div>
 
                     {/* 系统预测显示 */}
                     {currentSuggestion && isWaitingForResult && (
                         <div className="text-left mb-6">
+                            
                             <div className={`inline-block px-4 py-2 rounded-lg font-bold border-2 border-gray-300 text-gray-800 bg-transparent`}>
+                                
                                 <div className="flex items-center gap-2">
-                                    <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-white transition-all duration-150 ${
+                                    <span>系统预测</span>
+                                    <div className={`w-5 h-5 rounded flex items-center justify-center font-bold text-white transition-all duration-150 ${
                                         isAnimating 
                                             ? displayValue === 'big' ? 'bg-red-600 scale-110' : 'bg-blue-600 scale-110'
                                             : currentSuggestion === 'big' ? 'bg-red-600' : 'bg-blue-600'
                                     } ${isAnimating ? 'animate-pulse' : ''}`}>
-                                        {isAnimating 
-                                            ? displayValue === 'big' ? '大' : '小'
-                                            : currentSuggestion === 'big' ? '大' : '小'
-                                        }
-                                    </div>
-                                    <span>系统预测: {
-                                        isAnimating 
-                                            ? displayValue === 'big' ? '大' : '小'
-                                            : currentSuggestion === 'big' ? '大' : '小'
-                                    } {currentBet}</span>
+                                    </div>{currentBet}
+                                    
                                 </div>
                                 <div className="text-xs mt-1">
                                     {isAnimating ? '系统运算中...' : '根据现场开奖结果，点击下方按钮输入结果'}
@@ -770,7 +765,7 @@ export default function Calculator3() {
                                             : 'bg-green-500 text-white hover:bg-green-600 hover:shadow-md active:scale-95'
                                     }`}
                                 >
-                                    正确
+                                    胜利
                                 </button>
                                 <button
                                     onClick={handleLose}
@@ -781,7 +776,7 @@ export default function Calculator3() {
                                             : 'bg-gray-500 text-white hover:bg-gray-600 hover:shadow-md active:scale-95'
                                     }`}
                                 >
-                                    错误
+                                    失败
                                 </button>
                             </div>
                         )}

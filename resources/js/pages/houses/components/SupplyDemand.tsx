@@ -407,7 +407,7 @@ export default function SupplyDemand({ onPurchase }: SupplyDemandProps) {
                                 </span>
                                 <span className="text-xs text-red-400 animate-pulse">↕ 滑动翻页实时更新</span>
                                 <span className="text-xs text-red-250">
-                                    港币实时汇率 {exchangeRate ? exchangeRate.toFixed(4) : '0.9100'}
+                                    中银港币实时汇率 {exchangeRate ? exchangeRate.toFixed(4) : '0.9100'}
                                 </span>
                             </div>
                         </div>

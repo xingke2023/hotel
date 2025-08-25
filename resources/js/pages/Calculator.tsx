@@ -380,9 +380,9 @@ export default function Calculator() {
 
     return (
         <FrontendLayout>
-            <Head title="百家乐路单" />
+            <Head title="🎮 红蓝对决 - 策略游戏" />
             
-            <div className="min-h-screen bg-gray-50 p-4 relative">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-red-50 p-4 relative">
                 {/* Usage Instructions Link - Top Right */}
                 {!isHidden && (
                     <div className="fixed top-4 right-4 z-40">
@@ -399,7 +399,12 @@ export default function Calculator() {
                     {/* Header */}
                     <div className="text-center mb-6">
                         <div className="flex items-center justify-center gap-3 mb-2">
-                            {!isHidden && <h1 className="text-2xl font-bold text-gray-800">直播机助手</h1>}
+                            {!isHidden && (
+                                <div className="flex items-center gap-2">
+                                    
+                                    <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-red-600 bg-clip-text text-transparent">直缆游戏</h1>
+                                </div>
+                            )}
                             <button
                                 onClick={() => {
                                     if (!isHidden) {
@@ -407,9 +412,9 @@ export default function Calculator() {
                                     }
                                     setIsHidden(!isHidden);
                                 }}
-                                className="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded transition-colors"
+                                className="px-3 py-1 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white text-sm rounded-lg shadow-md transition-all duration-300"
                             >
-                                {isHidden ? '显示' : '隐藏模式'}
+                                {isHidden ? '🎮 显示' : '👻 隐藏模式'}
                             </button>
                         </div>
                         
@@ -419,13 +424,23 @@ export default function Calculator() {
                     <div className="mb-4">
                         {/* Total P&L */}
                         <div className="text-center mb-2">
-                            <span className={`text-lg font-bold ${
+                            <div className={`inline-block px-4 py-2 rounded-xl shadow-lg ${
                                 isHidden 
-                                    ? randomButtonColors.text 
-                                    : totalPnL >= 0 ? 'text-green-600' : 'text-red-600'
+                                    ? 'bg-gray-100 text-gray-600' 
+                                    : totalPnL >= 0 
+                                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white'
+                                        : 'bg-gradient-to-r from-red-500 to-rose-500 text-white'
                             }`}>
-                                总盈亏: {totalPnL >= 0 ? '+' : ''}{totalPnL}
-                            </span>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm opacity-90">战绩</span>
+                                    <span className="text-sm font-bold">
+                                        {totalPnL >= 0 ? '+' : ''}{totalPnL}
+                                    </span>
+                                    <span className="text-2xl">
+                                        {totalPnL >= 0 ? '🏆' : '⚔️'}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                         
                         {/* Betting Recommendation */}
@@ -442,7 +457,7 @@ export default function Calculator() {
                                                     ? 'bg-red-400 text-white border-red-600' 
                                                     : 'bg-blue-400 text-white border-blue-600'
                                         }`}>
-                                            {coinSide}
+                                            
                                         </div>
                                         <span>随机运算中...</span>
                                     </div>
@@ -454,20 +469,27 @@ export default function Calculator() {
                                         : 'text-gray-800 bg-transparent'
                                 }`}>
                                     <div className="flex items-center gap-2">
-                                        <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-white ${
-                                            currentRecommendation === 'P' ? 'bg-blue-600' : 'bg-red-600'
+                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center font-bold text-white shadow-lg ${
+                                            currentRecommendation === 'P' ? 'bg-gradient-to-r from-blue-500 to-blue-600' : 'bg-gradient-to-r from-red-500 to-red-600'
                                         }`}>
-                                            {currentRecommendation}
+                                            
                                         </div>
-                                        <span>下局建议打: {currentRecommendation === 'P' ? 'P 闲' : 'B 庄'} {betLevels[currentBetLevel] || betLevels[0]}</span>
+                                        <div className="flex items-center gap-1">
+                                            <span></span>
+                                            <span className={`font-bold ${currentRecommendation === 'P' ? 'text-blue-600' : 'text-red-600'}`}>
+                                                
+                                            </span>
+                                            <span>出击！</span>
+                                            <span className="font-bold text-yellow-600">{betLevels[currentBetLevel] || betLevels[0]}</span>
+                                        </div>
                                     </div>
                                     {betLevels[currentBetLevel] === 0 && <span className="text-xs block mt-1">遇到0值，使用第一级</span>}
                                 </div>
                             ) : (
-                                <div className="inline-block px-4 py-2 rounded-lg bg-gray-400 text-white font-bold">
-                                    此局不下注
-                                    <span className="text-xs block mt-1">
-                                        ({strategyMode === 'random' ? '随机PB' : '自定义策略'})
+                                <div className="inline-block px-4 py-2 rounded-lg bg-gradient-to-r from-gray-400 to-gray-500 text-white font-bold shadow-md">
+                                    ⏸️ 战略待机
+                                    <span className="text-xs block mt-1 opacity-90">
+                                        ({strategyMode === 'random' ? '随机对决' : '自定义战术'})
                                     </span>
                                 </div>
                             )}
@@ -475,23 +497,33 @@ export default function Calculator() {
                     </div>
                     
 
-                    {/* Control Buttons */}
+                    {/* Control Buttons - Red vs Blue Battle */}
                     <div className="flex gap-4 mb-6">
                         <button
                             onClick={() => addResult('P')}
-                            className={`flex-1 text-white font-bold py-2 px-6 rounded-lg text-xl transform active:scale-95 transition-all duration-150 ${
-                                isHidden ? randomButtonColors.p : 'bg-blue-500 hover:bg-blue-600 active:bg-blue-700'
+                            className={`group relative flex-1 text-white font-bold py-4 px-6 rounded-2xl text-2xl transform active:scale-95 transition-all duration-300 shadow-xl hover:shadow-2xl ${
+                                isHidden ? randomButtonColors.p : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 active:from-blue-700 active:to-blue-800'
                             }`}
                         >
-                            P
+                            <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div className="relative z-10 flex items-center justify-center gap-2">
+                                <span className="text-3xl"></span>
+                                <span></span>
+                                <span className="text-sm opacity-75"></span>
+                            </div>
                         </button>
                         <button
                             onClick={() => addResult('B')}
-                            className={`flex-1 text-white font-bold py-2 px-6 rounded-lg text-xl transform active:scale-95 transition-all duration-150 ${
-                                isHidden ? randomButtonColors.b : 'bg-red-500 hover:bg-red-600 active:bg-red-700'
+                            className={`group relative flex-1 text-white font-bold py-4 px-6 rounded-2xl text-2xl transform active:scale-95 transition-all duration-300 shadow-xl hover:shadow-2xl ${
+                                isHidden ? randomButtonColors.b : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 active:from-red-700 active:to-red-800'
                             }`}
                         >
-                            B
+                            <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div className="relative z-10 flex items-center justify-center gap-2">
+                                <span className="text-3xl"></span>
+                                <span></span>
+                                <span className="text-sm opacity-75"></span>
+                            </div>
                         </button>
                     </div>
 
@@ -584,12 +616,12 @@ export default function Calculator() {
                     {!isHidden && (
                     <div className="bg-white rounded-lg p-2 shadow-sm border w-full">
                         <div className="flex justify-between items-center mb-2">
-                            <h3 className="text-lg font-semibold">大路</h3>
+                            <h3 className="text-lg font-semibold"></h3>
                             <button
                                 onClick={clearResults}
                                 className="bg-gray-400 hover:bg-gray-500 text-white px-2 py-1 rounded text-xs transition-colors"
                             >
-                                清空牌靴
+                                清空
                             </button>
                         </div>
                         <div className="w-full overflow-hidden">
@@ -612,15 +644,15 @@ export default function Calculator() {
                                 return (
                                     <div
                                         key={index}
-                                        className={`aspect-square border border-gray-200 rounded-sm flex items-center justify-center text-xs font-bold ${
+                                        className={`aspect-square border border-gray-200 rounded-lg flex items-center justify-center text-xs font-bold shadow-sm ${
                                             cell 
                                                 ? cell.result === 'P' 
-                                                    ? 'bg-blue-500 text-white' 
-                                                    : 'bg-red-500 text-white'
+                                                    ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white border-blue-300' 
+                                                    : 'bg-gradient-to-br from-red-400 to-red-600 text-white border-red-300'
                                                 : 'bg-gray-50'
                                         }`}
                                     >
-                                        {cell ? cell.result : ''}
+                                        
                                     </div>
                                 );
                             })}
@@ -629,19 +661,31 @@ export default function Calculator() {
                     </div>
                     )}
 
-                    {/* Current Sequence */}
+                    {/* Current Sequence - Battle Log */}
                     {!isHidden && results.length > 0 && (
-                        <div className="mt-6 bg-white rounded-lg p-4 shadow-sm border">
-                            <h3 className="text-lg font-semibold mb-2">当前序列</h3>
+                        <div className="mt-6 bg-gradient-to-r from-white to-gray-50 rounded-xl p-4 shadow-lg border border-gray-200">
+                            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                                <span>⚔️</span>
+                                <span>战斗记录</span>
+                            </h3>
                             <div className="mb-4">
-                                <div className="font-mono text-lg tracking-wider overflow-x-auto whitespace-nowrap p-2 border rounded bg-gray-50">
+                                <div className="font-mono text-lg tracking-wider overflow-x-auto whitespace-nowrap p-3 border rounded-xl bg-gradient-to-r from-gray-50 to-white shadow-inner">
                                     {results.join('')}
                                 </div>
                             </div>
-                            <div className="flex justify-between text-sm">
-                                <span>总局数: {results.length}</span>
-                                <span>庄: {results.filter(r => r === 'B').length}</span>
-                                <span>闲: {results.filter(r => r === 'P').length}</span>
+                            <div className="flex justify-between text-sm bg-gradient-to-r from-blue-50 to-red-50 p-3 rounded-lg">
+                                <div className="flex items-center gap-1">
+                                    <span>🏟️ 总战斗:</span>
+                                    <span className="font-bold">{results.length}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <span>❤️ 红军:</span>
+                                    <span className="font-bold text-red-600">{results.filter(r => r === 'B').length}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <span>💙 蓝军:</span>
+                                    <span className="font-bold text-blue-600">{results.filter(r => r === 'P').length}</span>
+                                </div>
                             </div>
                         </div>
                     )}
