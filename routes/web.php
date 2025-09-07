@@ -81,6 +81,11 @@ Route::get('calculator21', function () {
     return Inertia::render('Calculator21');
 })->name('calculator21');
 
+// Calculator71页面
+Route::get('calculator71', function () {
+    return Inertia::render('Calculator71');
+})->name('calculator71');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');

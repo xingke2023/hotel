@@ -71,7 +71,7 @@ export default function HomeIndex() {
                     <div className="container mx-auto px-6 py-6 flex-shrink-0">
                         <div className="text-center max-w-4xl mx-auto">
                             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
-                                澳门住宿娱乐指南
+                                澳门旅游网
                             </h1>
                             <p className="text-base md:text-lg text-gray-600 mb-4 leading-relaxed">
                                 澳门五星级酒店低价平台，为您提供在澳门从住宿到娱乐的一站式体验平台
@@ -90,8 +90,8 @@ export default function HomeIndex() {
                     {/* 功能模块区域 - 占用剩余空间 */}
                     <div className="flex-1 container mx-auto px-6 flex flex-col justify-center">
                         
-                        {/* 功能卡片网格 - 2x2布局 */}
-                        <div className="grid grid-cols-2 gap-4 max-w-xs mx-auto">
+                        {/* 功能卡片网格 - 2x3布局 */}
+                        <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto">
                             <Link
                                 href="/houses"
                                 className="group bg-gradient-to-br from-white to-blue-50 rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-200 hover:border-blue-400 hover:-translate-y-1 aspect-square flex flex-col items-center justify-center text-center"
@@ -131,6 +131,19 @@ export default function HomeIndex() {
                                 <p className="text-gray-600 text-xs leading-tight"></p>
                             </Link>
 
+                            <a
+                                href="https://www.dsat.gov.mo/bus/site/busstopwaiting.aspx?lang=tc"
+                                className="group bg-gradient-to-br from-white to-green-50 rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-green-200 hover:border-green-400 hover:-translate-y-1 aspect-square flex flex-col items-center justify-center text-center"
+                            >
+                                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-2 group-hover:from-green-600 group-hover:to-emerald-600 transition-all duration-300 shadow-lg">
+                                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                    </svg>
+                                </div>
+                                <h3 className="font-bold text-gray-900 mb-1 text-sm">🚌 澳门实时公交</h3>
+                                <p className="text-gray-600 text-xs leading-tight">实时巴士到站信息</p>
+                            </a>
+
                             <button
                                 onClick={() => alert('🚧 正在建设中，敬请期待！')}
                                 className="group bg-gradient-to-br from-white to-orange-50 rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-200 hover:border-orange-400 hover:-translate-y-1 aspect-square flex flex-col items-center justify-center text-center"
@@ -146,6 +159,16 @@ export default function HomeIndex() {
                                     <span className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded text-xs">即将推出</span>
                                 </div>
                             </button>
+
+                            <div className="group bg-gradient-to-br from-white to-gray-50 rounded-xl p-4 shadow-lg border border-gray-200 aspect-square flex flex-col items-center justify-center text-center opacity-50">
+                                <div className="w-12 h-12 bg-gradient-to-r from-gray-400 to-gray-500 rounded-xl flex items-center justify-center mb-2">
+                                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                    </svg>
+                                </div>
+                                <h3 className="font-bold text-gray-500 mb-1 text-sm">更多功能</h3>
+                                <p className="text-gray-400 text-xs leading-tight">敬请期待</p>
+                            </div>
                         </div>
                     </div>
 
