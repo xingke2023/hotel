@@ -155,9 +155,9 @@ export default function HousesIndex() {
         <FrontendLayout>
             <Head title="供求信息 - 房源交易" />
             
-            <div className="min-h-screen bg-gray-50 pb-20 -mx-4 sm:-mx-6 lg:-mx-8 -my-6">
+            <div className="min-h-screen bg-gray-50 pb-20">
                 {/* 主要内容 */}
-                <div className="container mx-auto px-0 py-0">
+                <div className="w-full max-w-7xl mx-auto px-4 py-0">
                     <SupplyDemand onPurchase={(house) => { 
                         setSelectedHouse(house); 
                         // 设置默认购买留言

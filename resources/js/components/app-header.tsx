@@ -11,7 +11,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Menu, PenTool, Search } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -72,6 +72,19 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                     <span>{item.title}</span>
                                                 </Link>
                                             ))}
+                                            
+                                            {/* Mobile Publish Article Button */}
+                                            {auth.user ? (
+                                                <Link href="/articles/create" className="flex items-center space-x-2 font-medium">
+                                                    <Icon iconNode={PenTool} className="h-5 w-5" />
+                                                    <span>发布文章</span>
+                                                </Link>
+                                            ) : (
+                                                <Link href="/login?message=请先登录以发布文章" className="flex items-center space-x-2 font-medium">
+                                                    <Icon iconNode={PenTool} className="h-5 w-5" />
+                                                    <span>发布文章</span>
+                                                </Link>
+                                            )}
                                         </div>
 
                                         <div className="flex flex-col space-y-4">
@@ -125,6 +138,23 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                     </div>
 
                     <div className="ml-auto flex items-center space-x-2">
+                        {/* Publish Article Button */}
+                        {auth.user ? (
+                            <Link href="/articles/create">
+                                <Button variant="default" size="sm" className="hidden sm:flex items-center space-x-2">
+                                    <PenTool className="h-4 w-4" />
+                                    <span>发布文章</span>
+                                </Button>
+                            </Link>
+                        ) : (
+                            <Link href="/login?message=请先登录以发布文章">
+                                <Button variant="default" size="sm" className="hidden sm:flex items-center space-x-2">
+                                    <PenTool className="h-4 w-4" />
+                                    <span>发布文章</span>
+                                </Button>
+                            </Link>
+                        )}
+                        
                         <div className="relative flex items-center space-x-1">
                             <Button variant="ghost" size="icon" className="group h-9 w-9 cursor-pointer">
                                 <Search className="!size-5 opacity-80 group-hover:opacity-100" />
@@ -152,21 +182,29 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                 ))}
                             </div>
                         </div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="size-10 rounded-full p-1">
-                                    <Avatar className="size-8 overflow-hidden rounded-full">
-                                        <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
-                                        <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                                            {getInitials(auth.user.name)}
-                                        </AvatarFallback>
-                                    </Avatar>
+                        {auth.user ? (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="size-10 rounded-full p-1">
+                                        <Avatar className="size-8 overflow-hidden rounded-full">
+                                            <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
+                                            <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                                                {getInitials(auth.user.name)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-56" align="end">
+                                    <UserMenuContent user={auth.user} />
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        ) : (
+                            <Link href="/login">
+                                <Button variant="default" size="sm">
+                                    登录
                                 </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56" align="end">
-                                <UserMenuContent user={auth.user} />
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>

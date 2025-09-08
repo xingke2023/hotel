@@ -325,7 +325,7 @@ export default function ProfileIndex() {
             
             <div className="min-h-screen bg-gray-50 pb-20">
                 {/* 主要内容 */}
-                <div className="container mx-auto">
+                <div className="w-full max-w-7xl mx-auto px-4 py-6">
                     {renderMainContent()}
                 </div>
 

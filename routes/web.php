@@ -86,6 +86,9 @@ Route::get('calculator71', function () {
     return Inertia::render('Calculator71');
 })->name('calculator71');
 
+// 澳门讨论区 - 文章功能
+Route::get('articles', [App\Http\Controllers\ArticleController::class, 'index'])->name('articles.index');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
@@ -140,7 +143,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 卖家申请相关API
     Route::post('api/seller/apply', [App\Http\Controllers\SellerApplicationController::class, 'apply'])->name('api.seller.apply');
     Route::get('api/seller/status', [App\Http\Controllers\SellerApplicationController::class, 'status'])->name('api.seller.status');
+    
+    // 文章管理相关路由 - 具体路由必须在通配符路由之前
+    Route::get('articles/create', [App\Http\Controllers\ArticleController::class, 'create'])->name('articles.create');
+    Route::post('articles', [App\Http\Controllers\ArticleController::class, 'store'])->name('articles.store');
+    Route::get('my-articles', [App\Http\Controllers\ArticleController::class, 'myArticles'])->name('articles.my');
+    Route::get('articles/{article}/edit', [App\Http\Controllers\ArticleController::class, 'edit'])->name('articles.edit');
+    Route::put('articles/{article}', [App\Http\Controllers\ArticleController::class, 'update'])->name('articles.update');
+    Route::delete('articles/{article}', [App\Http\Controllers\ArticleController::class, 'destroy'])->name('articles.destroy');
+    
+    // 评论相关API路由
+    Route::get('api/articles/{article}/comments', [App\Http\Controllers\CommentController::class, 'index'])->name('api.comments.index');
+    Route::post('api/articles/{article}/comments', [App\Http\Controllers\CommentController::class, 'store'])->name('api.comments.store');
+    Route::delete('api/comments/{comment}', [App\Http\Controllers\CommentController::class, 'destroy'])->name('api.comments.destroy');
+    Route::post('api/comments/{comment}/like', [App\Http\Controllers\CommentController::class, 'like'])->name('api.comments.like');
 });
+
+// 文章详情页 - 必须放在最后，因为使用了通配符参数
+Route::get('articles/{article}', [App\Http\Controllers\ArticleController::class, 'show'])->name('articles.show');
 
 // 生物识别认证API路由
 Route::prefix('api/biometric')->group(function () {

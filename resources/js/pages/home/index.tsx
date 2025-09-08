@@ -144,8 +144,8 @@ export default function HomeIndex() {
                                 <p className="text-gray-600 text-xs leading-tight">实时巴士到站信息</p>
                             </a>
 
-                            <button
-                                onClick={() => alert('🚧 正在建设中，敬请期待！')}
+                            <Link
+                                href="/articles"
                                 className="group bg-gradient-to-br from-white to-orange-50 rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-200 hover:border-orange-400 hover:-translate-y-1 aspect-square flex flex-col items-center justify-center text-center"
                             >
                                 <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center mb-2 group-hover:from-orange-600 group-hover:to-red-600 transition-all duration-300 shadow-lg">
@@ -154,11 +154,8 @@ export default function HomeIndex() {
                                     </svg>
                                 </div>
                                 <h3 className="font-bold text-gray-900 mb-1 text-sm">💬 澳门讨论区</h3>
-                                <p className="text-gray-600 text-xs leading-tight"></p>
-                                <div className="mt-1">
-                                    <span className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded text-xs">即将推出</span>
-                                </div>
-                            </button>
+                                <p className="text-gray-600 text-xs leading-tight">分享澳门生活</p>
+                            </Link>
 
                             <div className="group bg-gradient-to-br from-white to-gray-50 rounded-xl p-4 shadow-lg border border-gray-200 aspect-square flex flex-col items-center justify-center text-center opacity-50">
                                 <div className="w-12 h-12 bg-gradient-to-r from-gray-400 to-gray-500 rounded-xl flex items-center justify-center mb-2">

@@ -1,4 +1,4 @@
-import { Head, useForm, Link, router } from '@inertiajs/react';
+import { Head, useForm, Link, router, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
@@ -22,6 +22,10 @@ interface LoginProps {
 }
 
 export default function Login({ status, canResetPassword }: LoginProps) {
+    const page = usePage();
+    const queryMessage = new URLSearchParams(window.location.search).get('message');
+    const displayMessage = status || queryMessage;
+    
     const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
         login: '',
         password: '',
@@ -71,9 +75,11 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     </div>
                     
                     <div className="bg-white dark:bg-gray-800 py-8 px-6 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700">
-                        {status && (
-                            <div className="mb-4 text-center text-sm font-medium text-green-600 dark:text-green-400">
-                                {status}
+                        {displayMessage && (
+                            <div className={`mb-4 text-center text-sm font-medium ${
+                                status ? 'text-green-600 dark:text-green-400' : 'text-blue-600 dark:text-blue-400'
+                            }`}>
+                                {displayMessage}
                             </div>
                         )}
 
