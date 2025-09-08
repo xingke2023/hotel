@@ -57,50 +57,52 @@ export default function ArticlesIndex({ articles, categories, filters }: Props) 
 
     return (
         <FrontendLayout>
-            <Head title="澳门讨论区 - 分享澳门生活" />
+            <Head title="澳门濠江论坛" />
             
             <div className="min-h-screen bg-gray-50">
                 {/* 头部区域 - 压缩高度 */}
-                <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white py-6">
+                <div className="bg-gradient-to-r from-slate-800 to-gray-900 text-white py-4">
                     <div className="w-[99%] mx-auto px-4">
-                        <div className="flex items-center justify-between mb-4">
-                            <h1 className="text-2xl font-bold">💬 澳门讨论区</h1>
+                        <div className="relative mb-4">
+                            <h1 className="text-2xl font-bold text-center">💬 澳门濠江论坛</h1>
                             
-                            {/* 发布按钮 - 右上角 */}
-                            {auth.user ? (
-                                <Link
-                                    href="/articles/create"
-                                    className="px-4 sm:px-6 py-2 bg-white text-orange-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
-                                >
-                                    <span>✍️</span>
-                                    <span className="hidden sm:inline">发布文章</span>
-                                    <span className="sm:hidden">发布</span>
-                                </Link>
-                            ) : (
-                                <Link
-                                    href="/login?message=请先登录以发布文章"
-                                    className="px-4 sm:px-6 py-2 bg-white text-orange-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
-                                >
-                                    <span>✍️</span>
-                                    <span className="hidden sm:inline">发布文章</span>
-                                    <span className="sm:hidden">发布</span>
-                                </Link>
-                            )}
+                            {/* 发布按钮 - 浮动右上角 */}
+                            <div className="absolute top-0 right-0">
+                                {auth.user ? (
+                                    <Link
+                                        href="/articles/create"
+                                        className="px-2 py-1 bg-white text-slate-700 font-medium rounded text-xs hover:bg-gray-50 transition-colors flex items-center gap-1"
+                                    >
+                                        <span>✍️</span>
+                                        <span className="hidden sm:inline">发布文章</span>
+                                        <span className="sm:hidden">发布</span>
+                                    </Link>
+                                ) : (
+                                    <Link
+                                        href="/login?message=请先登录以发布文章"
+                                        className="px-2 py-1 bg-white text-slate-700 font-medium rounded text-xs hover:bg-gray-50 transition-colors flex items-center gap-1"
+                                    >
+                                        <span>✍️</span>
+                                        <span className="hidden sm:inline">发布文章</span>
+                                        <span className="sm:hidden">发布</span>
+                                    </Link>
+                                )}
+                            </div>
                         </div>
                         
                         {/* 搜索栏 */}
-                        <form onSubmit={handleSearch} className="max-w-md mx-auto">
-                            <div className="flex">
+                        <form onSubmit={handleSearch} className="max-w-sm mx-auto">
+                            <div className="flex border border-white/20 rounded-md overflow-hidden">
                                 <input
                                     type="text"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     placeholder="搜索文章..."
-                                    className="flex-1 px-4 py-2 rounded-l-lg border-0 text-gray-900 focus:ring-2 focus:ring-orange-300"
+                                    className="flex-1 px-2.5 py-1 border-0 text-gray-900 focus:ring-0 text-sm bg-white"
                                 />
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 bg-orange-600 hover:bg-orange-700 rounded-r-lg transition-colors"
+                                    className="px-3 py-1 bg-slate-600 hover:bg-slate-700 transition-colors text-sm"
                                 >
                                     搜索
                                 </button>
