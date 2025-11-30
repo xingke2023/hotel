@@ -81,12 +81,12 @@ export default function Calculator2() {
             }
         }, 100);
         
-        // 1秒后停止动画并执行回调
+        // 0.1秒后停止动画并执行回调
         setTimeout(() => {
             clearInterval(colorInterval);
             setIsAnimating(false);
             callback();
-        }, 1000);
+        }, 100);
     };
 
     // 处理输的情况
@@ -218,21 +218,13 @@ export default function Calculator2() {
             <div className="min-h-screen bg-gray-50 p-4">
                 <div className="max-w-md mx-auto">
                     {/* Header */}
-                    <div className="relative mb-6">
+                    <div className="mb-6">
                         <div className="text-center">
                             <h1 className="text-xl text-gray-800">🎯 1221首尾消数游戏</h1>
                             <p className="text-sm text-gray-600 mt-2">
-                                
+
                             </p>
                         </div>
-                        
-                        {/* 重置游戏按钮 - 右上角，默认显示 */}
-                        <button
-                            onClick={handleResetGame}
-                            className="absolute -top-6 -right-6 border border-gray-400 bg-transparent hover:bg-gray-50 text-gray-600 hover:text-gray-800 px-2 py-1 rounded transition-colors text-xs"
-                        >
-                            重新开始游戏
-                        </button>
                     </div>
 
 
@@ -263,27 +255,27 @@ export default function Calculator2() {
                                 
                                 <div className="flex items-center justify-center gap-3">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-sm font-semibold">游戏预测，仅供参考</span>
-                                        
+                                        <span className="text-sm font-semibold">下局应打仅供参考</span>
+
                                     </div>
                                     
                                     {isAnimating ? (
                                         // 动画状态：显示两个圆圈，交替加粗边框，位置随机
                                         <div className="flex gap-2">
-                                            <div className={`w-8 h-8 flex items-center justify-center rounded-full text-white font-bold text-xs transition-all duration-100 ${
+                                            <div className={`w-10 h-10 flex items-center justify-center rounded-full text-white font-bold text-sm transition-all duration-100 ${
                                                 circlePositions.left === 'red' ? 'bg-red-500' : 'bg-blue-500'
                                             } ${
-                                                animationColor === circlePositions.left 
-                                                    ? `border-2 ${circlePositions.left === 'red' ? 'border-red-700' : 'border-blue-700'} animate-pulse` 
+                                                animationColor === circlePositions.left
+                                                    ? `border-2 ${circlePositions.left === 'red' ? 'border-red-700' : 'border-blue-700'} animate-pulse`
                                                     : `border ${circlePositions.left === 'red' ? 'border-red-300' : 'border-blue-300'}`
                                             }`}>
                                                 {currentBet}
                                             </div>
-                                            <div className={`w-8 h-8 flex items-center justify-center rounded-full text-white font-bold text-xs transition-all duration-100 ${
+                                            <div className={`w-10 h-10 flex items-center justify-center rounded-full text-white font-bold text-sm transition-all duration-100 ${
                                                 circlePositions.right === 'red' ? 'bg-red-500' : 'bg-blue-500'
                                             } ${
-                                                animationColor === circlePositions.right 
-                                                    ? `border-2 ${circlePositions.right === 'red' ? 'border-red-700' : 'border-blue-700'} animate-pulse` 
+                                                animationColor === circlePositions.right
+                                                    ? `border-2 ${circlePositions.right === 'red' ? 'border-red-700' : 'border-blue-700'} animate-pulse`
                                                     : `border ${circlePositions.right === 'red' ? 'border-red-300' : 'border-blue-300'}`
                                             }`}>
                                                 {currentBet}
@@ -291,9 +283,9 @@ export default function Calculator2() {
                                         </div>
                                     ) : (
                                         // 静态状态：显示最终预测结果带边框
-                                        <div className={`w-8 h-8 flex items-center justify-center rounded-full text-white font-bold text-xs transition-all duration-300 ${
-                                            currentSuggestion === 'big' 
-                                                ? 'bg-red-500 border-2 border-red-700' 
+                                        <div className={`w-10 h-10 flex items-center justify-center rounded-full text-white font-bold text-sm transition-all duration-300 ${
+                                            currentSuggestion === 'big'
+                                                ? 'bg-red-500 border-2 border-red-700'
                                                 : 'bg-blue-500 border-2 border-blue-700'
                                         }`}>
                                             {currentBet}
@@ -337,6 +329,12 @@ export default function Calculator2() {
                             <h3 className="text-lg font-semibold"></h3>
                             <div className="flex items-center gap-2">
                                 <label className="text-sm text-gray-700">基数</label>
+                                <button
+                                    onClick={() => handleBaseCodeChange(String(Math.max(10, baseCode - 10)))}
+                                    className="w-7 h-7 flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded transition-colors font-bold"
+                                >
+                                    -
+                                </button>
                                 <input
                                     type="number"
                                     min="1"
@@ -345,6 +343,12 @@ export default function Calculator2() {
                                     placeholder="20"
                                     className="w-14 px-2 py-1 border border-gray-300 rounded text-center text-sm"
                                 />
+                                <button
+                                    onClick={() => handleBaseCodeChange(String(baseCode + 10))}
+                                    className="w-7 h-7 flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded transition-colors font-bold"
+                                >
+                                    +
+                                </button>
                             </div>
                         </div>
                         
@@ -423,9 +427,15 @@ export default function Calculator2() {
                                     >
                                     失败
                                     </button>
+                                    <button
+                                        onClick={handleResetGame}
+                                        className="flex-1 font-bold py-2 px-4 rounded-lg text-sm shadow transition-all border border-gray-400 bg-transparent hover:bg-gray-50 text-gray-600 hover:text-gray-800 active:scale-95"
+                                    >
+                                    重开
+                                    </button>
                                 </div>
                                 <div className="text-xs text-gray-500 text-center mt-2">
-                                    胜利 {gameHistory.filter(record => record.result === 'win').length} 次 | 
+                                    胜利 {gameHistory.filter(record => record.result === 'win').length} 次 |
                                     失败 {gameHistory.filter(record => record.result === 'lose').length} 次
                                 </div>
                             </div>
