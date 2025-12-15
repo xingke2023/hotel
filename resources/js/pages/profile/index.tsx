@@ -24,7 +24,6 @@ interface AuthUser {
     id: number;
     name: string;
     email: string;
-    nickname?: string;
 }
 
 interface PageProps {
@@ -92,10 +91,10 @@ export default function ProfileIndex() {
         // 检查个人资料是否完整
         if (!checkProfileComplete()) {
             const missingFields = [];
-            if (!profileData?.real_name) missingFields.push('真实姓名');
+            if (!profileData?.real_name) missingFields.push('真实入住姓名');
             if (!profileData?.phone) missingFields.push('联系电话');
             if (!profileData?.wechat) missingFields.push('微信号');
-            
+
             alert(`请先完善个人资料：${missingFields.join('、')}`);
             setActiveTab('my-profile'); // 跳转到个人资料页面
             return;
@@ -249,7 +248,7 @@ export default function ProfileIndex() {
                                             <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                                                 <h5 className="text-sm font-medium text-yellow-800 mb-2">请先完善以下资料：</h5>
                                                 <ul className="text-sm text-yellow-700 space-y-1">
-                                                    {!profileData.real_name && <li>• 真实姓名</li>}
+                                                    {!profileData.real_name && <li>• 真实入住姓名</li>}
                                                     {!profileData.phone && <li>• 联系电话</li>}
                                                     {!profileData.wechat && <li>• 微信号</li>}
                                                 </ul>

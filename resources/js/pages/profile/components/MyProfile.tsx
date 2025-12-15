@@ -17,7 +17,6 @@ interface ProfileData {
     gender?: string;
     wechat?: string;
     whatsapp?: string;
-    nickname?: string;
     bio?: string;
     stats: {
         houses_count: number;
@@ -78,7 +77,6 @@ export default function MyProfile() {
                 gender: profileData.gender,
                 wechat: profileData.wechat,
                 whatsapp: profileData.whatsapp,
-                nickname: profileData.nickname,
                 bio: profileData.bio,
             });
 
@@ -154,7 +152,7 @@ export default function MyProfile() {
                         <div className="flex items-center">
                             <span className="text-yellow-600 text-lg mr-2">⚠️</span>
                             <p className="text-yellow-800 text-sm">
-                                <strong>请输入真实姓名以备工作人员协助酒店入住。</strong>虚假信息不能办理入住。
+                                <strong>请输入真实入住姓名以备工作人员协助酒店入住。</strong>虚假信息不能办理入住。
                             </p>
                         </div>
                     </div>
@@ -234,12 +232,9 @@ export default function MyProfile() {
                                     <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                                         {profileData.real_name || profileData.name}
                                     </h2>
-                                    {profileData.nickname && (
-                                        <p className="text-lg text-gray-600 mb-2">@{profileData.nickname}</p>
-                                    )}
                                     <p className="text-sm text-gray-500">{profileData.email}</p>
                                 </div>
-                                
+
                                 {profileData.bio && (
                                     <div className="bg-gray-50 rounded-xl p-4">
                                         <p className="text-gray-700 text-sm leading-relaxed">{profileData.bio}</p>
@@ -262,7 +257,7 @@ export default function MyProfile() {
                                         <span className="text-sm font-medium text-gray-900">{profileData.name}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="text-sm text-gray-600">真实姓名</span>
+                                        <span className="text-sm text-gray-600">真实入住姓名</span>
                                         <span className="text-sm font-medium text-gray-900">{profileData.real_name || '未填写'}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
@@ -352,7 +347,7 @@ export default function MyProfile() {
                             {/* 重要提示 */}
                             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                                 <p className="text-yellow-800 text-sm">
-                                    <strong>请填写真实信息</strong>，以便工作人员协助您完成酒店入住手续。
+                                    <strong>请填写真实入住信息</strong>，以便工作人员协助您完成酒店入住手续。
                                 </p>
                             </div>
 
@@ -367,22 +362,13 @@ export default function MyProfile() {
                                     />
                                 </div>
                                 <div>
-                                    <Label htmlFor="edit-real-name">真实姓名 *</Label>
+                                    <Label htmlFor="edit-real-name">真实入住姓名 *</Label>
                                     <Input
                                         id="edit-real-name"
                                         value={profileData.real_name || ''}
                                         onChange={(e) => setProfileData({...profileData, real_name: e.target.value})}
-                                        placeholder="请输入真实姓名"
+                                        placeholder="请输入真实入住姓名"
                                         required
-                                    />
-                                </div>
-                                <div>
-                                    <Label htmlFor="edit-nickname">昵称</Label>
-                                    <Input
-                                        id="edit-nickname"
-                                        value={profileData.nickname || ''}
-                                        onChange={(e) => setProfileData({...profileData, nickname: e.target.value})}
-                                        placeholder="设置个性昵称"
                                     />
                                 </div>
                                 <div>

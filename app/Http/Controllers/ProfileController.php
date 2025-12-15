@@ -37,19 +37,17 @@ class ProfileController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'real_name' => 'nullable|string|max:255',
-            'nickname' => 'nullable|string|max:255',
             'gender' => ['nullable', Rule::in(['male', 'female', 'other'])],
             'birth_date' => 'nullable|date',
             'wechat' => 'nullable|string|max:255',
             'whatsapp' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:25|regex:/^\+?(86|853|852)?-?[0-9]{8,11}$/',
+            'phone' => 'nullable|string|max:30',
             'bio' => 'nullable|string|max:1000',
         ]);
 
         $user->update($request->only([
             'name',
             'real_name',
-            'nickname', 
             'gender',
             'birth_date',
             'wechat',
