@@ -57,14 +57,14 @@ export default function ArticlesIndex({ articles, categories, filters }: Props) 
 
     return (
         <FrontendLayout>
-            <Head title="澳门濠江论坛" />
-            
+            <Head title="澳门讨论区" />
+
             <div className="min-h-screen bg-gray-50">
                 {/* 头部区域 - 压缩高度 */}
-                <div className="bg-gradient-to-r from-slate-800 to-gray-900 text-white py-4">
+                <div className="bg-gradient-to-r from-amber-700 to-amber-800 text-white py-4">
                     <div className="w-[99%] mx-auto px-4">
                         <div className="relative mb-4">
-                            <h1 className="text-2xl font-bold text-center">💬 澳门濠江论坛</h1>
+                            <h1 className="text-2xl font-bold text-center">💬 澳门讨论区</h1>
                             
                             {/* 发布按钮 - 浮动右上角 */}
                             <div className="absolute top-0 right-0">
@@ -113,14 +113,14 @@ export default function ArticlesIndex({ articles, categories, filters }: Props) 
 
                 <div className="w-full px-2 py-6">
                     {/* 顶部分类badge选择器 */}
-                    <div className="w-[99%] mx-auto p-4 mb-6">
+                    <div className="w-[99%] mx-auto p-0 mb-4">
                         <div className="flex flex-wrap items-center gap-2">
                             <button
                                 onClick={() => handleCategoryFilter()}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                                className={`px-4 py-1 text-sm font-medium transition-colors border ${
                                     !filters.category 
-                                        ? 'bg-orange-500 text-white' 
-                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        ? 'bg-orange-500 text-white border-orange-500' 
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-gray-300'
                                 }`}
                             >
                                 全部
@@ -129,14 +129,14 @@ export default function ArticlesIndex({ articles, categories, filters }: Props) 
                                 <button
                                     key={category.id}
                                     onClick={() => handleCategoryFilter(category.id.toString())}
-                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                                    className={`px-4 py-1 text-sm font-medium transition-colors border ${
                                         filters.category === category.id.toString()
                                             ? 'text-white'
-                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-gray-300'
                                     }`}
                                     style={
                                         filters.category === category.id.toString()
-                                            ? { backgroundColor: category.color }
+                                            ? { backgroundColor: category.color, borderColor: category.color }
                                             : {}
                                     }
                                 >
@@ -155,7 +155,7 @@ export default function ArticlesIndex({ articles, categories, filters }: Props) 
                                         <div className="flex items-center justify-between">
                                             <div className="flex-1 min-w-0 mr-4">
                                                 {/* 标题 */}
-                                                <h2 className="text-base font-medium text-gray-900 hover:text-orange-600 transition-colors line-clamp-1 mb-1">
+                                                <h2 className="text-base font-medium text-gray-900 hover:text-orange-600 transition-colors mb-1">
                                                     <Link href={`/articles/${article.slug}`}>
                                                         {article.title}
                                                     </Link>

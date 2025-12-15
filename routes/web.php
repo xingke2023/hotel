@@ -8,9 +8,12 @@ Route::get('/', function () {
     return Inertia::render('home/index');
 })->name('home');
 
-// 公开路由 - 不需要登录  
+// 公开路由 - 不需要登录
 Route::get('houses', [App\Http\Controllers\HouseController::class, 'index'])->name('houses');
 Route::get('api/houses', [App\Http\Controllers\HouseController::class, 'list'])->name('api.houses');
+
+// 汇率API
+Route::get('api/exchange-rate', [App\Http\Controllers\ExchangeRateController::class, 'getRate'])->name('api.exchange-rate');
 
 // 视频页面路由
 Route::get('videos', function () {
@@ -85,6 +88,7 @@ Route::get('calculator21', function () {
 Route::get('calculator71', function () {
     return Inertia::render('Calculator71');
 })->name('calculator71');
+
 
 // 澳门讨论区 - 文章功能
 Route::get('articles', [App\Http\Controllers\ArticleController::class, 'index'])->name('articles.index');

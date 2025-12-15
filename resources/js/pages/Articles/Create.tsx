@@ -68,7 +68,7 @@ export default function ArticleCreate({ categories }: Props) {
 
     return (
         <FrontendLayout>
-            <Head title="发布文章 - 澳门讨论区" />
+            <Head title="发布文章 - 澳门濠江论坛" />
             
             <div className="min-h-screen bg-gray-50">
                 <div className="w-full h-screen">

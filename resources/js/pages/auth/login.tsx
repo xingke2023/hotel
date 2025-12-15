@@ -33,12 +33,30 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     });
 
     const [biometricError, setBiometricError] = useState<string>('');
+    const [loginError, setLoginError] = useState<string>('');
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+        setLoginError(''); // 清除之前的错误
+        
         post(route('login'), {
             onSuccess: () => {
                 router.visit('/profile');
+            },
+            onError: (errors: any) => {
+                // 处理验证错误
+                console.log('Login errors:', errors);
+                
+                // 检查是否是验证错误
+                if (errors.login) {
+                    setLoginError(errors.login);
+                } else if (errors.password) {
+                    setLoginError('密码不能为空');
+                } else if (typeof errors === 'string') {
+                    setLoginError(errors);
+                } else {
+                    setLoginError('登录失败，请检查用户名和密码');
+                }
             },
             onFinish: () => reset('password'),
         });
@@ -89,6 +107,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             </div>
                         )}
 
+                        {loginError && (
+                            <div className="mb-4 text-center text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-3">
+                                {loginError}
+                            </div>
+                        )}
+
                         {/* 生物识别登录 */}
                         <div className="mb-6">
                             <BiometricAuth
@@ -117,6 +141,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     className="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700"
                                 />
                                 <InputError message={errors.login} />
+                {errors.general && <InputError message={errors.general} />}
                             </div>
 
                             <div>

@@ -40,7 +40,7 @@ export default function ArticleShow({ article, relatedArticles }: Props) {
 
     return (
         <FrontendLayout>
-            <Head title={`${article.title} - 澳门讨论区`} />
+            <Head title={`${article.title} - 澳门濠江论坛`} />
             
             <div className="min-h-screen bg-gray-50">
                 <div className="w-[99%] mx-auto px-4 py-8">
@@ -49,7 +49,7 @@ export default function ArticleShow({ article, relatedArticles }: Props) {
                         <nav className="flex items-center space-x-2 text-sm text-gray-500">
                             <Link href="/" className="hover:text-orange-600">首页</Link>
                             <span>›</span>
-                            <Link href="/articles" className="hover:text-orange-600">澳门讨论区</Link>
+                            <Link href="/articles" className="hover:text-orange-600">澳门濠江论坛</Link>
                             <span>›</span>
                             <span 
                                 className="px-2 py-1 rounded text-white text-xs"
