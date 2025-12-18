@@ -54,14 +54,16 @@ class Handler extends ExceptionHandler
         if ($request->header('X-Inertia')) {
             // Handle validation exceptions properly for Inertia
             if ($e instanceof ValidationException) {
-                // Return the validation errors in the format Inertia expects
-                return parent::render($request, $e);
+                // Redirect back with validation errors instead of returning JSON
+                return redirect()->back()
+                    ->withErrors($e->errors())
+                    ->withInput($request->except($this->dontFlash));
             }
-            
+
             // For other exceptions that would normally return JSON,
             // we need to convert them to redirect responses with flash data
             $response = parent::render($request, $e);
-            
+
             if ($response->getStatusCode() >= 400) {
                 // Convert error responses to redirects for Inertia
                 return redirect()->back()->withErrors([

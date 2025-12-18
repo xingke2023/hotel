@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { usePage, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import axios from 'axios';
+import axios from '@/lib/axios';
+
+// 懒加载支付弹窗，避免在不需要支付的页面加载Stripe
+const PaymentDialog = lazy(() => import('@/components/PaymentDialog'));
 
 interface House {
     id: number;
@@ -51,6 +54,9 @@ interface Order {
     seller_rating?: string;
     buyer_reviewed: boolean;
     seller_reviewed: boolean;
+    payment_status?: 'unpaid' | 'paid' | 'refunded';
+    payment_method?: 'stripe' | 'wechat' | 'alipay';
+    paid_at?: string;
 }
 
 export default function MyOrders() {
@@ -78,6 +84,10 @@ export default function MyOrders() {
     const [buyerReviewMessage, setBuyerReviewMessage] = useState('');
     const [buyerReviewRating, setBuyerReviewRating] = useState<'好' | '中' | '差' | ''>('');
 
+    // 支付弹窗状态
+    const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+    const [payingOrder, setPayingOrder] = useState<Order | null>(null);
+
     const itemsPerMyOrdersPage = 10;
 
     const fetchMyOrders = async () => {
@@ -98,6 +108,54 @@ export default function MyOrders() {
     useEffect(() => {
         fetchMyOrders();
     }, [myOrdersPage]);
+
+    // 检查支付宝返回的支付状态
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const payment = urlParams.get('payment');
+        const orderId = urlParams.get('order_id');
+
+        if (payment === 'alipay' && orderId) {
+            // 检查支付状态
+            checkAlipayPaymentStatus(parseInt(orderId));
+            // 清除 URL 参数
+            window.history.replaceState({}, '', '/profile/my-orders');
+        }
+    }, []);
+
+    const checkAlipayPaymentStatus = async (orderId: number) => {
+        try {
+            const response = await axios.get(`/api/orders/${orderId}/payment/status`);
+            const { payment_status } = response.data;
+
+            if (payment_status === 'paid') {
+                alert('✅ 支付成功！\n您的订单已支付完成。');
+                fetchMyOrders(); // 刷新订单列表
+            } else {
+                // 继续轮询检查支付状态
+                let attempts = 0;
+                const maxAttempts = 10;
+                const pollInterval = setInterval(async () => {
+                    attempts++;
+                    try {
+                        const res = await axios.get(`/api/orders/${orderId}/payment/status`);
+                        if (res.data.payment_status === 'paid') {
+                            clearInterval(pollInterval);
+                            alert('✅ 支付成功！\n您的订单已支付完成。');
+                            fetchMyOrders();
+                        } else if (attempts >= maxAttempts) {
+                            clearInterval(pollInterval);
+                            alert('ℹ️ 支付状态确认中\n如已支付，请稍后刷新页面查看。');
+                        }
+                    } catch (err) {
+                        console.error('查询支付状态失败:', err);
+                    }
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('查询支付状态失败:', error);
+        }
+    };
 
 
     const handleOrderRejectDelivery = async (orderId: number, message: string) => {
@@ -308,11 +366,23 @@ export default function MyOrders() {
                         {/* 第一行：标题、状态 */}
                         <div className="flex items-center justify-between mb-1">
                             <h4 className="font-medium text-gray-900 text-sm truncate flex-1 mr-2">{order.house.title}</h4>
-                            <Badge className={`${getStatusColor(order.status)} text-xs px-1.5 py-0.5 shrink-0`}>
-                                {getStatusText(order.status)}
-                            </Badge>
+                            <div className="flex items-center gap-1 shrink-0">
+                                <Badge className={`${getStatusColor(order.status)} text-xs px-1.5 py-0.5`}>
+                                    {getStatusText(order.status)}
+                                </Badge>
+                                {/* 支付状态标签 */}
+                                {order.status === 'confirmed' && (
+                                    <Badge className={`text-xs px-1.5 py-0.5 ${
+                                        order.payment_status === 'paid'
+                                            ? 'bg-green-100 text-green-800 border-green-300'
+                                            : 'bg-yellow-100 text-yellow-800 border-yellow-300'
+                                    }`}>
+                                        {order.payment_status === 'paid' ? '已支付' : '待支付'}
+                                    </Badge>
+                                )}
+                            </div>
                         </div>
-                        
+
                         {/* 第二行：价格、位置、卖家 */}
                         <div className="flex items-center justify-between text-xs mb-2">
                             <span className="font-medium text-green-600">¥{order.price.toLocaleString()}</span>
@@ -338,7 +408,21 @@ export default function MyOrders() {
                             >
                                 详情
                             </Button>
-                            
+
+                            {/* 支付按钮 - 当订单已确认且未支付时显示 */}
+                            {order.status === 'confirmed' && order.payment_status === 'unpaid' && (
+                                <Button
+                                    size="sm"
+                                    onClick={() => {
+                                        setPayingOrder(order);
+                                        setShowPaymentDialog(true);
+                                    }}
+                                    className="text-xs h-7 px-3 bg-green-600 hover:bg-green-700"
+                                >
+                                    立即支付
+                                </Button>
+                            )}
+
                             {order.status === 'shipped' && (
                                 <>
                                     <Button
@@ -422,7 +506,7 @@ export default function MyOrders() {
                                 <div>
                                     <div className="text-lg font-semibold">订单号：#{selectedOrder.id}</div>
                                     <div className="text-sm text-gray-500">
-                                        {new Date(selectedOrder.created_at).toLocaleString('zh-CN')}
+                                        {new Date(selectedOrder.created_at).toLocaleString('zh-CN', { timeZone: 'Asia/Hong_Kong' })}
                                     </div>
                                 </div>
                                 <Badge className={getStatusColor(selectedOrder.status)}>
@@ -464,19 +548,50 @@ export default function MyOrders() {
                                         <p className="text-sm">{selectedOrder.seller.name}</p>
                                     </div>
                                     <div>
+                                        <Label className="text-sm font-medium text-gray-700">支付状态</Label>
+                                        <div className="flex items-center gap-2">
+                                            <Badge className={`text-xs px-2 py-1 ${
+                                                selectedOrder.payment_status === 'paid'
+                                                    ? 'bg-green-100 text-green-800 border-green-300'
+                                                    : selectedOrder.payment_status === 'refunded'
+                                                    ? 'bg-gray-100 text-gray-800 border-gray-300'
+                                                    : 'bg-yellow-100 text-yellow-800 border-yellow-300'
+                                            }`}>
+                                                {selectedOrder.payment_status === 'paid' ? '✓ 已支付' :
+                                                 selectedOrder.payment_status === 'refunded' ? '已退款' : '待支付'}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                    {selectedOrder.payment_method && (
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700">支付方式</Label>
+                                            <p className="text-sm">
+                                                {selectedOrder.payment_method === 'stripe' && '信用卡'}
+                                                {selectedOrder.payment_method === 'wechat' && '微信支付'}
+                                                {selectedOrder.payment_method === 'alipay' && '支付宝'}
+                                            </p>
+                                        </div>
+                                    )}
+                                    <div>
                                         <Label className="text-sm font-medium text-gray-700">下单时间</Label>
-                                        <p className="text-sm">{new Date(selectedOrder.created_at).toLocaleString('zh-CN')}</p>
+                                        <p className="text-sm">{new Date(selectedOrder.created_at).toLocaleString('zh-CN', { timeZone: 'Asia/Hong_Kong' })}</p>
                                     </div>
                                     {selectedOrder.confirmed_at && (
                                         <div>
                                             <Label className="text-sm font-medium text-gray-700">确认时间</Label>
-                                            <p className="text-sm">{new Date(selectedOrder.confirmed_at).toLocaleString('zh-CN')}</p>
+                                            <p className="text-sm">{new Date(selectedOrder.confirmed_at).toLocaleString('zh-CN', { timeZone: 'Asia/Hong_Kong' })}</p>
+                                        </div>
+                                    )}
+                                    {selectedOrder.paid_at && (
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700">支付时间</Label>
+                                            <p className="text-sm text-green-600">{new Date(selectedOrder.paid_at).toLocaleString('zh-CN', { timeZone: 'Asia/Hong_Kong' })}</p>
                                         </div>
                                     )}
                                     {selectedOrder.shipped_at && (
                                         <div>
                                             <Label className="text-sm font-medium text-gray-700">发货时间</Label>
-                                            <p className="text-sm">{new Date(selectedOrder.shipped_at).toLocaleString('zh-CN')}</p>
+                                            <p className="text-sm">{new Date(selectedOrder.shipped_at).toLocaleString('zh-CN', { timeZone: 'Asia/Hong_Kong' })}</p>
                                         </div>
                                     )}
                                 </div>
@@ -498,7 +613,7 @@ export default function MyOrders() {
                                                                 {getActionText(message.action)}
                                                             </span>
                                                             <span className="text-xs text-gray-500">
-                                                                {new Date(message.created_at).toLocaleString('zh-CN')}
+                                                                {new Date(message.created_at).toLocaleString('zh-CN', { timeZone: 'Asia/Hong_Kong' })}
                                                             </span>
                                                         </div>
                                                         {message.message && (
@@ -908,6 +1023,33 @@ export default function MyOrders() {
                     )}
                 </DialogContent>
             </Dialog>
+
+            {/* 支付弹窗 */}
+            {payingOrder && (
+                <Suspense fallback={<div>加载支付组件...</div>}>
+                    <PaymentDialog
+                        open={showPaymentDialog}
+                        onClose={() => {
+                            setShowPaymentDialog(false);
+                            setPayingOrder(null);
+                        }}
+                        orderId={payingOrder.id}
+                        amount={payingOrder.price}
+                        onPaymentSuccess={() => {
+                            setShowPaymentDialog(false);
+                            setPayingOrder(null);
+                            // 先刷新订单列表
+                            fetchMyOrders();
+                            // 显示支付成功提示
+                            alert('✅ 支付成功！\n您的订单已支付完成。');
+                            // 再次刷新确保获取最新状态（考虑webhook延迟）
+                        setTimeout(() => {
+                            fetchMyOrders();
+                        }, 1000);
+                    }}
+                />
+                </Suspense>
+            )}
         </div>
     );
 }

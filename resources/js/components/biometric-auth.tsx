@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Fingerprint, Scan, Shield, AlertCircle } from 'lucide-react';
-import { 
-    isBiometricSupported, 
+import {
+    isBiometricSupported,
     isConditionalUISupported,
     registerBiometric,
     authenticateBiometric,
     formatCredentialForServer,
-    generateChallenge 
+    generateChallenge
 } from '@/utils/biometric-auth';
-import axios from 'axios';
+import axios from '@/lib/axios';
 
 interface BiometricAuthProps {
     onSuccess?: (credential: any) => void;
@@ -46,6 +46,12 @@ export default function BiometricAuth({
     };
 
     const checkExistingCredentials = async () => {
+        // 只有当userEmail非空时才检查凭证
+        if (!userEmail || userEmail.trim() === '') {
+            setHasCredentials(false);
+            return;
+        }
+
         try {
             const response = await axios.get('/api/biometric/credentials', {
                 params: { email: userEmail }
@@ -53,6 +59,7 @@ export default function BiometricAuth({
             setHasCredentials(response.data.hasCredentials);
         } catch (error) {
             console.error('Error checking credentials:', error);
+            setHasCredentials(false);
         }
     };
 
