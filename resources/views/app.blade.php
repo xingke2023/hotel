@@ -32,7 +32,26 @@
             }
         </style>
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', '澳门酒店特价房间') }}</title>
+
+        {{-- SEO Meta Tags --}}
+        <meta name="description" content="澳门酒店特价房间预订平台，提供澳门各大酒店优惠房间、特价房源信息。澳门住宿、酒店预订、投资工具一站式服务。">
+        <meta name="keywords" content="澳门酒店,特价房间,澳门住宿,酒店预订,澳门房源,澳门旅游,酒店优惠,澳门投资">
+        <meta name="author" content="aomen.chat">
+
+        {{-- Open Graph / Facebook --}}
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:title" content="{{ config('app.name', '澳门酒店特价房间') }}">
+        <meta property="og:description" content="澳门酒店特价房间预订平台，提供澳门各大酒店优惠房间、特价房源信息。">
+        <meta property="og:image" content="{{ asset('images/og-image.jpg') }}">
+
+        {{-- Twitter --}}
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="{{ url()->current() }}">
+        <meta property="twitter:title" content="{{ config('app.name', '澳门酒店特价房间') }}">
+        <meta property="twitter:description" content="澳门酒店特价房间预订平台，提供澳门各大酒店优惠房间、特价房源信息。">
+        <meta property="twitter:image" content="{{ asset('images/og-image.jpg') }}">
 
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">

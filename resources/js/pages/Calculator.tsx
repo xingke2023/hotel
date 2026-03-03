@@ -398,138 +398,78 @@ export default function Calculator() {
                 <div className="max-w-md mx-auto">
                     {/* Header */}
                     <div className="text-center mb-6">
-                        <div className="flex items-center justify-center gap-3 mb-2">
-                            {!isHidden && (
+                        <h1 className="text-2xl font-bold text-gray-800">🎯 直缆游戏</h1>
+                        <p className="text-sm text-gray-600 mt-2">
+                            系统给预测 | 手动输入结果
+                        </p>
+                    </div>
+
+                    {/* 总盈亏显示 */}
+                    <div className="text-center mb-6">
+                        <div className={`font-bold ${
+                            totalPnL >= 0 ? 'text-green-600' : 'text-red-600'
+                        }`}>
+                            战绩: {totalPnL >= 0 ? '+' : ''}{totalPnL}
+                        </div>
+                    </div>
+
+
+                    {/* 系统预测显示 */}
+                    {currentRecommendation && (
+                        <div className="mb-6">
+                            <div className={`px-4 py-2 rounded-lg font-bold border-2 border-gray-300 text-gray-800 bg-white shadow-sm`}>
                                 <div className="flex items-center gap-2">
-                                    
-                                    <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-red-600 bg-clip-text text-transparent">直缆游戏</h1>
+                                    <span>系统预测: {betLevels[currentBetLevel] || betLevels[0]}</span>
+                                    <div className={`w-5 h-5 rounded flex items-center justify-center font-bold text-white transition-all duration-150 ${
+                                        isRolling
+                                            ? coinSide === 'B' ? 'bg-red-600 scale-110' : 'bg-blue-600 scale-110'
+                                            : currentRecommendation === 'B' ? 'bg-red-600' : 'bg-blue-600'
+                                    } ${isRolling ? 'animate-pulse' : ''}`}>
+                                    </div>
                                 </div>
-                            )}
+                                <div className="text-xs mt-1">
+                                    {isRolling ? '系统运算中...' : '根据现场开奖结果，点击下方按钮输入结果'}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Control Buttons */}
+                    <div className="bg-white rounded-lg p-4 shadow-sm border mb-6">
+                        <div className="flex gap-2 mb-2">
                             <button
-                                onClick={() => {
-                                    if (!isHidden) {
-                                        generateRandomButtonColors();
-                                    }
-                                    setIsHidden(!isHidden);
-                                }}
-                                className="px-3 py-1 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white text-sm rounded-lg shadow-md transition-all duration-300"
+                                onClick={() => addResult('P')}
+                                disabled={isRolling}
+                                className={`flex-1 font-bold py-2 px-3 rounded-lg text-sm shadow transition-all ${
+                                    isRolling
+                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        : 'bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md active:scale-95'
+                                }`}
                             >
-                                {isHidden ? '🎮 显示' : '👻 隐藏模式'}
+                                闲赢 P
+                            </button>
+                            <button
+                                onClick={() => addResult('B')}
+                                disabled={isRolling}
+                                className={`flex-1 font-bold py-2 px-3 rounded-lg text-sm shadow transition-all ${
+                                    isRolling
+                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        : 'bg-red-500 text-white hover:bg-red-600 hover:shadow-md active:scale-95'
+                                }`}
+                            >
+                                庄赢 B
+                            </button>
+                            <button
+                                onClick={resetBettingSystem}
+                                className="flex-1 font-bold py-2 px-3 rounded-lg text-sm shadow transition-all border border-gray-400 bg-transparent hover:bg-gray-50 text-gray-600 hover:text-gray-800 active:scale-95"
+                            >
+                                复位
                             </button>
                         </div>
-                        
-                    </div>
-
-                    {/* P&L and Betting Info */}
-                    <div className="mb-4">
-                        {/* Total P&L */}
-                        <div className="text-center mb-2">
-                            <div className={`inline-block px-4 py-2 rounded-xl shadow-lg ${
-                                isHidden 
-                                    ? 'bg-gray-100 text-gray-600' 
-                                    : totalPnL >= 0 
-                                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white'
-                                        : 'bg-gradient-to-r from-red-500 to-rose-500 text-white'
-                            }`}>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm opacity-90">战绩</span>
-                                    <span className="text-sm font-bold">
-                                        {totalPnL >= 0 ? '+' : ''}{totalPnL}
-                                    </span>
-                                    <span className="text-2xl">
-                                        {totalPnL >= 0 ? '🏆' : '⚔️'}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        {/* Betting Recommendation */}
-                        <div className="text-left">
-                            {isRolling ? (
-                                <div className={`inline-block px-4 py-2 rounded-lg font-bold border-2 border-gray-300 ${
-                                    isHidden ? `${randomButtonColors.text} bg-transparent` : 'text-gray-800 bg-transparent'
-                                }`}>
-                                    <div className="flex items-center justify-center gap-2">
-                                        <div className={`text-sm w-6 h-6 rounded-full flex items-center justify-center font-bold border-2 transition-all duration-100 ${
-                                            isHidden
-                                                ? 'bg-gray-300 text-gray-700 border-gray-500'
-                                                : coinSide === 'B' 
-                                                    ? 'bg-red-400 text-white border-red-600' 
-                                                    : 'bg-blue-400 text-white border-blue-600'
-                                        }`}>
-                                            
-                                        </div>
-                                        <span>随机运算中...</span>
-                                    </div>
-                                </div>
-                            ) : currentRecommendation ? (
-                                <div className={`inline-block px-4 py-2 rounded-lg font-bold border-2 border-gray-300 ${
-                                    isHidden 
-                                        ? `${randomButtonColors.text} bg-transparent`
-                                        : 'text-gray-800 bg-transparent'
-                                }`}>
-                                    <div className="flex items-center gap-2">
-                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center font-bold text-white shadow-lg ${
-                                            currentRecommendation === 'P' ? 'bg-gradient-to-r from-blue-500 to-blue-600' : 'bg-gradient-to-r from-red-500 to-red-600'
-                                        }`}>
-                                            
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                            <span></span>
-                                            <span className={`font-bold ${currentRecommendation === 'P' ? 'text-blue-600' : 'text-red-600'}`}>
-                                                
-                                            </span>
-                                            <span>出击！</span>
-                                            <span className="font-bold text-yellow-600">{betLevels[currentBetLevel] || betLevels[0]}</span>
-                                        </div>
-                                    </div>
-                                    {betLevels[currentBetLevel] === 0 && <span className="text-xs block mt-1">遇到0值，使用第一级</span>}
-                                </div>
-                            ) : (
-                                <div className="inline-block px-4 py-2 rounded-lg bg-gradient-to-r from-gray-400 to-gray-500 text-white font-bold shadow-md">
-                                    ⏸️ 战略待机
-                                    <span className="text-xs block mt-1 opacity-90">
-                                        ({strategyMode === 'random' ? '随机对决' : '自定义战术'})
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    
-
-                    {/* Control Buttons - Red vs Blue Battle */}
-                    <div className="flex gap-4 mb-6">
-                        <button
-                            onClick={() => addResult('P')}
-                            className={`group relative flex-1 text-white font-bold py-4 px-6 rounded-2xl text-2xl transform active:scale-95 transition-all duration-300 shadow-xl hover:shadow-2xl ${
-                                isHidden ? randomButtonColors.p : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 active:from-blue-700 active:to-blue-800'
-                            }`}
-                        >
-                            <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <div className="relative z-10 flex items-center justify-center gap-2">
-                                <span className="text-3xl"></span>
-                                <span></span>
-                                <span className="text-sm opacity-75"></span>
-                            </div>
-                        </button>
-                        <button
-                            onClick={() => addResult('B')}
-                            className={`group relative flex-1 text-white font-bold py-4 px-6 rounded-2xl text-2xl transform active:scale-95 transition-all duration-300 shadow-xl hover:shadow-2xl ${
-                                isHidden ? randomButtonColors.b : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 active:from-red-700 active:to-red-800'
-                            }`}
-                        >
-                            <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <div className="relative z-10 flex items-center justify-center gap-2">
-                                <span className="text-3xl"></span>
-                                <span></span>
-                                <span className="text-sm opacity-75"></span>
-                            </div>
-                        </button>
                     </div>
 
 
                     {/* Betting Levels Display */}
-                    {!isHidden && (
                     <div className="mb-4 bg-white rounded-lg p-3 shadow-sm border">
                         <div className="flex justify-end items-center mb-2">
                             
@@ -608,12 +548,8 @@ export default function Calculator() {
                         </div>
                         <h4 className="text-[10px] text-gray-400 text-right">点击数字可自行编辑</h4>
                     </div>
-                    )}
-
-                    
 
                     {/* Road Map Grid */}
-                    {!isHidden && (
                     <div className="bg-white rounded-lg p-2 shadow-sm border w-full">
                         <div className="flex justify-between items-center mb-2">
                             <h3 className="text-lg font-semibold"></h3>
@@ -659,31 +595,27 @@ export default function Calculator() {
                             </div>
                         </div>
                     </div>
-                    )}
 
                     {/* Current Sequence - Battle Log */}
-                    {!isHidden && results.length > 0 && (
-                        <div className="mt-6 bg-gradient-to-r from-white to-gray-50 rounded-xl p-4 shadow-lg border border-gray-200">
-                            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                                <span>⚔️</span>
-                                <span>战斗记录</span>
-                            </h3>
+                    {results.length > 0 && (
+                        <div className="mt-6 bg-white rounded-lg p-4 shadow-sm border">
+                            <h3 className="text-lg font-semibold mb-2">战斗记录</h3>
                             <div className="mb-4">
-                                <div className="font-mono text-lg tracking-wider overflow-x-auto whitespace-nowrap p-3 border rounded-xl bg-gradient-to-r from-gray-50 to-white shadow-inner">
+                                <div className="font-mono text-lg tracking-wider overflow-x-auto whitespace-nowrap p-3 border rounded-lg bg-gray-50">
                                     {results.join('')}
                                 </div>
                             </div>
-                            <div className="flex justify-between text-sm bg-gradient-to-r from-blue-50 to-red-50 p-3 rounded-lg">
+                            <div className="flex justify-between text-sm bg-gray-50 p-3 rounded-lg">
                                 <div className="flex items-center gap-1">
-                                    <span>🏟️ 总战斗:</span>
+                                    <span>总战斗:</span>
                                     <span className="font-bold">{results.length}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <span>❤️ 红军:</span>
+                                    <span>庄(B):</span>
                                     <span className="font-bold text-red-600">{results.filter(r => r === 'B').length}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <span>💙 蓝军:</span>
+                                    <span>闲(P):</span>
                                     <span className="font-bold text-blue-600">{results.filter(r => r === 'P').length}</span>
                                 </div>
                             </div>

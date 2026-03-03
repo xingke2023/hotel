@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import BottomNavigation from '@/components/BottomNavigation';
 import { usePendingSalesCount } from '@/hooks/use-pending-sales-count';
-import axios from 'axios';
+import axios from '@/lib/axios';
 
 // 导入供求信息组件
 import SupplyDemand from './components/SupplyDemand';

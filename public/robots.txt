@@ -1,2 +1,24 @@
+# robots.txt for aomen.chat
+
+# Allow all crawlers
 User-agent: *
-Disallow:
+Allow: /
+
+# Disallow private/admin areas
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /settings
+Disallow: /admin
+
+# Allow specific API endpoints for SEO
+Allow: /api/houses
+Allow: /api/articles
+Allow: /api/videos
+Allow: /api/exchange-rate
+
+# Crawl-delay for good behavior
+Crawl-delay: 0.5
+
+# Sitemap location
+Sitemap: https://aomen.chat/sitemap.xml

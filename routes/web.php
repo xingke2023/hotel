@@ -8,12 +8,27 @@ Route::get('/', function () {
     return Inertia::render('home/index');
 })->name('home');
 
+// SEO - Sitemap
+Route::get('sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+
 // 公开路由 - 不需要登录
 Route::get('houses', [App\Http\Controllers\HouseController::class, 'index'])->name('houses');
 Route::get('api/houses', [App\Http\Controllers\HouseController::class, 'list'])->name('api.houses');
 
 // 汇率API
 Route::get('api/exchange-rate', [App\Http\Controllers\ExchangeRateController::class, 'getRate'])->name('api.exchange-rate');
+
+// Payment webhooks (no auth required)
+Route::post('webhooks/stripe', [App\Http\Controllers\PaymentController::class, 'stripeWebhook'])->name('webhooks.stripe');
+Route::post('webhooks/wechat', [App\Http\Controllers\PaymentController::class, 'wechatCallback'])->name('webhooks.wechat');
+Route::post('webhooks/alipay', [App\Http\Controllers\PaymentController::class, 'alipayCallback'])->name('webhooks.alipay');
+
+// Donation webhooks (no auth required)
+Route::post('webhooks/donation', [App\Http\Controllers\DonationController::class, 'donationWebhook'])->name('webhooks.donation');
+
+// 测试端点（仅开发环境）
+Route::post('api/orders/{order}/mark-paid-test', [App\Http\Controllers\PaymentController::class, 'markAsPaidForTesting'])->name('api.orders.mark-paid-test');
+Route::match(['get', 'post'], 'webhooks/test', [App\Http\Controllers\PaymentController::class, 'testWebhook'])->name('webhooks.test');
 
 // 视频页面路由
 Route::get('videos', function () {
@@ -47,6 +62,10 @@ Route::get('calculator1', function () {
 Route::get('calculator2', function () {
     return Inertia::render('Calculator2');
 })->name('calculator2');
+
+// 打赏支付API（公开路由）
+Route::post('api/donation/create', [App\Http\Controllers\DonationController::class, 'createDonation'])->name('api.donation.create');
+Route::post('api/donation/confirm', [App\Http\Controllers\DonationController::class, 'confirmDonation'])->name('api.donation.confirm');
 
 // 多策略投注系统页面
 Route::get('calculator3', function () {
@@ -142,6 +161,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     Route::post('api/settings/change-password', [App\Http\Controllers\SettingsController::class, 'changePassword'])->name('api.settings.change-password');
     Route::post('api/settings/logout', [App\Http\Controllers\SettingsController::class, 'logout'])->name('api.settings.logout');
+
+    // Payment routes
+    Route::post('api/orders/{order}/payment', [App\Http\Controllers\PaymentController::class, 'createPayment'])->name('api.orders.payment.create');
     Route::get('api/settings/account-info', [App\Http\Controllers\SettingsController::class, 'getAccountInfo'])->name('api.settings.account-info');
     
     // 卖家申请相关API
@@ -162,6 +184,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('api/comments/{comment}', [App\Http\Controllers\CommentController::class, 'destroy'])->name('api.comments.destroy');
     Route::post('api/comments/{comment}/like', [App\Http\Controllers\CommentController::class, 'like'])->name('api.comments.like');
 });
+
+// Payment status query - no auth required for polling
+Route::get('api/orders/{order}/payment/status', [App\Http\Controllers\PaymentController::class, 'getPaymentStatus'])->name('api.orders.payment.status');
+Route::post('api/orders/{order}/confirm-payment', [App\Http\Controllers\PaymentController::class, 'confirmPayment'])->name('api.orders.confirm-payment');
+
 
 // 文章详情页 - 必须放在最后，因为使用了通配符参数
 Route::get('articles/{article}', [App\Http\Controllers\ArticleController::class, 'show'])->name('articles.show');

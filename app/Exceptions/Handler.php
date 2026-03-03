@@ -3,9 +3,6 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -48,45 +45,10 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      */
-    public function render($request, Throwable $e): Response
+    public function render($request, Throwable $e)
     {
-        // For Inertia requests, we need to ensure proper handling
-        if ($request->header('X-Inertia')) {
-            // Handle validation exceptions properly for Inertia
-            if ($e instanceof ValidationException) {
-                // Redirect back with validation errors instead of returning JSON
-                return redirect()->back()
-                    ->withErrors($e->errors())
-                    ->withInput($request->except($this->dontFlash));
-            }
-
-            // For other exceptions that would normally return JSON,
-            // we need to convert them to redirect responses with flash data
-            $response = parent::render($request, $e);
-
-            if ($response->getStatusCode() >= 400) {
-                // Convert error responses to redirects for Inertia
-                return redirect()->back()->withErrors([
-                    'general' => $this->getErrorMessage($e)
-                ])->withInput($request->except(['password', 'password_confirmation']));
-            }
-        }
-
+        // Let Laravel's default exception handler deal with Inertia requests
+        // It properly handles validation exceptions and other errors for Inertia
         return parent::render($request, $e);
-    }
-
-    /**
-     * Get a user-friendly error message for the exception.
-     */
-    protected function getErrorMessage(Throwable $e): string
-    {
-        // Return user-friendly messages for common exceptions
-        return match (get_class($e)) {
-            'Illuminate\Auth\AuthenticationException' => '请先登录后再继续',
-            'Illuminate\Auth\Access\AuthorizationException' => '您没有权限执行此操作',
-            'Symfony\Component\HttpKernel\Exception\NotFoundHttpException' => '请求的页面不存在',
-            'Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException' => '请求过于频繁，请稍后再试',
-            default => '操作失败，请稍后重试'
-        };
     }
 }

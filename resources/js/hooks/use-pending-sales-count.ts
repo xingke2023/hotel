@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { usePage } from '@inertiajs/react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 
 interface AuthUser {
     id: number;

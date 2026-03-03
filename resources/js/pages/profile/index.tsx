@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Head, usePage, Link } from '@inertiajs/react';
+import { Head, usePage, Link, router } from '@inertiajs/react';
 import FrontendLayout from '@/layouts/frontend-layout';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import BottomNavigation from '@/components/BottomNavigation';
 import { usePendingSalesCount } from '@/hooks/use-pending-sales-count';
-import axios from 'axios';
+import axios from '@/lib/axios';
 
 // 导入拆分的组件
 import MyProducts from './components/MyProducts';
@@ -186,39 +186,35 @@ export default function ProfileIndex() {
                                         { key: 'my-orders', title: '我的订单', icon: '📋', desc: '查看我的购买记录' },
                                         { key: 'my-referrals', title: '我的推荐', icon: '⭐', desc: '推荐好友奖励' },
                                         { key: 'my-wallet', title: '我的钱包', icon: '💰', desc: '资金管理' },
+                                        { key: 'investment-tools', title: '数理分析', icon: '🧮', desc: '投资工具与策略', isInternalLink: true, url: '/investment-tools' },
                                         { key: 'my-profile', title: '我的资料', icon: '👤', desc: '个人信息管理' },
                                         { key: 'settings', title: '设置', icon: '⚙️', desc: '账户设置' },
-                                        { key: 'customer-service', title: '在线客服', icon: '💬', desc: '联系客服支持', isExternalLink: true, url: 'https://work.weixin.qq.com/kfid/kfcdfdb02ed73c8e4d0' },
                                     ].map((item) => (
-                                        <div 
+                                        <div
                                             key={item.key}
-                                            className={`${
-                                                item.key === 'my-products' || item.key === 'my-sales' 
-                                                    ? 'bg-blue-50 border border-blue-200' 
-                                                    : item.key === 'customer-service'
-                                                    ? 'bg-green-50 border border-green-200'
-                                                    : 'bg-white border border-gray-200'
-                                            } rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer`}
+                                            className="bg-blue-50 border border-blue-200 rounded-lg p-3 hover:shadow-lg transition-shadow cursor-pointer"
                                             onClick={() => {
-                                                if (item.isExternalLink && item.url) {
-                                                    window.open(item.url, '_blank');
+                                                if ((item as any).isInternalLink && (item as any).url) {
+                                                    router.visit((item as any).url);
+                                                } else if ((item as any).isExternalLink && (item as any).url) {
+                                                    window.open((item as any).url, '_blank');
                                                 } else {
                                                     setActiveTab(item.key as typeof activeTab);
                                                 }
                                             }}
                                         >
-                                            <div className="text-center">
-                                                <div className="relative inline-block">
-                                                    <div className="text-3xl mb-2">{item.icon}</div>
-                                                    {/* 红圈标注 */}
-                                                    {item.badge && item.badge > 0 && (
-                                                        <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                                                            {item.badge > 99 ? '99+' : item.badge}
-                                                        </div>
-                                                    )}
+                                            <div className="flex items-center justify-between">
+                                                {/* 文字信息 */}
+                                                <div className="flex-1 text-left">
+                                                    <h4 className="font-semibold text-gray-900 text-sm mb-0.5">{item.title}</h4>
+                                                    <p className="text-xs text-gray-500">{item.desc}</p>
                                                 </div>
-                                                <h4 className="font-semibold text-gray-900 mb-1">{item.title}</h4>
-                                                <p className="text-xs text-gray-500">{item.desc}</p>
+                                                {/* 红圈标注 */}
+                                                {item.badge && item.badge > 0 && (
+                                                    <div className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold flex-shrink-0">
+                                                        {item.badge > 99 ? '99+' : item.badge}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     ))}
@@ -322,7 +318,7 @@ export default function ProfileIndex() {
         <FrontendLayout>
             <Head title="我的 - 个人中心" />
             
-            <div className="min-h-screen bg-gray-50 pb-20">
+            <div className="min-h-screen bg-yellow-50 pb-20">
                 {/* 主要内容 */}
                 <div className="w-full max-w-7xl mx-auto px-4 py-6">
                     {renderMainContent()}

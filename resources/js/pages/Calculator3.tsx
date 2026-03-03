@@ -491,19 +491,19 @@ export default function Calculator3() {
 
                     {/* 系统预测显示 */}
                     {currentSuggestion && isWaitingForResult && (
-                        <div className="text-left mb-6">
-                            
-                            <div className={`inline-block px-4 py-2 rounded-lg font-bold border-2 border-gray-300 text-gray-800 bg-transparent`}>
-                                
+                        <div className="mb-6">
+
+                            <div className={`px-4 py-2 rounded-lg font-bold border-2 border-gray-300 text-gray-800 bg-white shadow-sm`}>
+
                                 <div className="flex items-center gap-2">
                                     <span>系统预测</span>
                                     <div className={`w-5 h-5 rounded flex items-center justify-center font-bold text-white transition-all duration-150 ${
-                                        isAnimating 
+                                        isAnimating
                                             ? displayValue === 'big' ? 'bg-red-600 scale-110' : 'bg-blue-600 scale-110'
                                             : currentSuggestion === 'big' ? 'bg-red-600' : 'bg-blue-600'
                                     } ${isAnimating ? 'animate-pulse' : ''}`}>
                                     </div>{currentBet}
-                                    
+
                                 </div>
                                 <div className="text-xs mt-1">
                                     {isAnimating ? '系统运算中...' : '根据现场开奖结果，点击下方按钮输入结果'}

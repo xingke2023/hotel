@@ -14,6 +14,10 @@ class Order extends Model
         'seller_id',
         'price',
         'status',
+        'payment_status',
+        'payment_method',
+        'payment_id',
+        'paid_at',
         'confirmed_at',
         'shipped_at',
         'delivered_at',
@@ -34,6 +38,7 @@ class Order extends Model
         'delivered_at' => 'datetime',
         'completed_at' => 'datetime',
         'auto_confirm_at' => 'datetime',
+        'paid_at' => 'datetime',
         'buyer_reviewed' => 'boolean',
         'seller_reviewed' => 'boolean',
     ];

@@ -1,6 +1,6 @@
-import { Head, useForm, Link, router, usePage } from '@inertiajs/react';
+import { Head, useForm, Link, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import BiometricAuth from '@/components/biometric-auth';
+import BottomNavigation from '@/components/BottomNavigation';
 
 type LoginForm = {
     login: string;
@@ -32,44 +32,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         remember: false,
     });
 
-    const [biometricError, setBiometricError] = useState<string>('');
-    const [loginError, setLoginError] = useState<string>('');
-
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        setLoginError(''); // 清除之前的错误
-        
+
         post(route('login'), {
-            onSuccess: () => {
-                router.visit('/profile');
-            },
-            onError: (errors: any) => {
-                // 处理验证错误
-                console.log('Login errors:', errors);
-                
-                // 检查是否是验证错误
-                if (errors.login) {
-                    setLoginError(errors.login);
-                } else if (errors.password) {
-                    setLoginError('密码不能为空');
-                } else if (typeof errors === 'string') {
-                    setLoginError(errors);
-                } else {
-                    setLoginError('登录失败，请检查用户名和密码');
-                }
-            },
             onFinish: () => reset('password'),
         });
-    };
-
-    const handleBiometricSuccess = (result: any) => {
-        // 生物识别登录成功，跳转到个人资料页面
-        router.visit('/profile');
-    };
-
-    const handleBiometricError = (error: string) => {
-        setBiometricError(error);
-        setTimeout(() => setBiometricError(''), 5000);
     };
 
     return (
@@ -87,9 +55,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <h2 className="mt-6 text-xl font-medium text-gray-900 dark:text-white">
                             登录您的账户
                         </h2>
-                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            输入您的用户名或邮箱和密码进行登录
-                        </p>
                     </div>
                     
                     <div className="bg-white dark:bg-gray-800 py-8 px-6 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700">
@@ -101,28 +66,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             </div>
                         )}
 
-                        {biometricError && (
-                            <div className="mb-4 text-center text-sm font-medium text-red-600 dark:text-red-400">
-                                {biometricError}
-                            </div>
-                        )}
-
-                        {loginError && (
-                            <div className="mb-4 text-center text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-3">
-                                {loginError}
-                            </div>
-                        )}
-
-                        {/* 生物识别登录 */}
-                        <div className="mb-6">
-                            <BiometricAuth
-                                mode="login"
-                                userEmail={data.login}
-                                onSuccess={handleBiometricSuccess}
-                                onError={handleBiometricError}
-                            />
-                        </div>
-                        
                         <form className="space-y-6" onSubmit={submit}>
                             <div>
                                 <Label htmlFor="login" className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -132,7 +75,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     id="login"
                                     type="text"
                                     required
-                                    autoFocus
                                     tabIndex={1}
                                     autoComplete="username"
                                     value={data.login}
@@ -193,17 +135,33 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             </Button>
                         </form>
 
-                        <div className="mt-6 text-center">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                还没有账户？{' '}
-                                <TextLink href={route('register')} className="text-blue-600 hover:text-blue-500 font-medium" tabIndex={5}>
+                        <div className="mt-6 space-y-3">
+                            <div className="relative">
+                                <div className="absolute inset-0 flex items-center">
+                                    <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                                </div>
+                                <div className="relative flex justify-center text-sm">
+                                    <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                                        还没有账户？
+                                    </span>
+                                </div>
+                            </div>
+                            <Link href={route('register')}>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-50 dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-950 font-semibold"
+                                    tabIndex={5}
+                                >
                                     立即注册
-                                </TextLink>
-                            </span>
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <BottomNavigation />
         </div>
     );
 }
