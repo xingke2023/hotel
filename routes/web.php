@@ -193,6 +193,21 @@ Route::post('api/orders/{order}/confirm-payment', [App\Http\Controllers\PaymentC
 // 文章详情页 - 必须放在最后，因为使用了通配符参数
 Route::get('articles/{article}', [App\Http\Controllers\ArticleController::class, 'show'])->name('articles.show');
 
+// 新闻资讯
+Route::get('news', [App\Http\Controllers\NewsController::class, 'index'])->name('news.index');
+
+// 新闻管理（具体路由必须在通配符路由之前）
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('news/create', [App\Http\Controllers\NewsController::class, 'create'])->name('news.create');
+    Route::post('news', [App\Http\Controllers\NewsController::class, 'store'])->name('news.store');
+    Route::get('news/{news}/edit', [App\Http\Controllers\NewsController::class, 'edit'])->name('news.edit');
+    Route::put('news/{news}', [App\Http\Controllers\NewsController::class, 'update'])->name('news.update');
+    Route::delete('news/{news}', [App\Http\Controllers\NewsController::class, 'destroy'])->name('news.destroy');
+});
+
+// 新闻详情页（通配符路由放最后）
+Route::get('news/{news}', [App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
+
 // 生物识别认证API路由
 Route::prefix('api/biometric')->group(function () {
     Route::get('/credentials', [App\Http\Controllers\BiometricAuthController::class, 'checkCredentials']);
