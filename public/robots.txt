@@ -1,4 +1,4 @@
-# robots.txt for aomen.chat
+# robots.txt for macau.xingke888.com
 
 # Allow all crawlers
 User-agent: *
@@ -21,4 +21,4 @@ Allow: /api/exchange-rate
 Crawl-delay: 0.5
 
 # Sitemap location
-Sitemap: https://aomen.chat/sitemap.xml
+Sitemap: https://macau.xingke888.com/sitemap.xml

@@ -22,18 +22,12 @@ class PasswordController extends Controller
 
     /**
      * Update the user's password.
+     * 密码管理已迁移到 SSO 统一认证中心，本地不再支持修改密码。
      */
     public function update(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', Password::defaults(), 'confirmed'],
+        return back()->withErrors([
+            'current_password' => '密码管理请前往统一认证中心：' . config('sso.base_url'),
         ]);
-
-        $request->user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        return back();
     }
 }

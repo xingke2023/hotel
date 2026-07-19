@@ -42,22 +42,12 @@ class ProfileController extends Controller
 
     /**
      * Delete the user's account.
+     * 账户注销请联系管理员或前往 SSO 中心处理。
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
+        return back()->withErrors([
+            'password' => '账户注销请联系管理员',
         ]);
-
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/');
     }
 }

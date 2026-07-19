@@ -41,7 +41,7 @@ Route::post('api/videos/{video}/like', [\App\Http\Controllers\VideoController::c
 // 个人中心页面 - 需要认证
 Route::get('profile', function () {
     return Inertia::render('profile/index');
-})->middleware(['auth', 'verified'])->name('profile');
+})->middleware(['auth'])->name('profile');
 
 // 投资工具选择页面
 Route::get('investment-tools', function () {
@@ -93,7 +93,7 @@ Route::get('calculator5', function () {
     return Inertia::render('Calculator5');
 })->name('calculator5');
 
-// 九式宝缆页面  
+// 九式宝缆页面
 Route::get('calculator8', function () {
     return Inertia::render('Calculator8');
 })->name('calculator8');
@@ -111,8 +111,11 @@ Route::get('calculator71', function () {
 
 // 澳门讨论区 - 文章功能
 Route::get('articles', [App\Http\Controllers\ArticleController::class, 'index'])->name('articles.index');
+Route::get('advantage-player', function () {
+    return Inertia::render('AdvantagePlayer');
+})->name('advantage.player');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
@@ -197,7 +200,7 @@ Route::get('articles/{article}', [App\Http\Controllers\ArticleController::class,
 Route::get('news', [App\Http\Controllers\NewsController::class, 'index'])->name('news.index');
 
 // 新闻管理（具体路由必须在通配符路由之前）
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('news/create', [App\Http\Controllers\NewsController::class, 'create'])->name('news.create');
     Route::post('news', [App\Http\Controllers\NewsController::class, 'store'])->name('news.store');
     Route::get('news/{news}/edit', [App\Http\Controllers\NewsController::class, 'edit'])->name('news.edit');
@@ -208,14 +211,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // 新闻详情页（通配符路由放最后）
 Route::get('news/{news}', [App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
 
-// 生物识别认证API路由
-Route::prefix('api/biometric')->group(function () {
-    Route::get('/credentials', [App\Http\Controllers\BiometricAuthController::class, 'checkCredentials']);
-    Route::post('/register/options', [App\Http\Controllers\BiometricAuthController::class, 'generateRegistrationOptions']);
-    Route::post('/register/verify', [App\Http\Controllers\BiometricAuthController::class, 'verifyRegistration']);
-    Route::post('/authenticate/options', [App\Http\Controllers\BiometricAuthController::class, 'generateAuthenticationOptions']);
-    Route::post('/authenticate/verify', [App\Http\Controllers\BiometricAuthController::class, 'verifyAuthentication']);
-});
+// 生物识别认证路由已移除（由 SSO 统一认证中心接管）
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

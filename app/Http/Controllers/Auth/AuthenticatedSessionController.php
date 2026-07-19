@@ -3,49 +3,73 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
+use App\Services\SsoAuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Cookie;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Show the login page.
-     */
+    public function __construct(private SsoAuthService $sso) {}
+
     public function create(Request $request): Response
     {
         return Inertia::render('auth/login', [
-            'canResetPassword' => Route::has('password.request'),
             'status' => $request->session()->get('status'),
         ]);
     }
 
-    /**
-     * Handle an incoming authentication request.
-     */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->validate([
+            'login'    => ['required', 'string'],
+            'password' => ['required', 'string'],
+        ]);
 
-        $request->session()->regenerate();
+        try {
+            $tokens = $this->sso->login($request->login, $request->password);
+        } catch (\RuntimeException $e) {
+            return back()->withErrors(['login' => $e->getMessage()])->withInput();
+        }
 
-        return redirect()->intended('/');
+        $payload = $this->sso->decodeToken($tokens['accessToken']);
+        $user    = $this->sso->resolveLocalUser($payload);
+
+        Auth::login($user, false);
+
+        return $this->attachCookies(
+            redirect()->intended('/'),
+            $tokens['accessToken'],
+            $tokens['refreshToken']
+        );
     }
 
-    /**
-     * Destroy an authenticated session.
-     */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        $refreshToken = $request->cookie('refresh_token');
 
+        if ($refreshToken) {
+            $this->sso->logout($refreshToken);
+        }
+
+        Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/')
+            ->withCookie(Cookie::forget('access_token'))
+            ->withCookie(Cookie::forget('refresh_token'));
+    }
+
+    private function attachCookies(RedirectResponse $response, string $access, string $refresh): RedirectResponse
+    {
+        $secure = config('app.env') === 'production';
+
+        return $response
+            ->cookie('access_token',  $access,  config('sso.cookie_access_ttl'),  '/', null, $secure, true, false, 'Lax')
+            ->cookie('refresh_token', $refresh, config('sso.cookie_refresh_ttl'), '/', null, $secure, true, false, 'Lax');
     }
 }

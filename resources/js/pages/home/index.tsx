@@ -99,7 +99,7 @@ export default function HomeIndex() {
                             </div>
                         </div>
                         <h1 className="text-3xl font-extrabold text-gray-900 mb-1.5 drop-shadow-sm">
-                            澳门讨论区
+                            澳门贴吧
                         </h1>
                         <p className="text-base text-blue-700 font-medium mb-3 animate-fade-in">
                             澳门五星级酒店低价订房平台
@@ -128,7 +128,7 @@ export default function HomeIndex() {
                                         <div className="absolute whitespace-nowrap animate-marquee flex items-center">
                                             {[1, 2, 3, 4, 5, 6].map((i) => (
                                                 <span key={`url-${i}`} className="inline-flex items-center mx-6 text-xs"> {/* text-sm to text-xs */}
-                                                    <span className="text-blue-700 font-bold">澳门讨论区网址：aomen.chat</span>
+                                                    <span className="text-blue-700 font-bold">澳门贴吧网址：macau.xingke888.com</span>
                                                 </span>
                                             ))}
                                         </div>
@@ -191,8 +191,8 @@ export default function HomeIndex() {
                             <div className="text-green-500 mb-1.5 group-hover:scale-110 transition-transform duration-300">
                                 <MessageCircle size={32} strokeWidth={1.5} />
                             </div>
-                            <h3 className="font-bold text-gray-900 text-base">澳门讨论区</h3>
-                            <p className="text-xs text-gray-500 mt-0.5">分享生活，寻找同伴</p>
+                            <h3 className="font-bold text-gray-900 text-base">澳门贴吧</h3>
+                            <p className="text-xs text-gray-500 mt-0.5">信息共享，寻找同伴</p>
                         </Link>
 
 <a

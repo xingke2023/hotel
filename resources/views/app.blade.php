@@ -37,7 +37,7 @@
         {{-- SEO Meta Tags --}}
         <meta name="description" content="澳门酒店特价房间预订平台，提供澳门各大酒店优惠房间、特价房源信息。澳门住宿、酒店预订、投资工具一站式服务。">
         <meta name="keywords" content="澳门酒店,特价房间,澳门住宿,酒店预订,澳门房源,澳门旅游,酒店优惠,澳门投资">
-        <meta name="author" content="aomen.chat">
+        <meta name="author" content="macau.xingke888.com">
 
         {{-- Open Graph / Facebook --}}
         <meta property="og:type" content="website">

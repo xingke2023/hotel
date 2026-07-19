@@ -2,7 +2,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import FrontendLayout from '@/layouts/frontend-layout';
 import BottomNavigation from '@/components/BottomNavigation';
 import { usePendingSalesCount } from '@/hooks/use-pending-sales-count';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { type SharedData } from '@/types';
 import { 
     Search, 
@@ -61,11 +61,22 @@ export default function ArticlesIndex({ articles, categories = [], filters = {} 
     const { auth } = page.props;
     const { pendingSalesCount } = usePendingSalesCount();
     const [search, setSearch] = useState(filters.search || '');
-    const [isSearchFocused, setIsSearchFocused] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const searchInputRef = useRef<HTMLInputElement>(null);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         router.get('/articles', { search, category: filters.category });
+    };
+
+    const openSearch = () => {
+        setIsSearchOpen(true);
+        setTimeout(() => searchInputRef.current?.focus(), 50);
+    };
+
+    const closeSearch = () => {
+        setIsSearchOpen(false);
+        setSearch('');
     };
 
     const handleCategoryFilter = (categoryId?: string) => {
@@ -94,62 +105,70 @@ export default function ArticlesIndex({ articles, categories = [], filters = {} 
                             </span>
                             澳门讨论区
                         </h1>
-                        
-                        {/* Create Post Button */}
-                        <Link
-                            href={auth.user ? "/articles/create" : "/login?message=请先登录以发布文章"}
-                            className="bg-gray-900 text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 hover:bg-gray-800 transition-colors shadow-sm active:scale-95 transition-transform"
-                        >
-                            <PenLine className="w-3.5 h-3.5" />
-                            <span>发布</span>
-                        </Link>
+
+                        <div className="flex items-center gap-2">
+                            {/* Search Icon Button */}
+                            <button
+                                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                                className={cn(
+                                    "p-1.5 rounded-full transition-colors",
+                                    isSearchOpen ? "bg-blue-100 text-blue-600" : "text-gray-500 hover:bg-gray-100"
+                                )}
+                            >
+                                <Search className="w-5 h-5" />
+                            </button>
+                            {/* Create Post Button */}
+                            <Link
+                                href={auth.user ? "/articles/create" : "/login?message=请先登录以发布文章"}
+                                className="bg-gray-900 text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 hover:bg-gray-800 transition-colors shadow-sm active:scale-95"
+                            >
+                                <PenLine className="w-3.5 h-3.5" />
+                                <span>发布</span>
+                            </Link>
+                        </div>
                     </div>
 
-                    {/* Search Bar */}
-                    <div className="px-4 pb-3">
-                        <form onSubmit={handleSearch} className="relative">
-                            <Search className={cn(
-                                "absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors pointer-events-none",
-                                isSearchFocused ? "text-blue-600" : "text-gray-400"
-                            )} />
-                            <input
-                                type="text"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                onFocus={() => setIsSearchFocused(true)}
-                                onBlur={() => setIsSearchFocused(false)}
-                                placeholder="搜索话题、攻略、心情..."
-                                className="w-full bg-gray-100 border-none rounded-xl py-2 pl-10 pr-20 text-sm text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all outline-none"
-                            />
-                            <button
-                                type="submit"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 text-white px-4 py-1 rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors active:scale-95"
-                            >
-                                搜索
-                            </button>
-                        </form>
-                    </div>
+                    {/* Search Bar - expands below title row */}
+                    {isSearchOpen && (
+                        <div className="px-4 pb-3">
+                            <form onSubmit={handleSearch} className="flex items-center gap-2">
+                                <div className="relative flex-1">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-600 pointer-events-none" />
+                                    <input
+                                        ref={searchInputRef}
+                                        type="text"
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        placeholder="搜索话题、攻略、心情..."
+                                        className="w-full bg-gray-100 border-none rounded-xl py-2 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all outline-none"
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="bg-blue-600 text-white px-3 py-2 rounded-xl text-xs font-medium hover:bg-blue-700 transition-colors active:scale-95 whitespace-nowrap"
+                                >
+                                    搜索
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={closeSearch}
+                                    className="text-gray-500 text-xs font-medium whitespace-nowrap"
+                                >
+                                    取消
+                                </button>
+                            </form>
+                        </div>
+                    )}
 
                     {/* Categories Grid */}
                     <div className="border-t border-gray-100">
                         <div className="flex flex-wrap px-4 py-2 gap-1.5">
-                            <button
-                                onClick={() => handleCategoryFilter()}
-                                className={cn(
-                                    "px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all",
-                                    !filters.category
-                                        ? "bg-gray-900 text-white shadow-sm"
-                                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                                )}
-                            >
-                                全部话题
-                            </button>
                             {categories.map((category) => (
                                 <button
                                     key={category.id}
                                     onClick={() => handleCategoryFilter(category.id.toString())}
                                     className={cn(
-                                        "px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border border-transparent",
+                                        "px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-all border border-transparent",
                                         filters.category === category.id.toString()
                                             ? "shadow-sm text-white border-opacity-20"
                                             : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -163,6 +182,12 @@ export default function ArticlesIndex({ articles, categories = [], filters = {} 
                                     {category.name}
                                 </button>
                             ))}
+                            <Link
+                                href="/advantage-player"
+                                className="px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-all border border-transparent bg-amber-100 text-amber-700 hover:bg-amber-200"
+                            >
+                                优势玩家
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -174,42 +199,33 @@ export default function ArticlesIndex({ articles, categories = [], filters = {} 
                             <Link 
                                 key={article.id} 
                                 href={`/articles/${article.slug}`}
-                                className="block bg-white rounded-lg p-3 shadow-sm border border-gray-100 active:scale-[0.99] transition-transform"> {/* rounded-xl to rounded-lg */}
+                                className="block bg-white rounded-lg px-3 py-1 shadow-sm border border-gray-100 active:scale-[0.99] transition-transform"> {/* rounded-xl to rounded-lg */}
                                 <div className="flex justify-between items-start gap-2">
                                     <div className="flex-1 min-w-0">
                                         {/* Consolidated Category, User, Date, Views, Likes */}
-                                        <div className="flex items-center gap-2 mb-1 text-xs text-gray-500">
-                                            {article.category ? (
-                                                <span 
-                                                    className="px-2 py-0.5 rounded-md text-[10px] font-bold text-white shadow-sm"
-                                                    style={{ backgroundColor: article.category.color }}
-                                                >
-                                                    {article.category.name}
-                                                </span>
-                                            ) : (
-                                                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-gray-400 text-white">
-                                                    未分类
-                                                </span>
-                                            )}
+                                        <div className="flex items-center gap-2 mb-1 text-sm text-gray-500">
                                             <span className="flex items-center gap-1">
-                                                <User className="w-3 h-3" />
+                                                <User className="w-3.5 h-3.5" />
                                                 {article.user?.name || '匿名'}
                                             </span>
                                             <span className="flex items-center gap-1">
-                                                <Calendar className="w-3 h-3" />
-                                                {article.published_at ? new Date(article.published_at).toLocaleDateString('zh-CN') : ''}
+                                                <Calendar className="w-3.5 h-3.5" />
+                                                {article.published_at ? new Date(article.published_at).toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : ''}
                                             </span>
                                             <span className="flex items-center gap-1">
-                                                <Eye className="w-3 h-3" />
+                                                <Eye className="w-3.5 h-3.5" />
                                                 {article.views_count || 0}
                                             </span>
                                             <span className="flex items-center gap-1 text-red-500/80">
-                                                <Heart className="w-3 h-3" />
+                                                <Heart className="w-3.5 h-3.5" />
                                                 {article.likes_count || 0}
                                             </span>
+                                            <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-500">
+                                                {article.category ? article.category.name : '未分类'}
+                                            </span>
                                         </div>
-                                        
-                                        <h2 className="text-base font-bold text-gray-900 leading-snug mb-1 line-clamp-2">
+
+                                        <h2 className="text-lg font-normal text-gray-900 leading-snug mb-0.5 line-clamp-2">
                                             {article.title}
                                         </h2>
                                         

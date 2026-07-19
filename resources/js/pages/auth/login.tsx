@@ -1,11 +1,9 @@
-import { Head, useForm, Link, usePage } from '@inertiajs/react';
+import { Head, useForm, Link } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
-import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import BottomNavigation from '@/components/BottomNavigation';
@@ -13,23 +11,19 @@ import BottomNavigation from '@/components/BottomNavigation';
 type LoginForm = {
     login: string;
     password: string;
-    remember: boolean;
 };
 
 interface LoginProps {
     status?: string;
-    canResetPassword: boolean;
 }
 
-export default function Login({ status, canResetPassword }: LoginProps) {
-    const page = usePage();
+export default function Login({ status }: LoginProps) {
     const queryMessage = new URLSearchParams(window.location.search).get('message');
     const displayMessage = status || queryMessage;
-    
+
     const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
         login: '',
         password: '',
-        remember: false,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -43,7 +37,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     return (
         <div className="min-h-screen bg-[#FDFDFC] text-[#1b1b18] dark:bg-[#0a0a0a] dark:text-[#EDEDEC]">
             <Head title="登录 - 澳门实时房价信息平台" />
-            
+
             <div className="flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
                 <div className="w-full max-w-md space-y-8">
                     <div className="text-center">
@@ -56,7 +50,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             登录您的账户
                         </h2>
                     </div>
-                    
+
                     <div className="bg-white dark:bg-gray-800 py-8 px-6 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700">
                         {displayMessage && (
                             <div className={`mb-4 text-center text-sm font-medium ${
@@ -83,20 +77,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     className="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700"
                                 />
                                 <InputError message={errors.login} />
-                {errors.general && <InputError message={errors.general} />}
                             </div>
 
                             <div>
-                                <div className="flex items-center justify-between">
-                                    <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        密码
-                                    </Label>
-                                    {canResetPassword && (
-                                        <TextLink href={route('password.request')} className="text-sm text-blue-600 hover:text-blue-500" tabIndex={5}>
-                                            忘记密码？
-                                        </TextLink>
-                                    )}
-                                </div>
+                                <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    密码
+                                </Label>
                                 <Input
                                     id="password"
                                     type="password"
@@ -111,23 +97,10 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 <InputError message={errors.password} />
                             </div>
 
-                            <div className="flex items-center">
-                                <Checkbox
-                                    id="remember"
-                                    name="remember"
-                                    checked={data.remember}
-                                    onClick={() => setData('remember', !data.remember)}
-                                    tabIndex={3}
-                                />
-                                <Label htmlFor="remember" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                                    记住我
-                                </Label>
-                            </div>
-
-                            <Button 
-                                type="submit" 
-                                className="w-full bg-blue-600 hover:bg-blue-700 focus:ring-blue-500" 
-                                tabIndex={4} 
+                            <Button
+                                type="submit"
+                                className="w-full bg-blue-600 hover:bg-blue-700 focus:ring-blue-500"
+                                tabIndex={3}
                                 disabled={processing}
                             >
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin mr-2" />}
@@ -151,7 +124,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     type="button"
                                     variant="outline"
                                     className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-50 dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-950 font-semibold"
-                                    tabIndex={5}
+                                    tabIndex={4}
                                 >
                                     立即注册
                                 </Button>
