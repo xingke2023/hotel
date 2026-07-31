@@ -38,7 +38,7 @@ class AuthenticatedSessionController extends Controller
         $payload = $this->sso->decodeToken($tokens['accessToken']);
         $user    = $this->sso->resolveLocalUser($payload);
 
-        Auth::login($user, false);
+        Auth::guard('web')->setUser($user);
 
         return $this->attachCookies(
             redirect()->intended('/'),
@@ -56,8 +56,6 @@ class AuthenticatedSessionController extends Controller
         }
 
         Auth::guard('web')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
 
         return redirect('/')
             ->withCookie(Cookie::forget('access_token'))

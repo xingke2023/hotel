@@ -42,10 +42,7 @@ class SettingsController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        Auth::guard('web')->logout();
 
         return response()->json([
             'message' => '已成功退出登录',

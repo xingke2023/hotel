@@ -36,7 +36,7 @@ class RegisteredUserController extends Controller
         $payload = $this->sso->decodeToken($tokens['accessToken']);
         $user    = $this->sso->resolveLocalUser($payload);
 
-        Auth::login($user, false);
+        Auth::guard('web')->setUser($user);
 
         $secure = config('app.env') === 'production';
 

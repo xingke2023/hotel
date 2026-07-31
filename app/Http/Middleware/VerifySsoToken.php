@@ -26,7 +26,7 @@ class VerifySsoToken
         try {
             $payload = $this->sso->decodeToken($accessToken);
             $user    = $this->sso->resolveLocalUser($payload);
-            Auth::login($user, false);
+            Auth::guard('web')->setUser($user);
             return $next($request);
 
         } catch (ExpiredException) {
@@ -47,7 +47,7 @@ class VerifySsoToken
             }
 
             $user = $this->sso->resolveLocalUser($payload);
-            Auth::login($user, false);
+            Auth::guard('web')->setUser($user);
 
             $response = $next($request);
 

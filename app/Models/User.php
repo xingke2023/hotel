@@ -97,16 +97,6 @@ class User extends Authenticatable
         return $this->hasMany(House::class);
     }
 
-    public function credentials(): HasMany
-    {
-        return $this->hasMany(UserCredential::class);
-    }
-
-    public function activeCredentials(): HasMany
-    {
-        return $this->credentials()->where('is_active', true);
-    }
-
     public function generateReferralCode(): string
     {
         return 'REF' . strtoupper(uniqid());
